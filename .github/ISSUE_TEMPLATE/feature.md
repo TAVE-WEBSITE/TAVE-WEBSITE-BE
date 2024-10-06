@@ -1,5 +1,5 @@
 ---
-name: 'Issue: feature'
+name: feature
 about: Suggest an idea for this project
 title: "[type] #[issue number] [Issue name]"
 labels: ''
