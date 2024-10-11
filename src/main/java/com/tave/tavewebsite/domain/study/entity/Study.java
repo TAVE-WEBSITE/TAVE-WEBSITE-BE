@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class study extends BaseProgramEntity {
+public class Study extends BaseProgramEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
