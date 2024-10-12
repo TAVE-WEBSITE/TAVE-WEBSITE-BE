@@ -17,16 +17,17 @@ public class Session extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "session_id")
+    @Column(name = "sessionId")
     private Long id;
 
     @NotNull
-    @Size(max = 30)
+    @Size(min = 1, max = 30)
     @Column(length = 30, nullable = false)
     private String title;
 
-    @Column(nullable = false)
     @NotNull
+    @Size(min = 1, max = 500)
+    @Column(nullable = false)
     private String description;
 
     @NotNull
