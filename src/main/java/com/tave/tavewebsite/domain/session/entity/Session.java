@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.domain.history.entity;
+package com.tave.tavewebsite.domain.session.entity;
 
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,23 +8,22 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class History extends BaseEntity {
+public class Session extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "historyId")
+    @Column(name = "sessionId")
     private Long id;
 
     @NotNull
-    @Size(min = 1, max = 5)
-    @Column(nullable = false)
-    private String generation;
+    @Size(min = 1, max = 30)
+    @Column(length = 30, nullable = false)
+    private String title;
 
     @NotNull
     @Size(min = 1, max = 500)
@@ -35,10 +34,15 @@ public class History extends BaseEntity {
     @Column(nullable = false)
     private boolean isPublic;
 
+    @NotNull
+    @Column(length = 2083, nullable = false) // DDL varchar(2083)
+    private String imgUrl;
+
     @Builder
-    public History(String generation, String description, boolean isPublic) {
-        this.generation = generation;
+    public Session(String title, String description, boolean isPublic, String imgUrl) {
+        this.title = title;
         this.description = description;
         this.isPublic = isPublic;
+        this.imgUrl = imgUrl;
     }
 }

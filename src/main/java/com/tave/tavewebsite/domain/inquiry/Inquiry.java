@@ -1,4 +1,5 @@
-package com.tave.tavewebsite.domain.history.entity;
+package com.tave.tavewebsite.domain.inquiry;
+
 
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,37 +9,40 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class History extends BaseEntity {
+public class Inquiry extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "historyId")
+    @Column(name = "inquiryId")
     private Long id;
 
     @NotNull
-    @Size(min = 1, max = 5)
-    @Column(nullable = false)
-    private String generation;
+    @Size(min = 1, max = 30)
+    @Column(length = 30, nullable = false)
+    private String atId;
 
     @NotNull
-    @Size(min = 1, max = 500)
-    @Column(nullable = false)
-    private String description;
+    @Size(min = 1, max = 30)
+    @Column(length = 30, nullable = false)
+    private String title;
+
+    @NotNull
+    @Column(length = 2083, nullable = false) // DDL varchar(2083)
+    private String url;
 
     @NotNull
     @Column(nullable = false)
     private boolean isPublic;
 
     @Builder
-    public History(String generation, String description, boolean isPublic) {
-        this.generation = generation;
-        this.description = description;
+    public Inquiry(String atId, String title, String url, boolean isPublic) {
+        this.atId = atId;
+        this.title = title;
+        this.url = url;
         this.isPublic = isPublic;
     }
 }
