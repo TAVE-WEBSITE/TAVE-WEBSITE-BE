@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.history.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,10 +20,12 @@ public class History {
     @Column(name = "historyId")
     private Long id;
 
+    @Size(min = 1, max = 5)
     @Column(nullable = false)
     private String generation;
 
-    @Column(nullable = false, length = 500)
+    @Size(min = 1, max = 500)
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
