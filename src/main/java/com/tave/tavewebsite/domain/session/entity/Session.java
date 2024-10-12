@@ -1,6 +1,8 @@
 package com.tave.tavewebsite.domain.session.entity;
 
+import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,28 +13,35 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Session {
+public class Session extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "session_id")
     private Long id;
 
+    @NotNull
     @Size(max = 30)
+    @Column(length = 30, nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    @NotNull
     private String description;
 
-    private boolean is_public;
+    @NotNull
+    @Column(nullable = false)
+    private boolean isPublic;
 
-    @Column(length = 2083) // DDL varchar(2083)
-    private String img_url;
+    @NotNull
+    @Column(length = 2083, nullable = false) // DDL varchar(2083)
+    private String imgUrl;
 
     @Builder
-    public Session(String title, String description, boolean is_public, String img_url) {
+    public Session(String title, String description, boolean isPublic, String imgUrl) {
         this.title = title;
         this.description = description;
-        this.is_public = is_public;
-        this.img_url = img_url;
+        this.isPublic = isPublic;
+        this.imgUrl = imgUrl;
     }
 }
