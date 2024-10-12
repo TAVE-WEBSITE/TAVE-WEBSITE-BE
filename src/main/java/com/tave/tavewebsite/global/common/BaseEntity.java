@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.global.common;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @CreatedDate
+    @Column(updatable = false) // 생성 시점만 기록, 수정 불가
     private LocalDateTime createdAt;
 
     @LastModifiedDate
