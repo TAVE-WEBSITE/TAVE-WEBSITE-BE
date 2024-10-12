@@ -17,16 +17,16 @@ public class Inquiry extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inquiry_id")
+    @Column(name = "inquiryId")
     private Long id;
 
     @NotNull
-    @Size(max = 30)
+    @Size(min = 1, max = 30)
     @Column(length = 30, nullable = false)
-    private String at_id;
+    private String atId;
 
     @NotNull
-    @Size(max = 30)
+    @Size(min = 1, max = 30)
     @Column(length = 30, nullable = false)
     private String title;
 
@@ -39,8 +39,8 @@ public class Inquiry extends BaseEntity {
     private boolean isPublic;
 
     @Builder
-    public Inquiry(String at_id, String title, String url, boolean isPublic) {
-        this.at_id = at_id;
+    public Inquiry(String atId, String title, String url, boolean isPublic) {
+        this.atId = atId;
         this.title = title;
         this.url = url;
         this.isPublic = isPublic;
