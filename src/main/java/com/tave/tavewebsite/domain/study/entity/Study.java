@@ -24,7 +24,7 @@ public class Study extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Size(max = 30)
+    @Size(min = 1, max = 30)
     @Column(length = 30, nullable = false)
     private String title;
 
