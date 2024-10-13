@@ -40,8 +40,8 @@ public class Study extends BaseEntity {
     private String generation;
 
     @NotNull
-    @Size(min = 1, max = 30)
-    @Column(length = 30, nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private String field;
 
     @NotNull
