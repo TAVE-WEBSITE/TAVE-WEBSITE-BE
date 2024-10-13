@@ -45,13 +45,13 @@ public class Member extends BaseEntity {
     private String generation;
 
     @Enumerated(EnumType.STRING)
-    private String department;
+    private DepartmentType department;
 
     @Enumerated(EnumType.STRING)
-    private String job;
+    private JobType job;
 
     @Builder
-    public Member(String email, String password, String role, String nickname, String agitId, String generation, String department, String job) {
+    public Member(String email, String password, String role, String nickname, String agitId, String generation, DepartmentType department, JobType job) {
         this.email = email;
         this.password = password;
         this.role = role;

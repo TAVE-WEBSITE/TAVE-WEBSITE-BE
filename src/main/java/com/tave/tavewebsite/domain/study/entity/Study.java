@@ -42,7 +42,7 @@ public class Study extends BaseEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String field;
+    private FieldType field;
 
     @NotNull
     @Column(nullable = false)
@@ -63,7 +63,7 @@ public class Study extends BaseEntity {
     private String imgUrl;
 
     @Builder
-    public Study(String title, String description, String generation, String field, LocalDateTime startDate, LocalDateTime endDate, String blogUrl, String imgUrl) {
+    public Study(String title, String description, String generation, FieldType field, LocalDateTime startDate, LocalDateTime endDate, String blogUrl, String imgUrl) {
         this.title = title;
         this.description = description;
         this.generation = generation;
