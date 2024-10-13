@@ -23,12 +23,12 @@ public class History extends BaseEntity {
 
     @NotNull
     @Size(min = 1, max = 5)
-    @Column(nullable = false)
+    @Column(length = 5, nullable = false)
     private String generation;
 
     @NotNull
     @Size(min = 1, max = 500)
-    @Column(nullable = false)
+    @Column(length = 500, nullable = false)
     private String description;
 
     @NotNull
