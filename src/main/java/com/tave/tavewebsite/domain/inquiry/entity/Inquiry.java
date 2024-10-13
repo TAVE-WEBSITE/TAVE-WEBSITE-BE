@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 @Entity
 @Getter
@@ -31,6 +32,7 @@ public class Inquiry extends BaseEntity {
     private String title;
 
     @NotNull
+    @URL
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String url;
 
