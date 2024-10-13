@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.domain.inquiry;
+package com.tave.tavewebsite.domain.inquiry.entity;
 
 
 import com.tave.tavewebsite.global.common.BaseEntity;
