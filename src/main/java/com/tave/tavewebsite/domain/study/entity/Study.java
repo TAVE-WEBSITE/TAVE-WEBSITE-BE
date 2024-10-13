@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
@@ -52,10 +53,12 @@ public class Study extends BaseEntity {
     private LocalDateTime endDate;
 
     @NotNull
+    @URL
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String blogUrl;
 
     @NotNull
+    @URL
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String imgUrl;
 

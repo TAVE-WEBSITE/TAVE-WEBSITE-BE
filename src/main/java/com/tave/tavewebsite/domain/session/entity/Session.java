@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 
 @Entity
@@ -35,6 +36,7 @@ public class Session extends BaseEntity {
     private boolean isPublic;
 
     @NotNull
+    @URL
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String imgUrl;
 

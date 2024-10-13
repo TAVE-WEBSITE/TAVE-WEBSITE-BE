@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
@@ -42,8 +43,8 @@ public class Project extends BaseEntity {
     private String teamName;
 
     @NotNull
-    @Size(min = 1, max = 30)
-    @Column(length = 30, nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private String field;
 
     @NotNull
@@ -55,10 +56,12 @@ public class Project extends BaseEntity {
     private LocalDateTime endDate;
 
     @NotNull
+    @URL
     @Column(length = 2083, nullable = false)
     private String blogUrl;
 
     @NotNull
+    @URL
     @Column(length = 2083, nullable = false)
     private String imgUrl;
 
