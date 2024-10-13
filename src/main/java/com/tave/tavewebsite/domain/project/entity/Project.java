@@ -1,5 +1,4 @@
-package com.tave.tavewebsite.domain.study.entity;
-
+package com.tave.tavewebsite.domain.project.entity;
 
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -13,15 +12,14 @@ import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Study extends BaseEntity {
+public class Project extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "studyId")
+    @Column(name = "projectId")
     private Long id;
 
     @NotNull
@@ -31,13 +29,18 @@ public class Study extends BaseEntity {
 
     @NotNull
     @Size(min = 1, max = 500)
-    @Column(nullable = false)
-    private String description; // 스터디 주제
+    @Column(length = 500, nullable = false)
+    private String description;
 
     @NotNull
     @Size(min = 1, max = 5)
     @Column(length = 5, nullable = false)
     private String generation;
+
+    @NotNull
+    @Size(min = 1, max = 30)
+    @Column(length = 30, nullable = false)
+    private String teamName;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -54,19 +57,20 @@ public class Study extends BaseEntity {
 
     @NotNull
     @URL
-    @Column(length = 2083, nullable = false) // DDL varchar(2083)
+    @Column(length = 2083, nullable = false)
     private String blogUrl;
 
     @NotNull
     @URL
-    @Column(length = 2083, nullable = false) // DDL varchar(2083)
+    @Column(length = 2083, nullable = false)
     private String imgUrl;
 
     @Builder
-    public Study(String title, String description, String generation, FieldType field, LocalDateTime startDate, LocalDateTime endDate, String blogUrl, String imgUrl) {
+    public Project(String title, String description, String generation, String teamName, FieldType field, LocalDateTime startDate, LocalDateTime endDate, String blogUrl, String imgUrl) {
         this.title = title;
         this.description = description;
         this.generation = generation;
+        this.teamName = teamName;
         this.field = field;
         this.startDate = startDate;
         this.endDate = endDate;

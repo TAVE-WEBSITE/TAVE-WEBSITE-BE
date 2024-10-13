@@ -44,16 +44,14 @@ public class Member extends BaseEntity {
     @Column(length = 5)
     private String generation;
 
-    @Size(min = 1, max = 50)
-    @Column(length = 50)
-    private String department;
+    @Enumerated(EnumType.STRING)
+    private DepartmentType department;
 
-    @Size(min = 1, max = 50)
-    @Column(length = 50)
-    private String job;
+    @Enumerated(EnumType.STRING)
+    private JobType job;
 
     @Builder
-    public Member(String email, String password, String role, String nickname, String agitId, String generation, String department, String job) {
+    public Member(String email, String password, String role, String nickname, String agitId, String generation, DepartmentType department, JobType job) {
         this.email = email;
         this.password = password;
         this.role = role;
