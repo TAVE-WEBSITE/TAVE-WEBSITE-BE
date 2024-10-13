@@ -44,12 +44,10 @@ public class Member extends BaseEntity {
     @Column(length = 5)
     private String generation;
 
-    @Size(min = 1, max = 50)
-    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
     private String department;
 
-    @Size(min = 1, max = 50)
-    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
     private String job;
 
     @Builder
