@@ -13,6 +13,16 @@ spring:
         #        show_sql: true
         format_sql: true
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${access_key}
+      secret-key: ${secret_key}
+    s3:
+      bucket: ${bucket_name}
+    region:
+      static: ${region}
+
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
