@@ -3,6 +3,7 @@ package com.tave.tavewebsite.global.exception;
 
 import com.tave.tavewebsite.global.exception.Response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,31 +19,38 @@ public class GlobalExceptionHandler {
 
     // 사용자 정의 예외 처리
     @ExceptionHandler(BaseErrorException.class)
-    public <T> ApiResponse<T> handle(BaseErrorException e) {
+    public ResponseEntity<ApiResponse<Void>> handle(BaseErrorException e) {
 
         logWarning(e, e.getErrorCode());
+        ApiResponse<Void> response = ApiResponse.fail(e.getErrorCode(), e.getMessage());
 
-        return ApiResponse.fail(e.getErrorCode(), e.getMessage());
+        return ResponseEntity
+                .status(e.getErrorCode())
+                .body(response);
     }
 
     // @Valid 예외 처리 (@NotNull, @Size, etc...) or IllegalArgumentException
     @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
-    public <T> ApiResponse<T> handle(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Void>> handle(MethodArgumentNotValidException e) {
 
         logWarning(e, ERROR_CODE);
+        ApiResponse<Void> response = ApiResponse.fail(ERROR_CODE, e.getMessage());
 
-        return ApiResponse.fail(ERROR_CODE, e.getMessage());
+        return ResponseEntity
+                .status(ERROR_CODE)
+                .body(response);
     }
-
 
     // 서버 측 에러 (이외의 에러)
     @ExceptionHandler(Exception.class)
-    public <T> ApiResponse<T> handle(Exception e) {
+    public ResponseEntity<ApiResponse<Void>> handle(Exception e) {
 
         logWarning(e, SERVER_ERROR_CODE);
+        ApiResponse<Void> response = ApiResponse.fail(SERVER_ERROR_CODE, e.getMessage());
 
-        return ApiResponse.fail(SERVER_ERROR_CODE, e.getMessage());
-    }
+        return ResponseEntity
+                .status(SERVER_ERROR_CODE)
+                .body(response);        }
 
     // log.warn이 중복되어 리팩토링
     private void logWarning(Exception e, int errorCode) {
