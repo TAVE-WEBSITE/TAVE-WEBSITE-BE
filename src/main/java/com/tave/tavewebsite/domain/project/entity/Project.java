@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.project.entity;
 
 import com.tave.tavewebsite.global.common.BaseEntity;
+import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.domain.project.entity;
+package com.tave.tavewebsite.global.common;
 
 public enum FieldType {
     DEEP_LEARNING,
