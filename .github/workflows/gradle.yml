@@ -53,7 +53,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/deploy
+            mkdir -p /home/ec2-user/deploy
 
       # docker-compose 복사
       - name: Copy docker-compose.yml
@@ -63,7 +63,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yml"
-          target: "/home/ubuntu/deploy/"
+          target: "/home/ec2-user/deploy/"
 
       # Docker 이미지를 빌드합니다.
       - name: docker image build
