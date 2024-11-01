@@ -5,26 +5,26 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ApiResponse<T> {
+public class ApiExceptionResponse<T> {
 
     private int code;
     private String message;
     private T data;
 
-    private ApiResponse(int code, String message, T data) {
+    private ApiExceptionResponse(int code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    private ApiResponse(int code, String message) {
+    private ApiExceptionResponse(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public static <T> ApiResponse<T> fail(int code, String message) {
+    public static <T> ApiExceptionResponse<T> fail(int code, String message) {
 
-        return new ApiResponse<>(code, message);
+        return new ApiExceptionResponse<>(code, message);
     }
 
     /*
