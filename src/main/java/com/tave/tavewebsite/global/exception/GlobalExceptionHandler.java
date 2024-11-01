@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.global.exception;
 
 
-import com.tave.tavewebsite.global.exception.Response.ApiResponse;
+import com.tave.tavewebsite.global.exception.Response.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,10 +19,10 @@ public class GlobalExceptionHandler {
 
     // 사용자 정의 예외 처리
     @ExceptionHandler(BaseErrorException.class)
-    public ResponseEntity<ApiResponse<Void>> handle(BaseErrorException e) {
+    public ResponseEntity<ExceptionResponse<Void>> handle(BaseErrorException e) {
 
         logWarning(e, e.getErrorCode());
-        ApiResponse<Void> response = ApiResponse.fail(e.getErrorCode(), e.getMessage());
+        ExceptionResponse<Void> response = ExceptionResponse.fail(e.getErrorCode(), e.getMessage());
 
         return ResponseEntity
                 .status(e.getErrorCode())
@@ -31,10 +31,10 @@ public class GlobalExceptionHandler {
 
     // @Valid 예외 처리 (@NotNull, @Size, etc...) or IllegalArgumentException
     @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
-    public ResponseEntity<ApiResponse<Void>> handle(MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse<Void>> handle(MethodArgumentNotValidException e) {
 
         logWarning(e, ERROR_CODE);
-        ApiResponse<Void> response = ApiResponse.fail(ERROR_CODE, e.getMessage());
+        ExceptionResponse<Void> response = ExceptionResponse.fail(ERROR_CODE, e.getMessage());
 
         return ResponseEntity
                 .status(ERROR_CODE)
@@ -43,10 +43,10 @@ public class GlobalExceptionHandler {
 
     // 서버 측 에러 (이외의 에러)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handle(Exception e) {
+    public ResponseEntity<ExceptionResponse<Void>> handle(Exception e) {
 
         logWarning(e, SERVER_ERROR_CODE);
-        ApiResponse<Void> response = ApiResponse.fail(SERVER_ERROR_CODE, e.getMessage());
+        ExceptionResponse<Void> response = ExceptionResponse.fail(SERVER_ERROR_CODE, e.getMessage());
 
         return ResponseEntity
                 .status(SERVER_ERROR_CODE)
