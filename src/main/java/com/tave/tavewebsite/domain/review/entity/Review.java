@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,5 +39,12 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private boolean isPublic;
 
-
+    @Builder
+    public Review(String nickname, String generation, FieldType field, String content, boolean isPublic) {
+        this.nickname = nickname;
+        this.generation = generation;
+        this.field = field;
+        this.content = content;
+        this.isPublic = isPublic;
+    }
 }
