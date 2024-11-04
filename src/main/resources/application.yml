@@ -13,6 +13,16 @@ spring:
         #        show_sql: true
         format_sql: true
 
+  mail:
+    host: smtp.naver.com
+    port: ${send_email_port}
+    username: ${send_email}
+    password: ${send_email_password}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+
 cloud:
   aws:
     credentials:
@@ -26,3 +36,4 @@ cloud:
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
+
