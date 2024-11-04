@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 public class MailService {
 
     private final JavaMailSender emailSender;
+    private final String SUCCESS_SIGN_UP = "[TAVE 관리자 홈페이지] 가입 신청 완료";
 
     @Value("${spring.mail.username}")
     private String from;
@@ -37,7 +38,7 @@ public class MailService {
             throw new FailMailSendException(); // Mail을 발송할때 생긴 예외
         }
 
-        return new MailResponseDto(to, "관리자 회원가입 신청 완료");
+        return new MailResponseDto(to + " 관리자 회원가입 신청 완료");
     }
 
     // 메일 내용 작성
@@ -46,7 +47,17 @@ public class MailService {
         MimeMessage message = emailSender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, to);
         // 이메일 제목
-        message.setSubject("[TAVE 관리자 홈페이지] 가입 신청 완료");
+        String msgg = ManagerSingUpHtml(message, SUCCESS_SIGN_UP);
+
+        message.setText(msgg, "utf-8", "html");
+        // 보내는 사람의 이메일 주소, 보내는 사람 이름
+        message.setFrom(from);
+
+        return message;
+    }
+
+    private String ManagerSingUpHtml(MimeMessage message, String subject) throws MessagingException {
+        message.setSubject(subject);
 
         String msgg = "";
         msgg += "<h1>안녕하세요</h1>";
@@ -57,12 +68,7 @@ public class MailService {
         msgg += "<h3 style='color:blue'>관리자 회원가입 신청이 완료됐습니다.</h3>";
         msgg += "<div style='font-size:130%'>";
         msgg += "</div>";
-
-        message.setText(msgg, "utf-8", "html");
-        // 보내는 사람의 이메일 주소, 보내는 사람 이름
-        message.setFrom(from);
-
-        return message;
+        return msgg;
     }
 
 
