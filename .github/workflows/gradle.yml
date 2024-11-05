@@ -4,6 +4,8 @@ name: Java CI/CD with Gradle
 on:
   push:
     branches: [ "main" ] # main 브랜치에 push가 발생하면 실행됩니다.
+  pull_request:
+    branches: [ "main" ]
 
 # 워크플로우가 접근할 수 있는 권한을 설정합니다.
 permissions:
@@ -93,13 +95,6 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }} # EC2 서버에 접근하기 위한 SSH 개인 키
           script: |
-            sudo yum update -y
-            sudo amazon-linux-extras install docker -y
-            sudo service docker start
-            sudo usermod -a -G docker $USER
-
-            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
           
             echo "DB_URL=${{ secrets.DB_URL }}" >> ~/deploy/.env
             echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> ~/deploy/.env
