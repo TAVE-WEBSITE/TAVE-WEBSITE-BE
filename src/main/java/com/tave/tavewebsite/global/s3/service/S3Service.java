@@ -37,8 +37,7 @@ public class S3Service {
             metadata.setContentType(file.getContentType());
 
             // PutObjectRequest 생성 시 InputStream과 ContentType을 설정합니다.
-            PutObjectRequest putRequest = new PutObjectRequest(bucketName, key, inputStream, metadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead);
+            PutObjectRequest putRequest = new PutObjectRequest(bucketName, key, inputStream, metadata);
             s3Client.putObject(putRequest);
         } catch (IOException e) {
             throw new RuntimeException(S3ErrorMessage.UPLOAD_FAIL.getMessage());
