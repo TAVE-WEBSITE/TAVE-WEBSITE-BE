@@ -29,18 +29,6 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    // @Valid 예외 처리 (@NotNull, @Size, etc...) or IllegalArgumentException
-    @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
-    public ResponseEntity<ExceptionResponse<Void>> handle(MethodArgumentNotValidException e) {
-
-        logWarning(e, ERROR_CODE);
-        ExceptionResponse<Void> response = ExceptionResponse.fail(ERROR_CODE, e.getMessage());
-
-        return ResponseEntity
-                .status(ERROR_CODE)
-                .body(response);
-    }
-
     // 서버 측 에러 (이외의 에러)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse<Void>> handle(Exception e) {
