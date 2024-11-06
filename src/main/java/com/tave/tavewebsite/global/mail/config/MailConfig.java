@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.global.config;
+package com.tave.tavewebsite.global.mail.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
