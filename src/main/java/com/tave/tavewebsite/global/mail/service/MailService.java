@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.global.mail;
+package com.tave.tavewebsite.global.mail.service;
 
 
 import com.tave.tavewebsite.global.mail.dto.MailResponseDto;
