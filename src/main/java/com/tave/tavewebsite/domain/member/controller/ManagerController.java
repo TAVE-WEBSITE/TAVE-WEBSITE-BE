@@ -23,4 +23,10 @@ public class ManagerController {
         MailResponseDto response = memberService.saveMember(requestDto);
         return new SuccessResponse<>(response);
     }
+
+    @GetMapping("/unauthorized")
+    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager(){
+        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
+        return new SuccessResponse<>(response);
+    }
 }
