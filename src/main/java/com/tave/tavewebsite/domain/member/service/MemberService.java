@@ -44,4 +44,10 @@ public class MemberService {
                 member -> {throw new DuplicateNicknameException();}
         );
     }
+
+    public List<UnauthorizedManagerResponseDto>  getUnauthorizedManager(){
+        return memberRepository.findByRole(RoleType.UNAUTHORIZED_MANAGER).stream()
+                .map(UnauthorizedManagerResponseDto::fromEntity)
+                .toList();
+    }
 }
