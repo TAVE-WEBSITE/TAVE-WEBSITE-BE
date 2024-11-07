@@ -33,13 +33,13 @@ public class MemberService {
         return mailService.sendManagerRegisterMessage(saveMember.getEmail());
     }
 
-    public void validateEmail(String email){
+    private void validateEmail(String email){
         memberRepository.findByEmail(email).ifPresent(
                 member -> {throw new DuplicateEmailException();}
         );
     }
 
-    public void validateNickname(String nickname){
+    private void validateNickname(String nickname){
         memberRepository.findByNickname(nickname).ifPresent(
                 member -> {throw new DuplicateNicknameException();}
         );
