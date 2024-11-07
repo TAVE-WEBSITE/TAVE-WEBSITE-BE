@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.member.controller;
 
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.member.dto.response.CheckNickNameResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.mail.dto.MailResponseDto;
@@ -28,5 +29,12 @@ public class ManagerController {
     public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager(){
         List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
         return new SuccessResponse<>(response);
+    }
+
+    @GetMapping("/{nickName}")
+    public SuccessResponse<CheckNickNameResponseDto> checkEmail(@PathVariable String nickName){
+        memberService.validateNickname(nickName);
+        CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
+        return new SuccessResponse<>(response, nickName+" 사용가능합니다.");
     }
 }
