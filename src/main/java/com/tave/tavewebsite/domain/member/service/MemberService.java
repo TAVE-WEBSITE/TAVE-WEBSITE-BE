@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -46,7 +48,7 @@ public class MemberService {
     }
 
     public List<UnauthorizedManagerResponseDto>  getUnauthorizedManager(){
-        return memberRepository.findByRole(RoleType.UNAUTHORIZED_MANAGER).stream()
+        return memberRepository.findByRole(UNAUTHORIZED_MANAGER).stream()
                 .map(UnauthorizedManagerResponseDto::fromEntity)
                 .toList();
     }
