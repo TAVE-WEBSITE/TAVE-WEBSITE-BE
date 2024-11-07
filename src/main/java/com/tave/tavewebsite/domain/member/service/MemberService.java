@@ -50,7 +50,7 @@ public class MemberService {
         );
     }
 
-    private void validateNickname(String nickname){
+    public void validateNickname(String nickname){
         memberRepository.findByNickname(nickname).ifPresent(
                 member -> {throw new DuplicateNicknameException();}
         );
