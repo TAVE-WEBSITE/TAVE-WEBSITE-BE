@@ -1,10 +1,13 @@
 package com.tave.tavewebsite.domain.member.entity;
 
+import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
 
 @Entity
 @Getter
@@ -26,15 +29,18 @@ public class Member extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String password;
 
-    @NotNull
-    @Size(min = 4, max = 10)
-    @Column(length = 10, nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
     @NotNull
     @Size(min = 2, max = 20)
     @Column(length = 20, nullable = false)
     private String nickname;
+
+    @NotNull
+    @Size(min = 2, max = 20)
+    @Column(length = 20, nullable = false)
+    private String username;
 
     @Size(min = 1, max = 30)
     @Column(length = 30)
@@ -50,15 +56,32 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private JobType job;
 
+
     @Builder
-    public Member(String email, String password, String role, String nickname, String agitId, String generation, DepartmentType department, JobType job) {
+    public Member(String email, String password, RoleType role, String nickname, String username, String agitId, String generation, DepartmentType department, JobType job) {
         this.email = email;
         this.password = password;
         this.role = role;
         this.nickname = nickname;
+        this.username = username;
         this.agitId = agitId;
         this.generation = generation;
         this.department = department;
         this.job = job;
+    }
+
+    // 패스워드 인코딩 필요
+    public static Member toMember(RegisterManagerRequestDto registerManagerRequestDto) {
+        return Member.builder()
+                .email(registerManagerRequestDto.email())
+                .password(registerManagerRequestDto.password())
+                .agitId(registerManagerRequestDto.agitId())
+                .nickname(registerManagerRequestDto.nickname())
+                .username(registerManagerRequestDto.username())
+                .generation(registerManagerRequestDto.generation())
+                .role(UNAUTHORIZED_MANAGER)
+                .job(registerManagerRequestDto.job())
+                .department(registerManagerRequestDto.department())
+                .build();
     }
 }
