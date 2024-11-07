@@ -9,9 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.validation.FieldError;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
@@ -35,12 +33,8 @@ public class GlobalExceptionHandler {
     }
 
     // @Valid 예외 처리 (@NotNull, @Size, etc...) or IllegalArgumentException
-    @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse<Void>> handle(MethodArgumentNotValidException e) {
-
-        List<String> errorMessages = e.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .toList();
 
         logWarning(e, ERROR_CODE);
         ExceptionResponse<Void> response = ExceptionResponse.fail(ERROR_CODE, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
