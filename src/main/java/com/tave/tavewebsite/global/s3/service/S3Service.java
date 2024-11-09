@@ -24,7 +24,7 @@ public class S3Service {
         this.bucketName = bucketName;
     }
 
-    public void uploadImages(MultipartFile file) {
+    public URL uploadImages(MultipartFile file) {
         String key = file.getOriginalFilename();
         checkExistFile(key);
         // MultipartFile에서 InputStream을 얻어 S3에 업로드합니다.
@@ -35,7 +35,7 @@ public class S3Service {
             PutObjectRequest putRequest = new PutObjectRequest(bucketName, key, inputStream, metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead);
             s3Client.putObject(putRequest);
-
+            return getImageUrl(key);
         } catch (IOException e) {
             throw new S3UploadFailException();
         }
