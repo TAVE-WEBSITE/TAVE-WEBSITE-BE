@@ -28,12 +28,12 @@ public class Study extends BaseEntity {
     @NotNull
     @Size(min = 1, max = 30)
     @Column(length = 30, nullable = false)
-    private String title;
+    private String teamName; // 스터디 팀 이름
 
     @NotNull
     @Size(min = 1, max = 500)
     @Column(nullable = false)
-    private String description; // 스터디 주제
+    private String topic; // 스터디 주제
 
     @NotNull
     @Size(min = 1, max = 5)
@@ -64,13 +64,11 @@ public class Study extends BaseEntity {
     private String imgUrl;
 
     @Builder
-    public Study(String title, String description, String generation, FieldType field, LocalDateTime startDate, LocalDateTime endDate, String blogUrl, String imgUrl) {
-        this.title = title;
-        this.description = description;
+    public Study(String teamName, String topic, String generation, FieldType field, String blogUrl, String imgUrl) {
+        this.topic = topic;
+        this.teamName = teamName;
         this.generation = generation;
         this.field = field;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.blogUrl = blogUrl;
         this.imgUrl = imgUrl;
     }
