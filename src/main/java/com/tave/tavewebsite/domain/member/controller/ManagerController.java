@@ -32,7 +32,7 @@ public class ManagerController {
     }
 
     @GetMapping("/{nickName}")
-    public SuccessResponse<CheckNickNameResponseDto> checkEmail(@PathVariable String nickName){
+    public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable String nickName){
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
         return new SuccessResponse<>(response, nickName+" 사용가능합니다.");
