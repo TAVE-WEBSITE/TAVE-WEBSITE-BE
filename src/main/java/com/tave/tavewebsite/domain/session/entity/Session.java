@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.session.entity;
 
+import com.tave.tavewebsite.domain.session.entity.dto.request.SessionRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -46,5 +47,14 @@ public class Session extends BaseEntity {
         this.description = description;
         this.isPublic = isPublic;
         this.imgUrl = imgUrl;
+    }
+
+    public static Session of(SessionRequestDto sessionRequestDto, java.net.URL imgUrl) {
+        return Session.builder()
+                .title(sessionRequestDto.title())
+                .description(sessionRequestDto.description())
+                .isPublic(sessionRequestDto.isPublic())
+                .imgUrl(imgUrl.toString())
+                .build();
     }
 }
