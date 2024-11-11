@@ -1,6 +1,6 @@
 package com.tave.tavewebsite.domain.session.entity;
 
-import com.tave.tavewebsite.domain.session.entity.dto.request.SessionRequestDto;
+import com.tave.tavewebsite.domain.session.dto.request.SessionRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +32,10 @@ public class Session extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
+    @Size(min = 1, max = 5)
+    @Column(length = 5)
+    private String generation;
+
     @NotNull
     @Column(nullable = false)
     private boolean isPublic;
@@ -42,9 +46,10 @@ public class Session extends BaseEntity {
     private String imgUrl;
 
     @Builder
-    public Session(String title, String description, boolean isPublic, String imgUrl) {
+    public Session(String title, String description, String generation,boolean isPublic, String imgUrl) {
         this.title = title;
         this.description = description;
+        this.generation = generation;
         this.isPublic = isPublic;
         this.imgUrl = imgUrl;
     }
@@ -53,6 +58,7 @@ public class Session extends BaseEntity {
         return Session.builder()
                 .title(sessionRequestDto.title())
                 .description(sessionRequestDto.description())
+                .generation(sessionRequestDto.generation())
                 .isPublic(sessionRequestDto.isPublic())
                 .imgUrl(imgUrl.toString())
                 .build();
