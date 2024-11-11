@@ -11,6 +11,10 @@ spring:
       hibernate:
         #      show_sql: true
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
   mail:
     host: smtp.naver.com
