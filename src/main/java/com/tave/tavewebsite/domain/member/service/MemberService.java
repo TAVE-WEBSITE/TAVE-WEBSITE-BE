@@ -18,13 +18,13 @@ import java.util.List;
 import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MailService mailService;
 
-    @Transactional
     public MailResponseDto saveMember(RegisterManagerRequestDto requestDto){
 
         validateNickname(requestDto.nickname());
