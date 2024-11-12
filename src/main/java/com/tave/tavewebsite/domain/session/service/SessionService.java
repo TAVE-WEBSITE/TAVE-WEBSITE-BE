@@ -38,5 +38,18 @@ public class SessionService {
                 .toList();
     }
 
+    public void deleteSession(Long sessionId) {
+        Session findSession = findBySessionId(sessionId);
+        sessionRepository.delete(findSession);
+    }
+
+    /*
+    * 리팩토링
+    * */
+
+    private Session findBySessionId(Long sessionId) {
+        return sessionRepository.findById(sessionId)
+                .orElseThrow(SessionNotFoundException::new);
+    }
 
 }
