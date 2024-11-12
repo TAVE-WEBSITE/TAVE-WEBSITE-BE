@@ -36,4 +36,11 @@ public class SessionController {
         List<SessionResponseDto> response = sessionService.findSessionByGeneration(generation, page, size);
         return new SuccessResponse<>(response, SESSION_SUCCESS_REGISTER.getMessage());
     }
+
+    @DeleteMapping("/{sessionId}")
+    public SuccessResponse<Void> deleteSession(@PathVariable Long sessionId){
+        sessionService.deleteSession(sessionId);
+        return new SuccessResponse<>(null, SESSION_DELETE.getMessage());
+    }
+
 }
