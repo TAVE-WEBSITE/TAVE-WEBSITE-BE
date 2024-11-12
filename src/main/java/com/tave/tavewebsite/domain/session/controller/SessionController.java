@@ -43,4 +43,15 @@ public class SessionController {
         return new SuccessResponse<>(null, SESSION_DELETE.getMessage());
     }
 
+    @PatchMapping("/{sessionId}")
+    public SuccessResponse<Void> updateSession(@PathVariable Long sessionId,
+                                        @RequestPart(name = "request") SessionRequestDto sessionRequestDto,
+                                         @RequestPart(name = "file", required = false) MultipartFile file){
+        sessionService.updateSession(sessionId, sessionRequestDto, file);
+        return new SuccessResponse<>(null, SESSION_UPDATE.getMessage());
+    }
+
+
+
+
 }
