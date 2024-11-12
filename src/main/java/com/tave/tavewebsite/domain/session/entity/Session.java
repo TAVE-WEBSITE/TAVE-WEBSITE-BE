@@ -63,4 +63,15 @@ public class Session extends BaseEntity {
                 .imgUrl(imgUrl.toString())
                 .build();
     }
+
+    public void updateField(SessionRequestDto sessionRequestDto) {
+        this.title = sessionRequestDto.title();
+        this.description = sessionRequestDto.description();
+        this.generation = sessionRequestDto.generation();
+        this.isPublic = sessionRequestDto.isPublic();
+    }
+
+    public void updateImgUrl( java.net.URL imgUrl) {
+        this.imgUrl = imgUrl.toString();
+    }
 }
