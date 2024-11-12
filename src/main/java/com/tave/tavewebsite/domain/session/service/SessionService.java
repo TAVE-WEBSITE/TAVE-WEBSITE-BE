@@ -43,6 +43,13 @@ public class SessionService {
         sessionRepository.delete(findSession);
     }
 
+    @Transactional
+    public void updateSession(Long sessionId, SessionRequestDto sessionRequestDto, MultipartFile file){
+        Session findSession = findBySessionId(sessionId);
+        updateSessionField(findSession,sessionRequestDto);
+        updateSessionImgUrl(findSession, file);
+    }
+
     /*
     * 리팩토링
     * */
@@ -50,6 +57,19 @@ public class SessionService {
     private Session findBySessionId(Long sessionId) {
         return sessionRepository.findById(sessionId)
                 .orElseThrow(SessionNotFoundException::new);
+    }
+
+    private void updateSessionField(Session findSession, SessionRequestDto sessionRequestDto) {
+        log.info(findSession.getTitle(), findSession.getDescription());
+        findSession.updateField(sessionRequestDto);
+        log.info(findSession.getTitle(), findSession.getDescription());
+    }
+
+    private void updateSessionImgUrl( Session findSession, MultipartFile file) {
+        if(file != null){
+            URL savedImageUrl = s3Service.uploadImages(file);
+            findSession.updateImgUrl(savedImageUrl);
+        }
     }
 
 }
