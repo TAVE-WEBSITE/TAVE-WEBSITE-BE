@@ -2,11 +2,14 @@ package com.tave.tavewebsite.global.exception;
 
 
 import com.tave.tavewebsite.global.exception.Response.ExceptionResponse;
+import com.tave.tavewebsite.global.mail.exception.FailMailSendException;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import java.io.UnsupportedEncodingException;
 
 @Slf4j
 @RestControllerAdvice
@@ -30,8 +33,20 @@ public class GlobalExceptionHandler {
     }
 
     // @Valid 예외 처리 (@NotNull, @Size, etc...) or IllegalArgumentException
-    @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse<Void>> handle(MethodArgumentNotValidException e) {
+
+        logWarning(e, ERROR_CODE);
+        ExceptionResponse<Void> response = ExceptionResponse.fail(ERROR_CODE, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+
+        return ResponseEntity
+                .status(ERROR_CODE)
+                .body(response);
+    }
+
+    @ExceptionHandler({FailMailSendException.class, MessagingException.class, UnsupportedEncodingException.class})
+    public ResponseEntity<ExceptionResponse<Void>> handle(FailMailSendException e) {
+
 
         logWarning(e, ERROR_CODE);
         ExceptionResponse<Void> response = ExceptionResponse.fail(ERROR_CODE, e.getMessage());
