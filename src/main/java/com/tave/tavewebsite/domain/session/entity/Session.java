@@ -32,6 +32,10 @@ public class Session extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
+    /*
+    * 동아리 지원 관리자 페이지에서 사용 시 "세션 진행 날짜" 필드를 추가하는 게 좋다고 생각.
+    * */
+
     @Size(min = 1, max = 5)
     @Column(length = 5)
     private String generation;
