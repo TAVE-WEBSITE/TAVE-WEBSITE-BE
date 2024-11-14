@@ -37,16 +37,22 @@ dependencies {
     // jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // security
     //implementation 'org.springframework.boot:spring-boot-starter-security'
     //implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     testImplementation 'org.springframework.security:spring-security-test'
+
 
     // junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // db
     runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'com.h2database:h2'
+
 
     // s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'

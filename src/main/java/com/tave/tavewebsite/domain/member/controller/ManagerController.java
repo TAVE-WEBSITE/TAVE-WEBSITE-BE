@@ -1,0 +1,40 @@
+package com.tave.tavewebsite.domain.member.controller;
+
+import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.member.dto.response.CheckNickNameResponseDto;
+import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
+import com.tave.tavewebsite.domain.member.service.MemberService;
+import com.tave.tavewebsite.global.mail.dto.MailResponseDto;
+import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/manager")
+@RequiredArgsConstructor
+public class ManagerController {
+
+    private final MemberService memberService;
+
+    @PostMapping
+    public SuccessResponse<MailResponseDto> registerManager(@RequestBody @Valid RegisterManagerRequestDto requestDto) {
+        MailResponseDto response = memberService.saveMember(requestDto);
+        return new SuccessResponse<>(response);
+    }
+
+    @GetMapping("/unauthorized")
+    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager(){
+        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
+        return new SuccessResponse<>(response);
+    }
+
+    @GetMapping("/{nickName}")
+    public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable String nickName){
+        memberService.validateNickname(nickName);
+        CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
+        return new SuccessResponse<>(response, nickName+" 사용가능합니다.");
+    }
+}
