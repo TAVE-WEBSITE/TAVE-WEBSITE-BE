@@ -21,7 +21,6 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
-    private static final Boolean PUBLIC = true; // true로 값만 쓰임 지양 -> 상수화
 
     public ReviewResponseDto saveReview(ReviewRequestDto requestDto) {
         // 딱히 중복 검사를 할 필드가 없다 -> (동명이인 가능성 有)
@@ -30,8 +29,8 @@ public class ReviewService {
         return reviewMapper.toReviewResponseDto(saveReview);
     }
 
-    public List<ReviewResponseDto> findReviewsByGeneration(String generation) {
-        List<Review> reviews = reviewRepository.findByGenerationAndIsPublic(generation, PUBLIC);
+    public List<ReviewResponseDto> findReviewsByGeneration(String generation, boolean isPublic) {
+        List<Review> reviews = reviewRepository.findByGenerationAndIsPublic(generation, isPublic);
 
         return reviews.stream()
                 .map(reviewMapper::toReviewResponseDto)
@@ -40,9 +39,16 @@ public class ReviewService {
 
     @Transactional
     public void updateReview(Long reviewId,ReviewRequestDto requestDto) {
-        Review findReview = reviewRepository.findById(reviewId)
-                .orElseThrow(ReviewNotFoundException::new);
+        Review findReview = findReview(reviewId);
         findReview.update(requestDto);
     }
 
+    /*
+    * 리팩토링
+    * */
+
+    private Review findReview(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+    }
 }
