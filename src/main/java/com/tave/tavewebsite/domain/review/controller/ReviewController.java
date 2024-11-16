@@ -21,6 +21,9 @@ import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private static final boolean PUBLIC = true; // true로 값만 쓰임 지양 -> 상수화
+    private static final boolean PRIVATE = false; // true로 값만 쓰임 지양 -> 상수화
+
 
     @PostMapping
     public SuccessResponse<ReviewResponseDto> registerReview(@RequestBody @Valid ReviewRequestDto requestDto) {
@@ -32,14 +35,22 @@ public class ReviewController {
     }
 
     @GetMapping("/{generation}")
-    public SuccessResponse<List<ReviewResponseDto>> getReviews(@PathVariable String generation) {
-        List<ReviewResponseDto> response = reviewService.findReviewsByGeneration(generation);
+    public SuccessResponse<List<ReviewResponseDto>> getPublicReviews(@PathVariable String generation) {
+        List<ReviewResponseDto> response = reviewService.findReviewsByGeneration(generation, PUBLIC);
 
         return new SuccessResponse<>(
                 response,
-                REVIEW_GET.getMessage(generation)
+                REVIEW_GET_PUBLIC.getMessage(generation)
         );
     }
+
+    @GetMapping("/private/{generation}")
+    public SuccessResponse<List<ReviewResponseDto>> getPrivateReviews(@PathVariable String generation) {
+        List<ReviewResponseDto> response = reviewService.findReviewsByGeneration(generation, PRIVATE);
+        return new SuccessResponse<>(
+                response,
+                REVIEW_GET_PRIVATE.getMessage(generation)
+        );    }
 
     @PatchMapping("/{reviewId}")
     public SuccessResponse updateReview(@PathVariable Long reviewId,
