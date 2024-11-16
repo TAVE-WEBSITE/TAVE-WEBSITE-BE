@@ -58,4 +58,10 @@ public class ReviewController {
         reviewService.updateReview(reviewId, requestDto);
         return SuccessResponse.ok(REVIEW_UPDATE.getMessage());
     }
+
+    @DeleteMapping("/{reviewId}")
+    public SuccessResponse deleteReview(@PathVariable Long reviewId) {
+        reviewService.deleteReivew(reviewId);
+        return SuccessResponse.ok(REVIEW_DELETE.getMessage());
+    }
 }
