@@ -43,6 +43,11 @@ public class ReviewService {
         findReview.update(requestDto);
     }
 
+    public void deleteReivew(Long reviewId) {
+        Review findReview = findReview(reviewId);
+        reviewRepository.delete(findReview);
+    }
+
     /*
     * 리팩토링
     * */
