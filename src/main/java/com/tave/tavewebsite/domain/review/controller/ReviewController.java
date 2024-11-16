@@ -8,10 +8,9 @@ import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.*;
 
@@ -26,7 +25,19 @@ public class ReviewController {
     @PostMapping
     public SuccessResponse<ReviewResponseDto> registerReview(@RequestBody @Valid ReviewRequestDto requestDto) {
         ReviewResponseDto response = reviewService.saveReview(requestDto);
-        return new SuccessResponse<>(response, REVIEW_CREATE.getMessage());
+        return new SuccessResponse<>(
+                response,
+                REVIEW_CREATE.getMessage(response.generation())
+        );
     }
 
+    @GetMapping("/{generation}")
+    public SuccessResponse<List<ReviewResponseDto>> getReviews(@PathVariable String generation) {
+        List<ReviewResponseDto> response = reviewService.findReviewsByGeneration(generation);
+
+        return new SuccessResponse<>(
+                response,
+                REVIEW_GET.getMessage(generation)
+        );
+    }
 }
