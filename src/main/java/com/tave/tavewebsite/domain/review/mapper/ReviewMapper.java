@@ -20,6 +20,7 @@ public class ReviewMapper {
 
     public ReviewResponseDto toReviewResponseDto(Review review) {
         return ReviewResponseDto.builder()
+                .id(review.getId())
                 .nickname(review.getNickname())
                 .generation(review.getGeneration())
                 .field(review.getField())

@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record ReviewResponseDto(
+        Long id,
         String nickname,
         String generation,
         FieldType field,
