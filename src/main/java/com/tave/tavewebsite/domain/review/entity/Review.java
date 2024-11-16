@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.review.entity;
 
+import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
@@ -46,5 +47,13 @@ public class Review extends BaseEntity {
         this.field = field;
         this.content = content;
         this.isPublic = isPublic;
+    }
+
+    public void update(ReviewRequestDto requestDto) {
+        this.nickname = requestDto.nickname();
+        this.field = requestDto.field();
+        this.generation = requestDto.generation();
+        this.content = requestDto.content();
+        this.isPublic = requestDto.isPublic();
     }
 }
