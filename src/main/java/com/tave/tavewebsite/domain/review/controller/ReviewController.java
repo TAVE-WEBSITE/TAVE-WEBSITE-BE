@@ -54,7 +54,7 @@ public class ReviewController {
 
     @PatchMapping("/{reviewId}")
     public SuccessResponse updateReview(@PathVariable Long reviewId,
-                                                           @RequestBody ReviewRequestDto requestDto) {
+                                        @RequestBody ReviewRequestDto requestDto) {
         reviewService.updateReview(reviewId, requestDto);
         return SuccessResponse.ok(REVIEW_UPDATE.getMessage());
     }
