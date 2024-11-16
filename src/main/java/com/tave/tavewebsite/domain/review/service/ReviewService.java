@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.review.service;
 
 
+import com.tave.tavewebsite.domain.review.exception.ReviewNotFoundException;
 import com.tave.tavewebsite.domain.review.mapper.ReviewMapper;
 import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
 import com.tave.tavewebsite.domain.review.dto.response.ReviewResponseDto;
@@ -9,6 +10,7 @@ import com.tave.tavewebsite.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +36,13 @@ public class ReviewService {
         return reviews.stream()
                 .map(reviewMapper::toReviewResponseDto)
                 .toList();
+    }
+
+    @Transactional
+    public void updateReview(Long reviewId,ReviewRequestDto requestDto) {
+        Review findReview = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+        findReview.update(requestDto);
     }
 
 }
