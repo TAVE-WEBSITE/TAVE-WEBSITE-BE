@@ -43,6 +43,7 @@ public class ReviewService {
         findReview.update(requestDto);
     }
 
+    @Transactional
     public void deleteReivew(Long reviewId) {
         Review findReview = findReview(reviewId);
         reviewRepository.delete(findReview);
