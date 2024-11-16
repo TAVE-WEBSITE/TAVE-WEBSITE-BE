@@ -10,6 +10,7 @@ public enum SuccessMessage {
     REVIEW_GET_PUBLIC("공개 후기를 반환합니다."),
     REVIEW_GET_PRIVATE("비공개 후기를 반환합니다."),
     REVIEW_UPDATE("후기를 수정했습니다."),
+    REVIEW_DELETE("후기를 삭제했습니다.");
 
     private final String message;
 
