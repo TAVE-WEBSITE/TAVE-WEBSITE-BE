@@ -1,20 +1,21 @@
 spring:
+  #  datasource:
+  #    driver-class-name: org.postgresql.Driver
+  #    url: ${DB_URL}
+  #    username: ${DB_USERNAME}
+  #    password: ${DB_PASSWORD}
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:h2:tcp://localhost/~/tave;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         #      show_sql: true
         format_sql: true
-  servlet:
-    multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
 
   mail:
     host: smtp.naver.com
@@ -32,6 +33,8 @@ cloud:
       access-key: ${access_key}
       secret-key: ${secret_key}
     s3:
+
+
       bucket: ${bucket_name}
     region:
       static: ${region}

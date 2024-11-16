@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,9 +47,11 @@ public class Config {
 
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(
                         CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
+//                .and()
+//                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
         );
+
+        http.addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
 
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
@@ -62,10 +65,13 @@ public class Config {
                         .requestMatchers("/manager").hasRole(RoleType.MANAGER.name())
                         // 회장 전용 api
                         .requestMatchers("/admin").hasRole(RoleType.ADMIN.name())
+                        .requestMatchers("/api/v1/manager/**", "api/v1/").permitAll()
                         .anyRequest().authenticated()
         );
 
-        http.formLogin().disable();
+//        http.formLogin().disable();
+
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
