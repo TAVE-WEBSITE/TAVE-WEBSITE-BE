@@ -47,14 +47,6 @@ public class Study extends BaseEntity {
     private FieldType field;
 
     @NotNull
-    @Column(nullable = false)
-    private LocalDateTime startDate;
-
-    @NotNull
-    @Column(nullable = false)
-    private LocalDateTime endDate;
-
-    @NotNull
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String blogUrl;
 

@@ -20,9 +20,9 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping()
-    public SuccessResponse createStudy(@RequestBody @Valid StudyReq req) {
+    public SuccessResponse createStudy(@RequestPart @Valid StudyReq req, @RequestPart MultipartFile imageFile) {
 
-        studyService.createStudy(req);
+        studyService.createStudy(req, imageFile);
 
         return SuccessResponse.ok("스터디가 생성되었습니다!");
     }
@@ -36,8 +36,9 @@ public class StudyController {
 
     @PutMapping("/{studyId}")
     public SuccessResponse updateStudy(@PathVariable Long studyId,
-                                       @RequestBody StudyReq dto) {
-        studyService.modifyStudy(studyId, dto);
+                                       @RequestBody StudyReq dto,
+                                       @RequestPart MultipartFile imageFile) {
+        studyService.modifyStudy(studyId, dto, imageFile);
 
         return SuccessResponse.ok("수정되었습니다.");
     }

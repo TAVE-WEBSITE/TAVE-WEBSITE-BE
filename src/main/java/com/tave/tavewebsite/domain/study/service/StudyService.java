@@ -25,13 +25,11 @@ public class StudyService {
 
 
     @Transactional
-    public void createStudy(StudyReq req) {
+    public void createStudy(StudyReq req, MultipartFile file) {
         // 존재 유무 & 직책에 대한 유저 자격 확인
         // 이미지 업로드하고 req.getImageUrl() 대신 만들어진 String 값을 넣기
-        URL url = null;
-        if (req.imageFile() != null) {
-            url = s3Service.uploadImages(req.imageFile());
-        }
+        URL url = s3Service.uploadImages(file);
+
         Study study = new Study(req, url);
 
         studyRepository.save(study);
@@ -47,10 +45,10 @@ public class StudyService {
     }
 
     @Transactional
-    public void modifyStudy(Long studyId, StudyReq req){
+    public void modifyStudy(Long studyId, StudyReq req, MultipartFile file) {
         // 존재 유무 & 직책에 대한 유저 자격 확인
         Study study = studyRepository.findById(studyId).orElseThrow(NotFoundStudy::new); // 스터디 존재 유무 확인
-        URL url = s3Service.uploadImages(req.imageFile());
+        URL url = s3Service.uploadImages(file);
         study.updateStudy(req, url);
 
         studyRepository.save(study);

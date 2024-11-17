@@ -16,7 +16,5 @@ public record StudyReq(
         @NotNull(message = "스터디주제는 Null일 수 없습니다.")
         String topic,
         @NotNull(message = "블로그 url은 Null일 수 없습니다.")
-        String blogUrl,
-
-        MultipartFile imageFile
+        String blogUrl
     ){}
