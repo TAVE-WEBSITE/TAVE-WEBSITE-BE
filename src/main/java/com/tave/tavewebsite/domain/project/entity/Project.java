@@ -78,4 +78,14 @@ public class Project extends BaseEntity {
         this.blogUrl = blogUrl;
         this.imgUrl = imgUrl;
     }
+
+    public void update(String title, String description, String generation, String teamName, FieldType field, String blogUrl, String imgUrl) {
+        this.title = title;
+        this.description = description;
+        this.generation = generation;
+        this.teamName = teamName;
+        this.field = field;
+        this.blogUrl = blogUrl;
+        this.imgUrl = imgUrl;
+    }
 }
