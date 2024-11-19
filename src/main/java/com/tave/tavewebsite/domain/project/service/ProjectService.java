@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.project.service;
 import com.tave.tavewebsite.domain.project.dto.request.ProjectRequestDto;
 import com.tave.tavewebsite.domain.project.dto.response.ProjectResponseDto;
 import com.tave.tavewebsite.domain.project.entity.Project;
+import com.tave.tavewebsite.domain.project.exception.ProjectNotFoundException;
 import com.tave.tavewebsite.domain.project.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,4 +40,11 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public ProjectResponseDto getProjectById(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project ID: " + projectId + projectId));
+        return new ProjectResponseDto(project);
+    }
+    
 }
