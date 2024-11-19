@@ -64,6 +64,17 @@ public class Study extends BaseEntity {
         this.imgUrl = imageUrl.toString();
     }
 
+    // test를 위한 생성
+    public Study(Long id, String teamName, String topic, String generation, FieldType field, String blogUrl, String imgUrl) {
+        this.id = id;
+        this.teamName = teamName;
+        this.topic = topic;
+        this.generation = generation;
+        this.field = field;
+        this.blogUrl = blogUrl;
+        this.imgUrl = imgUrl;
+    }
+
     public Study updateStudy(StudyReq req, URL imageUrl) {
         this.topic = req.topic();
         this.teamName = req.teamName();
