@@ -35,4 +35,9 @@ public class ProjectController {
         return new SuccessResponse<>(response);
     }
 
+    @PutMapping("/{projectId}")
+    public SuccessResponse<ProjectResponseDto> updateProject(@PathVariable Long projectId, @RequestBody @Valid ProjectRequestDto requestDto) {
+        ProjectResponseDto response = projectService.updateProject(projectId, requestDto);
+        return new SuccessResponse<>(response);
+    }
 }

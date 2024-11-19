@@ -46,5 +46,14 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException("Project ID: " + projectId + projectId));
         return new ProjectResponseDto(project);
     }
-    
+
+    public ProjectResponseDto updateProject(Long projectId, ProjectRequestDto requestDto) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project ID: " + projectId));
+
+        project.update(requestDto.getTitle(), requestDto.getDescription(), requestDto.getGeneration(),
+                requestDto.getTeamName(), requestDto.getField(), requestDto.getBlogUrl(), requestDto.getImgUrl());
+
+        return new ProjectResponseDto(project);
+    }
 }
