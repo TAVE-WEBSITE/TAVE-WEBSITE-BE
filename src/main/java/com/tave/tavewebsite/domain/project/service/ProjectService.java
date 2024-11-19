@@ -56,4 +56,10 @@ public class ProjectService {
 
         return new ProjectResponseDto(project);
     }
+
+    public void deleteProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project ID: " + projectId));
+        projectRepository.delete(project);
+    }
 }

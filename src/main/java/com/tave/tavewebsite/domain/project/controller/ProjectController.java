@@ -40,4 +40,10 @@ public class ProjectController {
         ProjectResponseDto response = projectService.updateProject(projectId, requestDto);
         return new SuccessResponse<>(response);
     }
+
+    @DeleteMapping("/{projectId}")
+    public SuccessResponse deleteProject(@PathVariable Long projectId) {
+        projectService.deleteProject(projectId);
+        return new SuccessResponse<>(null);
+    }
 }
