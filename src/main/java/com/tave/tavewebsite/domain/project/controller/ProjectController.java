@@ -28,4 +28,11 @@ public class ProjectController {
         List<ProjectResponseDto> response = projectService.getAllProjects();
         return new SuccessResponse<>(response);
     }
+
+    @GetMapping("/{projectId}")
+    public SuccessResponse<ProjectResponseDto> getProjectById(@PathVariable Long projectId) {
+        ProjectResponseDto response = projectService.getProjectById(projectId);
+        return new SuccessResponse<>(response);
+    }
+
 }
