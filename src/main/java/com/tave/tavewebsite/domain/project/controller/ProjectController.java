@@ -6,10 +6,9 @@ import com.tave.tavewebsite.domain.project.service.ProjectService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/project")
@@ -21,6 +20,12 @@ public class ProjectController {
     @PostMapping
     public SuccessResponse<ProjectResponseDto> createProject(@RequestBody @Valid ProjectRequestDto requestDto) {
         ProjectResponseDto response = projectService.createProject(requestDto);
+        return new SuccessResponse<>(response);
+    }
+
+    @GetMapping
+    public SuccessResponse<List<ProjectResponseDto>> getAllProjects() {
+        List<ProjectResponseDto> response = projectService.getAllProjects();
         return new SuccessResponse<>(response);
     }
 }
