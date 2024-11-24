@@ -19,11 +19,11 @@ services:
       SEND_EMAIL_PASSWORD: ${SEND_EMAIL_PASSWORD}
 
       hibernate_ddl_auto: update
-#      REDIS_HOST: redis
-#    depends_on:
-#      - redis
+      REDIS_HOST: redis
+    depends_on:
+      - redis
 
-#  redis:
-#    image: "redis:latest"
-#    ports:
-#      - "6379:6379"
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
