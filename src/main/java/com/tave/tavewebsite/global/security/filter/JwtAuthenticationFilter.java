@@ -1,5 +1,7 @@
 package com.tave.tavewebsite.global.security.filter;
 
+import com.tave.tavewebsite.global.redis.utils.RedisUtil;
+import com.tave.tavewebsite.global.security.exception.JwtValidException.SignOutUserException;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -23,7 +26,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. Request Header에서 JWT 토큰 추출
         String token = resolveToken(request);
 
-        // 2. validateToken으로 토큰 유효성 검사
+        // 2. redis를 통해 로그아웃한 사용자인지 확인
+        if (redisUtil.hasKey("Bearer " + token)) {
+            throw new SignOutUserException();
+        }
+
+        // 3. validateToken으로 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(token)) {
             // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
@@ -36,7 +44,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         // 해당 토큰 검증 필터가 적용되지 않게 하려는 api 경로
-        return requestURI.startsWith("/api/v1/manager/signIn");
+        return requestURI.startsWith("/api/v1/manager/signIn")
+                || requestURI.startsWith("/api/v1/manager/refresh")
+                || (requestURI.startsWith("/api/v1/manager") && request.getMethod().equals("POST"));
     }
 
     // Request Header에서 토큰 정보 추출

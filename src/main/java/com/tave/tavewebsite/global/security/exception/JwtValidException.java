@@ -28,4 +28,18 @@ public abstract class JwtValidException {
             super(JwtErrorMessage.CLAIMS_IS_EMPTY.getErrorCode(), JwtErrorMessage.CLAIMS_IS_EMPTY.getMessage());
         }
     }
+
+    public static class NotMatchRefreshTokenException extends BaseErrorException {
+        public NotMatchRefreshTokenException() {
+            super(JwtErrorMessage.NOT_MATCH_REFRESHTOKEN.getErrorCode(),
+                    JwtErrorMessage.NOT_MATCH_REFRESHTOKEN.getMessage());
+        }
+    }
+
+    public static class SignOutUserException extends BaseErrorException {
+        public SignOutUserException() {
+            super(JwtErrorMessage.SIGN_OUT_USER.getErrorCode(),
+                    JwtErrorMessage.SIGN_OUT_USER.getMessage());
+        }
+    }
 }

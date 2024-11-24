@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.global.security.utils;
 
+import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.EmptyClaimsException;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.ExpiredTokenException;
@@ -17,12 +18,10 @@ import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,22 +39,15 @@ public class JwtTokenProvider {
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
-    public JwtToken generateToken(Authentication authentication) {
-        // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        if (authorities.isEmpty()) {
-            authorities = ""; // 빈 문자열로 설정
-        }
+    public JwtToken generateToken(Member member) {
 
         long now = (new Date()).getTime();
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 1800000);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", "ROLE_" + authorities)
+                .setSubject(member.getNickname())
+                .claim("auth", "ROLE_" + member.getRole().name())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();

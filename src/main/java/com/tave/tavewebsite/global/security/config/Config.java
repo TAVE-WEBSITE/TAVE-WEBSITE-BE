@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.global.security.config;
 
 import com.tave.tavewebsite.domain.member.entity.RoleType;
+import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.filter.CsrfTokenResponseHeaderBindingFilter;
 import com.tave.tavewebsite.global.security.filter.JwtAuthenticationFilter;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
@@ -8,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,6 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class Config {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisUtil redisUtil;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -62,13 +65,14 @@ public class Config {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
-                        .requestMatchers("/api/v1/manager/signIn").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/manager").permitAll()
+                        .requestMatchers("/api/v1/manager/signIn", "/api/v1/manager/refresh").permitAll()
                         // 일반 회원 전용 api
-                        .requestMatchers("/member")
+                        .requestMatchers("/api/v1/manager/signOut")
                         .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
                                 RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         // 미허가 운영진 전용 api
-                        .requestMatchers("/un/manager")
+                        .requestMatchers("/api/v1/manager/test")
                         .hasAnyRole(RoleType.UNAUTHORIZED_MANAGER.name(), RoleType.MANAGER.name(),
                                 RoleType.ADMIN.name())
                         // 운영진 전용 api
@@ -78,7 +82,8 @@ public class Config {
                         .anyRequest().authenticated()
         );
 
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisUtil),
+                UsernamePasswordAuthenticationFilter.class);
 
         http.formLogin().disable();
 
