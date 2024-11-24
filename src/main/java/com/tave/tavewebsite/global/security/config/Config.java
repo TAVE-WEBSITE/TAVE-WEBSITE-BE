@@ -66,13 +66,17 @@ public class Config {
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
                         .requestMatchers(HttpMethod.POST, "/api/v1/manager").permitAll()
-                        .requestMatchers("/api/v1/manager/signIn", "/api/v1/manager/refresh").permitAll()
+                        .requestMatchers("/api/v1/manager/test", "/api/v1/manager/signIn", "/api/v1/manager/refresh")
+                        .permitAll()
                         // 일반 회원 전용 api
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/manager")
+                        .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
+                                RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         .requestMatchers("/api/v1/manager/signOut")
                         .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
                                 RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         // 미허가 운영진 전용 api
-                        .requestMatchers("/api/v1/manager/test")
+                        .requestMatchers("/un/man")
                         .hasAnyRole(RoleType.UNAUTHORIZED_MANAGER.name(), RoleType.MANAGER.name(),
                                 RoleType.ADMIN.name())
                         // 운영진 전용 api

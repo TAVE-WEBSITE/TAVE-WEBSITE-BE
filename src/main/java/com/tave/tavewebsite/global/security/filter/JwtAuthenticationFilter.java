@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         // 해당 토큰 검증 필터가 적용되지 않게 하려는 api 경로
         return requestURI.startsWith("/api/v1/manager/signIn")
+                || requestURI.startsWith("/api/v1/manager/test")
                 || requestURI.startsWith("/api/v1/manager/refresh")
                 || (requestURI.startsWith("/api/v1/manager") && request.getMethod().equals("POST"));
     }
