@@ -2,6 +2,7 @@ package com.tave.tavewebsite.global.security.config;
 
 import com.tave.tavewebsite.domain.member.entity.RoleType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
+import com.tave.tavewebsite.global.security.exception.CustomAuthenticationEntryPoint;
 import com.tave.tavewebsite.global.security.filter.CsrfTokenResponseHeaderBindingFilter;
 import com.tave.tavewebsite.global.security.filter.JwtAuthenticationFilter;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
@@ -30,6 +31,7 @@ public class Config {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisUtil redisUtil;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -90,6 +92,9 @@ public class Config {
                 UsernamePasswordAuthenticationFilter.class);
 
         http.formLogin().disable();
+
+        http.exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint);
 
         return http.build();
     }
