@@ -1,14 +1,9 @@
 spring:
-  #  datasource:
-  #    driver-class-name: org.postgresql.Driver
-  #    url: ${DB_URL}
-  #    username: ${DB_USERNAME}
-  #    password: ${DB_PASSWORD}
   datasource:
-    url: jdbc:h2:tcp://localhost/~/tave;
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,6 +11,16 @@ spring:
       hibernate:
         #      show_sql: true
         format_sql: true
+  data:
+    redis:
+      port: 6379
+      host: redis
+  #      host: 127.0.0.1
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
   mail:
     host: smtp.naver.com
@@ -27,14 +32,15 @@ spring:
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
 
+  jwt:
+    secret: ${JWT_SECRET}
+
 cloud:
   aws:
     credentials:
       access-key: ${access_key}
       secret-key: ${secret_key}
     s3:
-
-
       bucket: ${bucket_name}
     region:
       static: ${region}
