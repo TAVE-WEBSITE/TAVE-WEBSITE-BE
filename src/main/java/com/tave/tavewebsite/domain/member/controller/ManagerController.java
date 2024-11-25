@@ -59,7 +59,7 @@ public class ManagerController {
         return new SuccessResponse<>(response);
     }
 
-    @GetMapping("/{nickName}")
+    @GetMapping("/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
