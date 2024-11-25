@@ -48,13 +48,13 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private FieldType field;
 
-    @NotNull
-    @Column(nullable = false)
-    private LocalDateTime startDate;
-
-    @NotNull
-    @Column(nullable = false)
-    private LocalDateTime endDate;
+//    @NotNull
+//    @Column(nullable = false)
+//    private LocalDateTime startDate;
+//
+//    @NotNull
+//    @Column(nullable = false)
+//    private LocalDateTime endDate;
 
     @NotNull
     @URL
@@ -67,14 +67,14 @@ public class Project extends BaseEntity {
     private String imgUrl;
 
     @Builder
-    public Project(String title, String description, String generation, String teamName, FieldType field, LocalDateTime startDate, LocalDateTime endDate, String blogUrl, String imgUrl) {
+    public Project(String title, String description, String generation, String teamName, FieldType field, String blogUrl, String imgUrl) {
         this.title = title;
         this.description = description;
         this.generation = generation;
         this.teamName = teamName;
         this.field = field;
-        this.startDate = startDate;
-        this.endDate = endDate;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
         this.blogUrl = blogUrl;
         this.imgUrl = imgUrl;
     }
