@@ -2,6 +2,7 @@ package com.tave.tavewebsite.global.security.utils;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
+import com.tave.tavewebsite.global.security.exception.JwtValidException.CannotUseRefreshToken;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.EmptyClaimsException;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.ExpiredTokenException;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.InValidTokenException;
@@ -14,6 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,12 +68,13 @@ public class JwtTokenProvider {
     }
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
-    public Authentication getAuthentication(String accessToken) {
+    public Authentication getAuthentication(HttpServletRequest request, String accessToken) {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            request.setAttribute("cannotUseRefreshToken", 400);
+            throw new CannotUseRefreshToken();
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -85,7 +88,7 @@ public class JwtTokenProvider {
     }
 
     // 토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public boolean validateToken(HttpServletRequest request, String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -93,10 +96,13 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
+            request.setAttribute("invalidJwtToken", 401);
             throw new InValidTokenException();
         } catch (ExpiredJwtException e) {
+            request.setAttribute("expiredJwtToken", 401);
             throw new ExpiredTokenException();
         } catch (UnsupportedJwtException e) {
+            request.setAttribute("unsupportedJwtToken", 401);
             throw new UnsupportedTokenException();
         } catch (IllegalArgumentException e) {
             throw new EmptyClaimsException();

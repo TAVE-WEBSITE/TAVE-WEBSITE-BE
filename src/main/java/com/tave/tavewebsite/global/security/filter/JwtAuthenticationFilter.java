@@ -28,13 +28,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 2. redis를 통해 로그아웃한 사용자인지 확인
         if (redisUtil.hasKey("Bearer " + token)) {
+            request.setAttribute("signOutException", 401);
             throw new SignOutUserException();
         }
 
         // 3. validateToken으로 토큰 유효성 검사
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token != null && jwtTokenProvider.validateToken(request, token)) {
             // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            Authentication authentication = jwtTokenProvider.getAuthentication(request, token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

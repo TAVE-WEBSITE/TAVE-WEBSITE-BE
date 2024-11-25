@@ -42,4 +42,11 @@ public abstract class JwtValidException {
                     JwtErrorMessage.SIGN_OUT_USER.getMessage());
         }
     }
+
+    public static class CannotUseRefreshToken extends BaseErrorException {
+        public CannotUseRefreshToken() {
+            super(JwtErrorMessage.CANNOT_USE_REFRESHTOKEN.getErrorCode(),
+                    JwtErrorMessage.CANNOT_USE_REFRESHTOKEN.getMessage());
+        }
+    }
 }
