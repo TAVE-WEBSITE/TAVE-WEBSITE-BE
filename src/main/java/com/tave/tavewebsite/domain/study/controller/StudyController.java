@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.study.dto.StudyReq;
 import com.tave.tavewebsite.domain.study.dto.StudyResDto;
 import com.tave.tavewebsite.domain.study.service.StudyService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/study")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class StudyController {
 
     private final StudyService studyService;
 
-    @PostMapping()
+    @PostMapping("/manager/study")
     public SuccessResponse createStudy(@RequestPart @Valid StudyReq req, @RequestPart MultipartFile imageFile) {
 
         studyService.createStudy(req, imageFile);
@@ -27,14 +28,14 @@ public class StudyController {
         return SuccessResponse.ok("스터디가 생성되었습니다!");
     }
 
-    @GetMapping()
+    @GetMapping("/study")
     public SuccessResponse<Page<StudyResDto>> getStudy(@PageableDefault(size = 8) Pageable pageable) {
         Page<StudyResDto> studies = studyService.getStudies(pageable);
 
         return new SuccessResponse<>(studies);
     }
 
-    @PutMapping("/{studyId}")
+    @PutMapping("/manager/{studyId}")
     public SuccessResponse updateStudy(@PathVariable Long studyId,
                                        @RequestBody StudyReq dto,
                                        @RequestPart MultipartFile imageFile) {
@@ -43,7 +44,7 @@ public class StudyController {
         return SuccessResponse.ok("수정되었습니다.");
     }
 
-    @DeleteMapping("/{studyId}")
+    @DeleteMapping("/manager/{studyId}")
     public SuccessResponse deleteStudy(@PathVariable Long studyId) {
         studyService.deleteStudy(studyId);
 

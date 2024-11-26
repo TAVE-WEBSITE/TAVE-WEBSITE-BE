@@ -68,7 +68,8 @@ public class Config {
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
                         .requestMatchers(HttpMethod.POST, "/api/v1/manager").permitAll()
-                        .requestMatchers("/api/v1/manager/test", "/api/v1/manager/signIn", "/api/v1/manager/refresh")
+                        .requestMatchers("/api/v1/manager/test", "/api/v1/manager/signIn", "/api/v1/manager/refresh",
+                                "/api/v1/study")
                         .permitAll()
                         // 일반 회원 전용 api
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/manager")
@@ -83,6 +84,7 @@ public class Config {
                                 RoleType.ADMIN.name())
                         // 운영진 전용 api
                         .requestMatchers("/manager").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                        .requestMatchers("/api/v1/manager/study/**").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         // 회장 전용 api
                         .requestMatchers("/admin").hasRole(RoleType.ADMIN.name())
                         .anyRequest().authenticated()

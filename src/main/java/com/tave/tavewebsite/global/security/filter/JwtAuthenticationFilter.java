@@ -48,6 +48,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return requestURI.startsWith("/api/v1/manager/signIn")
                 || requestURI.startsWith("/api/v1/manager/test")
                 || requestURI.startsWith("/api/v1/manager/refresh")
+
+                || requestURI.startsWith("/api/v1/study")
                 || (requestURI.startsWith("/api/v1/manager") && request.getMethod().equals("POST"));
     }
 
