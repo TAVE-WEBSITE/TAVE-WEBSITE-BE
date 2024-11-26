@@ -25,6 +25,7 @@ public class ReviewMapper {
                 .generation(review.getGeneration())
                 .field(review.getField())
                 .content(review.getContent())
+                .isPublic(review.isPublic())
                 .build();
     }
 
