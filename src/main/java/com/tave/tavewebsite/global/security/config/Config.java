@@ -67,25 +67,25 @@ public class Config {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
-                        .requestMatchers(HttpMethod.POST, "/api/v1/manager").permitAll()
-                        .requestMatchers("/api/v1/manager/test", "/api/v1/manager/signIn", "/api/v1/manager/refresh",
-                                "/api/v1/review", "/api/v1/manager/validate/")
+                        .requestMatchers("/v1/normal/**", "/v1/auth/signup", "/v1/auth/signin", "/v1/auth/refresh")
                         .permitAll()
+
                         // 일반 회원 전용 api
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/manager")
+                        .requestMatchers("/v1/member/**", "/v1/auth/signout", "/v1/auth/delete/**")
                         .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
                                 RoleType.MANAGER.name(), RoleType.ADMIN.name())
-                        .requestMatchers("/api/v1/manager/signOut")
-                        .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
-                                RoleType.MANAGER.name(), RoleType.ADMIN.name())
+
                         // 미허가 운영진 전용 api
-                        .requestMatchers("/un/man")
+                        .requestMatchers("/v1/xxxxxxxxx")
                         .hasAnyRole(RoleType.UNAUTHORIZED_MANAGER.name(), RoleType.MANAGER.name(),
                                 RoleType.ADMIN.name())
+
                         // 운영진 전용 api
-                        .requestMatchers("/api/v1/manager/review/**").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                        .requestMatchers("/v1/manager/**")
+                        .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+
                         // 회장 전용 api
-                        .requestMatchers("/admin", "/api/v1/manager/unauthorized").hasRole(RoleType.ADMIN.name())
+                        .requestMatchers("/v1/admin/**").hasRole(RoleType.ADMIN.name())
                         .anyRequest().authenticated()
         );
 
