@@ -35,17 +35,17 @@ public class StudyController {
         return new SuccessResponse<>(studies);
     }
 
-    @PutMapping("/manager/{studyId}")
-    public SuccessResponse updateStudy(@PathVariable Long studyId,
-                                       @RequestBody StudyReq dto,
+    @PutMapping("/manager/study/{studyId}")
+    public SuccessResponse updateStudy(@PathVariable("studyId") Long studyId,
+                                       @RequestPart @Valid StudyReq dto,
                                        @RequestPart MultipartFile imageFile) {
         studyService.modifyStudy(studyId, dto, imageFile);
 
         return SuccessResponse.ok("수정되었습니다.");
     }
 
-    @DeleteMapping("/manager/{studyId}")
-    public SuccessResponse deleteStudy(@PathVariable Long studyId) {
+    @DeleteMapping("/manager/study/{studyId}")
+    public SuccessResponse deleteStudy(@PathVariable("studyId") Long studyId) {
         studyService.deleteStudy(studyId);
 
         return SuccessResponse.ok("성공적으로 삭제되었습니다!");
