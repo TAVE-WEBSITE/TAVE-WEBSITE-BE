@@ -66,6 +66,11 @@ public class Config {
 
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
+                        .requestMatchers("/favicon.ico",
+                                "/error",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**").permitAll()
                         // 비회원 전용 api
                         .requestMatchers(HttpMethod.POST, "/api/v1/manager").permitAll()
                         .requestMatchers("/api/v1/manager/test", "/api/v1/manager/signIn", "/api/v1/manager/refresh",
@@ -84,7 +89,7 @@ public class Config {
                                 RoleType.ADMIN.name())
                         // 운영진 전용 api
                         .requestMatchers("/manager").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
-                        .requestMatchers("/api/v1/manager/study/**").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                        .requestMatchers("/api/v1/manager/study/**").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name(), RoleType.UNAUTHORIZED_MANAGER.name())
                         // 회장 전용 api
                         .requestMatchers("/admin").hasRole(RoleType.ADMIN.name())
                         .anyRequest().authenticated()
