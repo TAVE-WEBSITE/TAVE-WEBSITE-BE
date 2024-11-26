@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByGenerationAndIsPublic(String generation, boolean isPublic);
+    List<Review> findByGeneration(String generation);
+
+    List<Review> findByIsPublic(boolean isPublic);
 }
