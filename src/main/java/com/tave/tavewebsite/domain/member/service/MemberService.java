@@ -2,15 +2,14 @@ package com.tave.tavewebsite.domain.member.service;
 
 import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
 
+import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
 import com.tave.tavewebsite.domain.member.dto.request.RefreshTokenRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.SignUpRequestDto;
 import com.tave.tavewebsite.domain.member.dto.response.SignInResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.member.exception.DuplicateEmailException;
-import com.tave.tavewebsite.domain.member.exception.DuplicateNicknameException;
-import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
+import com.tave.tavewebsite.domain.member.exception.*;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.global.mail.dto.MailResponseDto;
 import com.tave.tavewebsite.global.mail.service.MailService;
@@ -105,5 +104,25 @@ public class MemberService {
         return jwtToken;
     }
 
+    public void verifyEmail(ValidateEmailReq req) {
+        validateNickname(req.nickname());
+        validateEmail(req.email());
+
+        mailService.sendAuthenticationCode(req.email());
+    }
+
+    public void verityNumber(ValidateEmailReq req){
+        validateEmail(req.email());
+        String validatedNumber = (String) redisUtil.get(req.email());
+
+        if(!req.number().equals(validatedNumber)){
+            throw new NotMatchedNumberException();
+        }
+        else if(redisUtil.checkExpired(req.email()) <= 0 || redisUtil.checkExpired(req.email()) == null){
+            throw new ExpiredNumberException();
+        }
+
+        redisUtil.delete(req.email());
+    }
 
 }

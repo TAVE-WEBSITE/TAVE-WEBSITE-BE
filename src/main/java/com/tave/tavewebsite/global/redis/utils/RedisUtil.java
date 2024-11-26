@@ -43,4 +43,12 @@ public class RedisUtil {
     public boolean hasKeyBlackList(String key) {
         return Boolean.TRUE.equals(redisBlackListTemplate.hasKey(key));
     }
+
+    public Long checkExpired(String key) {
+        Long ttl = redisTemplate.getExpire(key);
+        if (ttl == null) {
+            throw new IllegalStateException("Unable to fetch TTL for key: " + key);
+        }
+        return ttl;
+    }
 }

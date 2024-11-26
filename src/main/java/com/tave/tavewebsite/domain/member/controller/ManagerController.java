@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.member.controller;
 
+import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
 import com.tave.tavewebsite.domain.member.dto.request.RefreshTokenRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.SignUpRequestDto;
@@ -13,60 +14,53 @@ import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/manager")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class ManagerController {
 
     private final MemberService memberService;
 
-    @PostMapping
+    @PostMapping("/auth/signup")
     public SuccessResponse<MailResponseDto> registerManager(@RequestBody @Valid RegisterManagerRequestDto requestDto) {
         MailResponseDto response = memberService.saveMember(requestDto);
         return new SuccessResponse<>(response);
     }
 
-    @PostMapping("/signIn")
+    @PostMapping("/auth/signin")
     public SuccessResponse<SignInResponseDto> signIn(@RequestBody SignUpRequestDto requestDto) {
         SignInResponseDto signInResponseDto = memberService.signIn(requestDto);
         return new SuccessResponse<>(signInResponseDto);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/auth/refresh")
     public SuccessResponse<JwtToken> refreshToken(@RequestBody RefreshTokenRequestDto requestDto) {
         JwtToken jwtToken = memberService.refreshToken(requestDto);
         return new SuccessResponse<>(jwtToken);
     }
 
-    @GetMapping("/signOut")
+    @GetMapping("/auth/signout")
     public SuccessResponse signOut(@RequestHeader("Authorization") String token) {
         memberService.singOut(token);
         return SuccessResponse.ok();
     }
 
-    @GetMapping("/unauthorized")
+    @GetMapping("/admin/unauthorized")
     public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
         List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
         return new SuccessResponse<>(response);
     }
 
-    @GetMapping("/{nickName}")
+    @GetMapping("/normal/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
         return new SuccessResponse<>(response, nickName + " 사용가능합니다.");
     }
 
-    @DeleteMapping("/{memberId}")
+    @DeleteMapping("/auth/delete/{memberId}")
     public SuccessResponse deleteMember(@PathVariable("memberId") Long memberId) {
         memberService.deleteMember(memberId);
         return SuccessResponse.ok();
@@ -76,5 +70,20 @@ public class ManagerController {
     @GetMapping("/test")
     public String test() {
         return "test";
+    }
+
+    @PostMapping("/normal/authenticate/email")
+    public SuccessResponse findPassword(@RequestBody ValidateEmailReq requestDto) {
+
+        memberService.verifyEmail(requestDto);
+
+        return SuccessResponse.ok("이메일로 인증 번호가 전송되었습니다!");
+    }
+
+    @GetMapping("/normal/verify/number")
+    public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
+        memberService.verityNumber(requestDto);
+
+        return SuccessResponse.ok("인증되었습니다!");
     }
 }
