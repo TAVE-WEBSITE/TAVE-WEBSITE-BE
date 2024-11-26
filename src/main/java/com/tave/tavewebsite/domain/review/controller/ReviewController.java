@@ -15,15 +15,12 @@ import java.util.List;
 import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.*;
 
 @Slf4j
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 @RestController
 @RequiredArgsConstructor
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private static final boolean PUBLIC = true; // true로 값만 쓰임 지양 -> 상수화
-    private static final boolean PRIVATE = false; // true로 값만 쓰임 지양 -> 상수화
-
 
     @PostMapping("/manager/review")
     public SuccessResponse<ReviewResponseDto> registerReview(@RequestBody @Valid ReviewRequestDto requestDto) {
@@ -34,9 +31,9 @@ public class ReviewController {
         );
     }
 
-    @GetMapping("/review/{generation}")
-    public SuccessResponse<List<ReviewResponseDto>> getPublicReviews(@PathVariable String generation) {
-        List<ReviewResponseDto> response = reviewService.findReviewsByGeneration(generation, PUBLIC);
+    @GetMapping("/manager/review/{generation}")
+    public SuccessResponse<List<ReviewResponseDto>> getAllReviews(@PathVariable String generation) {
+        List<ReviewResponseDto> response = reviewService.findAllReviewsByGeneration(generation);
 
         return new SuccessResponse<>(
                 response,
@@ -44,13 +41,15 @@ public class ReviewController {
         );
     }
 
-    @GetMapping("/manager/review/private/{generation}")
-    public SuccessResponse<List<ReviewResponseDto>> getPrivateReviews(@PathVariable String generation) {
-        List<ReviewResponseDto> response = reviewService.findReviewsByGeneration(generation, PRIVATE);
+    // 비회원이 후기 조회
+    @GetMapping("/normal/review")
+    public SuccessResponse<List<ReviewResponseDto>> getPublicReviews() {
+        List<ReviewResponseDto> response = reviewService.findPublicReviews();
         return new SuccessResponse<>(
                 response,
-                REVIEW_GET_PRIVATE.getMessage(generation)
-        );    }
+                REVIEW_GET_PRIVATE.getMessage()
+        );
+    }
 
     @PatchMapping("/manager/review/{reviewId}")
     public SuccessResponse updateReview(@PathVariable Long reviewId,
