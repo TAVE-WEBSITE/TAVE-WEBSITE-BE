@@ -10,6 +10,7 @@ public record ReviewResponseDto(
         String nickname,
         String generation,
         FieldType field,
-        String content
+        String content,
+        boolean isPublic
 ) {
 }
