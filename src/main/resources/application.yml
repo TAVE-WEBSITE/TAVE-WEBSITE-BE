@@ -6,11 +6,17 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         #      show_sql: true
         format_sql: true
+  data:
+    redis:
+      port: 6379
+      host: redis
+  #      host: 127.0.0.1
+
   servlet:
     multipart:
       max-file-size: 20MB
@@ -25,6 +31,9 @@ spring:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
+
+  jwt:
+    secret: ${JWT_SECRET}
 
 cloud:
   aws:
