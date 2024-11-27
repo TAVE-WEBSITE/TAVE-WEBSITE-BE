@@ -38,7 +38,7 @@ public class ManagerHistoryController {
     @PatchMapping("/{historyId}")
     public SuccessResponse updateHistory(@PathVariable("historyId") Long id,
                                          @RequestBody @Valid HistoryRequestDto historyRequestDto) {
-        historyService.put(id, historyRequestDto);
+        historyService.patch(id, historyRequestDto);
         return SuccessResponse.ok();
     }
 

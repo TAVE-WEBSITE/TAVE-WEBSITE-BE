@@ -48,7 +48,7 @@ public class History extends BaseEntity {
         this.isPublic = isPublic;
     }
 
-    public void putHistory(HistoryRequestDto historyResponseDto) {
+    public void patchHistory(HistoryRequestDto historyResponseDto) {
         generation = historyResponseDto.generation();
         description = historyResponseDto.description();
         isPublic = historyResponseDto.isPublic();

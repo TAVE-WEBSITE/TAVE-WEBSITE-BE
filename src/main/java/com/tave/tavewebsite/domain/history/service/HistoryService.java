@@ -42,13 +42,17 @@ public class HistoryService {
     }
 
     @Transactional
-    public void put(Long id, HistoryRequestDto dto) {
-        History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
-        history.putHistory(dto);
+    public void patch(Long id, HistoryRequestDto dto) {
+        History history = validate(id);
+        history.patchHistory(dto);
     }
 
     public void delete(Long id) {
-        historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
+        validate(id);
         historyRepository.deleteById(id);
+    }
+
+    private History validate(Long id) {
+        return historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
     }
 }
