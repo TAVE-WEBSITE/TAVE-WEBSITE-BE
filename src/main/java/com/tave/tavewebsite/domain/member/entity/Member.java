@@ -96,4 +96,8 @@ public class Member extends BaseEntity {
                 .department(registerManagerRequestDto.department())
                 .build();
     }
+
+    public void update(String validatedPassword, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(validatedPassword);
+    }
 }

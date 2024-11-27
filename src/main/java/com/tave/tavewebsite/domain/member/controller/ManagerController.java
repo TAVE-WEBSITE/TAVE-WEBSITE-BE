@@ -1,9 +1,6 @@
 package com.tave.tavewebsite.domain.member.controller;
 
-import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
-import com.tave.tavewebsite.domain.member.dto.request.RefreshTokenRequestDto;
-import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
-import com.tave.tavewebsite.domain.member.dto.request.SignUpRequestDto;
+import com.tave.tavewebsite.domain.member.dto.request.*;
 import com.tave.tavewebsite.domain.member.dto.response.CheckNickNameResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.SignInResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
@@ -73,9 +70,9 @@ public class ManagerController {
     }
 
     @PostMapping("/normal/authenticate/email")
-    public SuccessResponse findPassword(@RequestBody ValidateEmailReq requestDto) {
+    public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto) {
 
-        memberService.verifyEmail(requestDto);
+        memberService.sendMessage(requestDto);
 
         return SuccessResponse.ok("이메일로 인증 번호가 전송되었습니다!");
     }
@@ -85,5 +82,12 @@ public class ManagerController {
         memberService.verityNumber(requestDto);
 
         return SuccessResponse.ok("인증되었습니다!");
+    }
+
+    @PutMapping("/normal/reset/password")
+    public SuccessResponse resetPassword(@RequestBody ResetPasswordReq requestDto) {
+        memberService.resetPassword(requestDto);
+
+        return SuccessResponse.ok("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요!");
     }
 }
