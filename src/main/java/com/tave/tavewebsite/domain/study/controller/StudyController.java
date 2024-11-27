@@ -28,7 +28,7 @@ public class StudyController {
         return SuccessResponse.ok("스터디가 생성되었습니다!");
     }
 
-    @GetMapping("/study")
+    @GetMapping("/normal/study")
     public SuccessResponse<Page<StudyResDto>> getStudy(@PageableDefault(size = 8) Pageable pageable) {
         Page<StudyResDto> studies = studyService.getStudies(pageable);
 
