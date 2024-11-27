@@ -75,8 +75,7 @@ public class Config {
 
                         // 운영진 전용 api
                         .requestMatchers("/v1/manager/**")
-                        .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name(),
-                                RoleType.UNAUTHORIZED_MANAGER.name())
+                        .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
 
                         // 회장 전용 api
                         .requestMatchers("/v1/admin/**").hasRole(RoleType.ADMIN.name())
