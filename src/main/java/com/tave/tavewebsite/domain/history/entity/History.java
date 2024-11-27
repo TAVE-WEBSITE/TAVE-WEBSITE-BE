@@ -1,7 +1,13 @@
 package com.tave.tavewebsite.domain.history.entity;
 
+import com.tave.tavewebsite.domain.history.dto.request.HistoryRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -40,5 +46,11 @@ public class History extends BaseEntity {
         this.generation = generation;
         this.description = description;
         this.isPublic = isPublic;
+    }
+
+    public void putHistory(HistoryRequestDto historyResponseDto) {
+        generation = historyResponseDto.generation();
+        description = historyResponseDto.description();
+        isPublic = historyResponseDto.isPublic();
     }
 }
