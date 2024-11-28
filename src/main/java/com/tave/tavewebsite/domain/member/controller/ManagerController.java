@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/manager/member")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class ManagerController {
 
@@ -35,7 +35,7 @@ public class ManagerController {
         return new SuccessResponse<>(response);
     }
 
-    @PostMapping("/signIn")
+    @PostMapping("/auth/signin")
     public SuccessResponse<SignInResponseDto> signIn(@RequestBody SignUpRequestDto requestDto) {
         SignInResponseDto signInResponseDto = memberService.signIn(requestDto);
         return new SuccessResponse<>(signInResponseDto);
@@ -73,7 +73,7 @@ public class ManagerController {
     }
 
     // ci/cd 이후 배포 성공 테스트용 엔드포인트
-    @GetMapping("/test")
+    @GetMapping("/normal/test")
     public String test() {
         return "test";
     }

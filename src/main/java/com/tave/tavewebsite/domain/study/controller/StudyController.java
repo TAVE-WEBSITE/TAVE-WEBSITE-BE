@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class StudyController {
 
@@ -29,8 +29,10 @@ public class StudyController {
     }
 
     @GetMapping("/normal/study")
-    public SuccessResponse<Page<StudyResDto>> getStudy(@PageableDefault(size = 8) Pageable pageable) {
-        Page<StudyResDto> studies = studyService.getStudies(pageable);
+    public SuccessResponse<Page<StudyResDto>> getStudy(@PageableDefault(size = 8) Pageable pageable,
+                                                       @RequestParam(defaultValue = "ALL", name = "generation") String generation,
+                                                       @RequestParam(defaultValue = "ALL", name = "field") String field) {
+        Page<StudyResDto> studies = studyService.getStudies(generation, field, pageable);
 
         return new SuccessResponse<>(studies);
     }

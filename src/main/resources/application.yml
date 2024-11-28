@@ -1,13 +1,9 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/taveWebsite
-    username: sa
-    password: 1111
-  #    driver-class-name: org.postgresql.Driver
-#    url: ${DB_URL}
-#    username: ${USERNAME}
-#    password: ${PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,7 +15,7 @@ spring:
     redis:
       port: 6379
       host: redis
-  #      host: 127.0.0.1
+      #host: 127.0.0.1
 
   servlet:
     multipart:
@@ -42,8 +38,8 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: ${access-key}
-      secret-key: ${secret-key}
+      access-key: ${access_key}
+      secret-key: ${secret_key}
     s3:
       bucket: ${bucket_name}
     region:
@@ -52,4 +48,3 @@ cloud:
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
-
