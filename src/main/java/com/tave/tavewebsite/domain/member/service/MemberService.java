@@ -133,4 +133,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public void updateAuthentication(String memberId){
+        Long id = Long.valueOf(memberId);
+        Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
+        member.updateRole();
+    }
+
 }
