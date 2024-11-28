@@ -3,7 +3,6 @@ package com.tave.tavewebsite.global.security.config;
 import com.tave.tavewebsite.domain.member.entity.RoleType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.exception.CustomAuthenticationEntryPoint;
-import com.tave.tavewebsite.global.security.filter.CsrfTokenResponseHeaderBindingFilter;
 import com.tave.tavewebsite.global.security.filter.JwtAuthenticationFilter;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
 import java.util.List;
@@ -12,13 +11,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -54,11 +52,7 @@ public class Config {
         http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
                 corsConfigurationSource()));
 
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(
-                        CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
-        );
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

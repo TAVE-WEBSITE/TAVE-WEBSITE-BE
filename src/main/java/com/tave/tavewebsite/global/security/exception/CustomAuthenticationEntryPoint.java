@@ -12,12 +12,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -35,6 +33,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             setResponse(response, EXPIRED_JWT_TOKEN.getErrorCode(), EXPIRED_JWT_TOKEN.getMessage());
         } else if (request.getAttribute("unsupportedJwtToken") != null) {
             setResponse(response, UNSUPPORTED_JWT_TOKEN.getErrorCode(), UNSUPPORTED_JWT_TOKEN.getMessage());
+        } else {
+            // 나머지 잘못된 요청에 대한 기본 예외 처리
+            setResponse(response, 401, "잘못된 인증 요청입니다."); // 기본적으로 401 상태 코드와 에러 메시지 반환
         }
 
 
