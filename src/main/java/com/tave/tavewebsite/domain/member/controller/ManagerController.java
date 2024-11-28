@@ -20,25 +20,6 @@ public class ManagerController {
 
     private final MemberService memberService;
 
-    @GetMapping("/admin/unauthorized")
-    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
-        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
-        return new SuccessResponse<>(response);
-    }
-
-    @GetMapping("/normal/validate/{nickName}")
-    public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
-        memberService.validateNickname(nickName);
-        CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
-        return new SuccessResponse<>(response, nickName + " 사용가능합니다.");
-    }
-
-    // ci/cd 이후 배포 성공 테스트용 엔드포인트
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
     @PostMapping("/normal/authenticate/email")
     public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto) {
 
@@ -54,10 +35,37 @@ public class ManagerController {
         return SuccessResponse.ok("인증되었습니다!");
     }
 
+    @GetMapping("/normal/upgrade/{memberId}")
+    public SuccessResponse updateAuthentication(@PathVariable("memberId") String memberId) {
+        memberService.updateAuthentication(memberId);
+
+        return new SuccessResponse("update Success.");
+    }
+
+    @GetMapping("/normal/validate/{nickName}")
+    public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
+        memberService.validateNickname(nickName);
+        CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
+        return new SuccessResponse<>(response, nickName + " 사용가능합니다.");
+    }
+
+    @GetMapping("/admin/unauthorized")
+    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
+        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
+        return new SuccessResponse<>(response);
+    }
+
+    // ci/cd 이후 배포 성공 테스트용 엔드포인트
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
     @PutMapping("/normal/reset/password")
     public SuccessResponse resetPassword(@RequestBody ResetPasswordReq requestDto) {
         memberService.resetPassword(requestDto);
 
         return SuccessResponse.ok("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요!");
     }
+
 }
