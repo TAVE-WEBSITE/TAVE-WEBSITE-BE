@@ -23,19 +23,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/manager")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class ManagerController {
 
     private final MemberService memberService;
 
-    @PostMapping
+    @PostMapping("/auth/signup")
     public SuccessResponse<MailResponseDto> registerManager(@RequestBody @Valid RegisterManagerRequestDto requestDto) {
         MailResponseDto response = memberService.saveMember(requestDto);
         return new SuccessResponse<>(response);
     }
 
-    @PostMapping("/signIn")
+    @PostMapping("/auth/signin")
     public SuccessResponse<SignInResponseDto> signIn(@RequestBody SignUpRequestDto requestDto) {
         SignInResponseDto signInResponseDto = memberService.signIn(requestDto);
         return new SuccessResponse<>(signInResponseDto);
@@ -53,13 +53,13 @@ public class ManagerController {
         return SuccessResponse.ok();
     }
 
-    @GetMapping("/unauthorized")
+    @GetMapping("/admin/unauthorized")
     public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
         List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
         return new SuccessResponse<>(response);
     }
 
-    @GetMapping("/validate/{nickName}")
+    @GetMapping("/normal/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
