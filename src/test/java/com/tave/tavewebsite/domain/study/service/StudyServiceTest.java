@@ -1,10 +1,8 @@
 package com.tave.tavewebsite.domain.study.service;
 
-import com.tave.tavewebsite.domain.study.dto.StudyReq;
-import com.tave.tavewebsite.domain.study.dto.StudyResDto;
+import com.tave.tavewebsite.domain.study.dto.StudyRequestDto;
 import com.tave.tavewebsite.domain.study.entity.Study;
 import com.tave.tavewebsite.domain.study.repository.StudyRepository;
-import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.s3.service.S3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,18 +12,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.net.URL;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -57,7 +49,7 @@ class StudyServiceTest {
         );
         URL mockUrl = new URL("https://example.com/test-image.jpg");
 
-        StudyReq req = new StudyReq(
+        StudyRequestDto req = new StudyRequestDto(
                 "TeamName",
                 "14",
                 "BACKEND",

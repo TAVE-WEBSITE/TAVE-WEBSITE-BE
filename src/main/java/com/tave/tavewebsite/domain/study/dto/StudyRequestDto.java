@@ -2,9 +2,8 @@ package com.tave.tavewebsite.domain.study.dto;
 
 
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.multipart.MultipartFile;
 
-public record StudyReq(
+public record StudyRequestDto(
 
         @NotNull(message = "팀이름은 Null일 수 없습니다.")
         String teamName,

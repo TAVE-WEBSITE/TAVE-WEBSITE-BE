@@ -1,10 +1,9 @@
 package com.tave.tavewebsite.domain.study.repository;
 
-import com.tave.tavewebsite.domain.study.dto.StudyResDto;
+import com.tave.tavewebsite.domain.study.dto.StudyResponseDto;
 import com.tave.tavewebsite.domain.study.entity.Study;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     private EntityManager em;
 
     @Override
-    public Page<StudyResDto> findStudyByGenerationAndField(String generation, String field, Pageable pageable) {
+    public Page<StudyResponseDto> findStudyByGenerationAndField(String generation, String field, Pageable pageable) {
 
         List<Study> studies = em.createQuery("select s from Study s where s.field=:field and s.generation = :generation", Study.class)
                 .setParameter("field", FieldType.valueOf(field))
@@ -32,7 +31,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     }
 
     @Override
-    public Page<StudyResDto> findStudyByField(String field, Pageable pageable) {
+    public Page<StudyResponseDto> findStudyByField(String field, Pageable pageable) {
         List<Study> studies = em.createQuery("select s from Study s where s.field = :field", Study.class)
                 .setParameter("field", FieldType.valueOf(field))
                 .setMaxResults(pageable.getPageSize())
@@ -42,7 +41,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     }
 
     @Override
-    public Page<StudyResDto> findStudyByGeneration(String generation, Pageable pageable) {
+    public Page<StudyResponseDto> findStudyByGeneration(String generation, Pageable pageable) {
         List<Study> studies = em.createQuery("select s from Study s where s.generation = :generation", Study.class)
                 .setParameter("generation", generation)
                 .setMaxResults(pageable.getPageSize())
@@ -52,7 +51,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     }
 
     @Override
-    public Page<StudyResDto> findAllStudy(Pageable pageable) {
+    public Page<StudyResponseDto> findAllStudy(Pageable pageable) {
         List<Study> studies = em.createQuery("select s from Study s order by s.createdAt", Study.class)
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
@@ -61,12 +60,12 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
         return getResult(studies, pageable);
     }
 
-    private Page<StudyResDto> getResult(List<Study> studies, Pageable pageable) {
-        List<StudyResDto> studyResDtos = studies.stream().map(study -> new StudyResDto(study.getId(), study.getTeamName(),
+    private Page<StudyResponseDto> getResult(List<Study> studies, Pageable pageable) {
+        List<StudyResponseDto> studyResponseDtos = studies.stream().map(study -> new StudyResponseDto(study.getId(), study.getTeamName(),
                 study.getGeneration(), String.valueOf(study.getField()), study.getTopic(),
                 study.getImgUrl(), study.getBlogUrl())).toList();
 
-        return new PageImpl<>(studyResDtos, pageable, studies.size());
+        return new PageImpl<>(studyResponseDtos, pageable, studies.size());
     }
 
 

@@ -1,10 +1,10 @@
 package com.tave.tavewebsite.domain.study.controller;
 
-import com.tave.tavewebsite.domain.study.dto.StudyReq;
-import com.tave.tavewebsite.domain.study.dto.StudyResDto;
+
+import com.tave.tavewebsite.domain.study.dto.StudyRequestDto;
+import com.tave.tavewebsite.domain.study.dto.StudyResponseDto;
 import com.tave.tavewebsite.domain.study.service.StudyService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping("/manager/study")
-    public SuccessResponse createStudy(@RequestPart @Valid StudyReq req, @RequestPart MultipartFile imageFile) {
+    public SuccessResponse createStudy(@RequestPart @Valid StudyRequestDto req, @RequestPart MultipartFile imageFile) {
 
         studyService.createStudy(req, imageFile);
 
@@ -29,17 +29,17 @@ public class StudyController {
     }
 
     @GetMapping("/normal/study")
-    public SuccessResponse<Page<StudyResDto>> getStudy(@PageableDefault(size = 8) Pageable pageable,
-                                                       @RequestParam(defaultValue = "ALL", name = "generation") String generation,
-                                                       @RequestParam(defaultValue = "ALL", name = "field") String field) {
-        Page<StudyResDto> studies = studyService.getStudies(generation, field, pageable);
+    public SuccessResponse<Page<StudyResponseDto>> getStudy(@PageableDefault(size = 8) Pageable pageable,
+                                                            @RequestParam(defaultValue = "ALL", name = "generation") String generation,
+                                                            @RequestParam(defaultValue = "ALL", name = "field") String field) {
+        Page<StudyResponseDto> studies = studyService.getStudies(generation, field, pageable);
 
         return new SuccessResponse<>(studies);
     }
 
     @PutMapping("/manager/study/{studyId}")
     public SuccessResponse updateStudy(@PathVariable("studyId") Long studyId,
-                                       @RequestPart @Valid StudyReq dto,
+                                       @RequestPart @Valid StudyRequestDto dto,
                                        @RequestPart MultipartFile imageFile) {
         studyService.modifyStudy(studyId, dto, imageFile);
 

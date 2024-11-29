@@ -1,7 +1,6 @@
 package com.tave.tavewebsite.domain.study.entity;
 
-
-import com.tave.tavewebsite.domain.study.dto.StudyReq;
+import com.tave.tavewebsite.domain.study.dto.StudyRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
@@ -55,7 +54,7 @@ public class Study extends BaseEntity {
     private String imgUrl;
 
     @Builder
-    public Study(StudyReq req, URL imageUrl) {
+    public Study(StudyRequestDto req, URL imageUrl) {
         this.topic = req.topic();
         this.teamName = req.teamName();
         this.generation = req.generation();
@@ -75,7 +74,7 @@ public class Study extends BaseEntity {
         this.imgUrl = imgUrl;
     }
 
-    public Study updateStudy(StudyReq req, URL imageUrl) {
+    public Study updateStudy(StudyRequestDto req, URL imageUrl) {
         this.topic = req.topic();
         this.teamName = req.teamName();
         this.generation = req.generation();

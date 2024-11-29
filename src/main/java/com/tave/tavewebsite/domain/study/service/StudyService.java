@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.study.service;
 
-import com.tave.tavewebsite.domain.study.dto.StudyReq;
-import com.tave.tavewebsite.domain.study.dto.StudyResDto;
+import com.tave.tavewebsite.domain.study.dto.StudyRequestDto;
+import com.tave.tavewebsite.domain.study.dto.StudyResponseDto;
 import com.tave.tavewebsite.domain.study.entity.Study;
 import com.tave.tavewebsite.domain.study.exception.NotFoundStudy;
 import com.tave.tavewebsite.domain.study.repository.StudyRepository;
@@ -24,7 +24,7 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final S3Service s3Service;
 
-    public void createStudy(StudyReq req, MultipartFile file) {
+    public void createStudy(StudyRequestDto req, MultipartFile file) {
         URL url = s3Service.uploadImages(file);
 
         Study study = new Study(req, url);
@@ -33,8 +33,8 @@ public class StudyService {
     }
 
     @Transactional(readOnly = true)
-    public Page<StudyResDto> getStudies(String generation, String field, Pageable pageable) {
-        Page<StudyResDto> map;
+    public Page<StudyResponseDto> getStudies(String generation, String field, Pageable pageable) {
+        Page<StudyResponseDto> map;
 
         try {
             log.info("field: {}, generation: {}", field, generation);
@@ -53,13 +53,13 @@ public class StudyService {
         return map;
     }
 
-    public void modifyStudy(Long studyId, StudyReq req, MultipartFile file) {
+    public void modifyStudy(Long studyId, StudyRequestDto req, MultipartFile file) {
         // 존재 유무 & 직책에 대한 유저 자격 확인
         Study study = studyRepository.findById(studyId).orElseThrow(NotFoundStudy::new); // 스터디 존재 유무 확인
         URL url = s3Service.uploadImages(file);
         study.updateStudy(req, url);
 
-        studyRepository.save(study);
+        //studyRepository.save(study);
     }
 
     public void deleteStudy(Long studyId){

@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.study.dto;
 
 
-public record StudyResDto(
+public record StudyResponseDto(
         Long studyId,
         String teamName,
         String generation,
