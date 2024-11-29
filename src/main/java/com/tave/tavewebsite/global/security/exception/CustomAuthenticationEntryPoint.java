@@ -39,6 +39,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
 
 
+
     }
 
     // 발생한 예외에 맞게 status를 설정하고 message를 반환
