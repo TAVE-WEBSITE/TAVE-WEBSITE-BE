@@ -3,7 +3,6 @@ package com.tave.tavewebsite.global.security.config;
 import com.tave.tavewebsite.domain.member.entity.RoleType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.exception.CustomAuthenticationEntryPoint;
-import com.tave.tavewebsite.global.security.filter.CsrfTokenResponseHeaderBindingFilter;
 import com.tave.tavewebsite.global.security.filter.JwtAuthenticationFilter;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
 import java.util.List;
@@ -13,13 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -55,11 +53,7 @@ public class Config {
         http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
                 corsConfigurationSource()));
 
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(
-                        CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
-        );
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -67,24 +61,25 @@ public class Config {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
-                        .requestMatchers(HttpMethod.POST, "/api/v1/manager").permitAll()
-                        .requestMatchers("/api/v1/manager/test", "/api/v1/manager/signIn", "/api/v1/manager/refresh")
+                        .requestMatchers("/v1/normal/**", "/v1/auth/signup", "/v1/auth/signin", "/v1/auth/refresh")
                         .permitAll()
+
                         // 일반 회원 전용 api
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/manager")
+                        .requestMatchers("/v1/member/**", "/v1/auth/signout", "/v1/auth/delete/**")
                         .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
                                 RoleType.MANAGER.name(), RoleType.ADMIN.name())
-                        .requestMatchers("/api/v1/manager/signOut")
-                        .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
-                                RoleType.MANAGER.name(), RoleType.ADMIN.name())
+
                         // 미허가 운영진 전용 api
-                        .requestMatchers("/un/man")
+                        .requestMatchers("/v1/xxxxxxxxx")
                         .hasAnyRole(RoleType.UNAUTHORIZED_MANAGER.name(), RoleType.MANAGER.name(),
                                 RoleType.ADMIN.name())
+
                         // 운영진 전용 api
-                        .requestMatchers("/manager").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                        .requestMatchers("/v1/manager/**")
+                        .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+
                         // 회장 전용 api
-                        .requestMatchers("/admin").hasRole(RoleType.ADMIN.name())
+                        .requestMatchers("/v1/admin/**").hasRole(RoleType.ADMIN.name())
                         .anyRequest().authenticated()
         );
 

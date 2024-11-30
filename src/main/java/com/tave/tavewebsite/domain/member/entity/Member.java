@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.member.entity;
 
+import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
 import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
 
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
@@ -95,5 +96,13 @@ public class Member extends BaseEntity {
                 .job(registerManagerRequestDto.job())
                 .department(registerManagerRequestDto.department())
                 .build();
+    }
+
+    public void update(String validatedPassword, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(validatedPassword);
+    }
+
+    public void updateRole() {
+        this.role = MANAGER;
     }
 }
