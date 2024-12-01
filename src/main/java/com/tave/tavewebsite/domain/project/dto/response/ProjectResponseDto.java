@@ -13,7 +13,6 @@ public class ProjectResponseDto {
     private final String teamName;
     private final FieldType field;
     private final String blogUrl;
-    private final String imgUrl;
 
     public ProjectResponseDto(Project project) {
         this.id = project.getId();
@@ -23,6 +22,5 @@ public class ProjectResponseDto {
         this.teamName = project.getTeamName();
         this.field = project.getField();
         this.blogUrl = project.getBlogUrl();
-        this.imgUrl = project.getImgUrl();
     }
 }
