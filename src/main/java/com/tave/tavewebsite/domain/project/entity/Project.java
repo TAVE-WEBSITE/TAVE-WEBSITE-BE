@@ -10,7 +10,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
+
+import java.net.URL;
 
 @Entity
 @Getter
@@ -48,12 +49,10 @@ public class Project extends BaseEntity {
     private FieldType field;
 
     @NotNull
-    @URL
     @Column(length = 2083, nullable = false)
     private String blogUrl;
 
     @NotNull
-    @URL
     @Column(length = 2083, nullable = false)
     private String imgUrl;
 
