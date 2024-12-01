@@ -20,8 +20,8 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping("/manager/project")
-    public SuccessResponse createProject(@RequestPart @Valid ProjectRequestDto requestDto, @RequestPart MultipartFile imageFile) {
-        projectService.createProject(requestDto, imageFile);
+    public SuccessResponse createProject(@RequestPart @Valid ProjectRequestDto req, @RequestPart MultipartFile imageFile) {
+        projectService.createProject(req, imageFile);
         return SuccessResponse.ok(SuccessMessage.PROJECT_CREATE.getMessage());
     }
 
@@ -36,9 +36,9 @@ public class ProjectController {
 
     @PutMapping("/manager/project/{projectId}")
     public SuccessResponse updateProject(@PathVariable Long projectId,
-                                         @RequestPart @Valid ProjectRequestDto requestDto,
+                                         @RequestPart @Valid ProjectRequestDto req,
                                          @RequestPart MultipartFile imageFile) {
-        projectService.updateProject(projectId, requestDto, imageFile);
+        projectService.updateProject(projectId, req, imageFile);
         return SuccessResponse.ok(SuccessMessage.PROJECT_UPDATE.getMessage());
     }
 
