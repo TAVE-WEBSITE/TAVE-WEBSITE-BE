@@ -63,6 +63,7 @@ public class ProjectService {
     }
 
     // 프로젝트 수정
+    @Transactional
     public void updateProject(Long projectId, ProjectRequestDto req, MultipartFile file) {
         // 프로젝트가 존재하는지 확인
         Project project = projectRepository.findById(projectId)
