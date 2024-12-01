@@ -21,19 +21,19 @@ public class ProjectController {
     @PostMapping("/manager/project")
     public SuccessResponse createProject(@RequestPart @Valid ProjectRequestDto requestDto, @RequestPart MultipartFile imageFile) {
         projectService.createProject(requestDto, imageFile);
-        return SuccessResponse.ok("프로젝트가 생성되었습니다.");
+        return SuccessResponse.ok(SuccessMessage.PROJECT_CREATE.getMessage());
     }
 
     @GetMapping("/normal/project")
     public SuccessResponse<List<ProjectResponseDto>> getAllProjects() {
         List<ProjectResponseDto> response = projectService.getAllProjects();
-        return new SuccessResponse<>(response);
+        return new SuccessResponse<>(response, SuccessMessage.PROJECT_READ.getMessage());
     }
 
     @GetMapping("/normal/project/{projectId}")
     public SuccessResponse<ProjectResponseDto> getProjectById(@PathVariable Long projectId) {
         ProjectResponseDto response = projectService.getProjectById(projectId);
-        return new SuccessResponse<>(response);
+        return new SuccessResponse<>(response, SuccessMessage.PROJECT_READ.getMessage());
     }
 
     @PutMapping("/manager/project/{projectId}")
@@ -41,12 +41,12 @@ public class ProjectController {
                                          @RequestPart @Valid ProjectRequestDto requestDto,
                                          @RequestPart MultipartFile imageFile) {
         projectService.updateProject(projectId, requestDto, imageFile);
-        return SuccessResponse.ok("프로젝트가 수정되었습니다.");
+        return SuccessResponse.ok(SuccessMessage.PROJECT_UPDATE.getMessage());
     }
 
     @DeleteMapping("/manager/project/{projectId}")
     public SuccessResponse deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);
-        return SuccessResponse.ok("프로젝트가 성공적으로 삭제되었습니다.");
+        return SuccessResponse.ok(SuccessMessage.PROJECT_DELETE.getMessage());
     }
 }
