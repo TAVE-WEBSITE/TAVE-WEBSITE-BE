@@ -7,43 +7,46 @@ import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/project")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PostMapping
-    public SuccessResponse<ProjectResponseDto> createProject(@RequestBody @Valid ProjectRequestDto requestDto) {
-        ProjectResponseDto response = projectService.createProject(requestDto);
-        return new SuccessResponse<>(response);
+    @PostMapping("/manager/project")
+    public SuccessResponse createProject(@RequestPart @Valid ProjectRequestDto requestDto, @RequestPart MultipartFile imageFile) {
+        projectService.createProject(requestDto, imageFile);
+        return SuccessResponse.ok("프로젝트가 생성되었습니다.");
     }
 
-    @GetMapping
+    @GetMapping("/normal/project")
     public SuccessResponse<List<ProjectResponseDto>> getAllProjects() {
         List<ProjectResponseDto> response = projectService.getAllProjects();
         return new SuccessResponse<>(response);
     }
 
-    @GetMapping("/{projectId}")
+    @GetMapping("/normal/project/{projectId}")
     public SuccessResponse<ProjectResponseDto> getProjectById(@PathVariable Long projectId) {
         ProjectResponseDto response = projectService.getProjectById(projectId);
         return new SuccessResponse<>(response);
     }
 
-    @PutMapping("/{projectId}")
-    public SuccessResponse<ProjectResponseDto> updateProject(@PathVariable Long projectId, @RequestBody @Valid ProjectRequestDto requestDto) {
-        ProjectResponseDto response = projectService.updateProject(projectId, requestDto);
-        return new SuccessResponse<>(response);
+    @PutMapping("/manager/project/{projectId}")
+    public SuccessResponse updateProject(@PathVariable Long projectId,
+                                         @RequestPart @Valid ProjectRequestDto requestDto,
+                                         @RequestPart MultipartFile imageFile) {
+        projectService.updateProject(projectId, requestDto, imageFile);
+        return SuccessResponse.ok("프로젝트가 수정되었습니다.");
     }
 
-    @DeleteMapping("/{projectId}")
+    @DeleteMapping("/manager/project/{projectId}")
     public SuccessResponse deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);
-        return new SuccessResponse<>(null);
+        return SuccessResponse.ok("프로젝트가 성공적으로 삭제되었습니다.");
     }
 }
