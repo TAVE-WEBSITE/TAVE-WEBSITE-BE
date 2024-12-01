@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.project.entity;
 
+import com.tave.tavewebsite.domain.project.dto.request.ProjectRequestDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
@@ -10,8 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -48,14 +47,6 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private FieldType field;
 
-//    @NotNull
-//    @Column(nullable = false)
-//    private LocalDateTime startDate;
-//
-//    @NotNull
-//    @Column(nullable = false)
-//    private LocalDateTime endDate;
-
     @NotNull
     @URL
     @Column(length = 2083, nullable = false)
@@ -67,25 +58,24 @@ public class Project extends BaseEntity {
     private String imgUrl;
 
     @Builder
-    public Project(String title, String description, String generation, String teamName, FieldType field, String blogUrl, String imgUrl) {
-        this.title = title;
-        this.description = description;
-        this.generation = generation;
-        this.teamName = teamName;
-        this.field = field;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-        this.blogUrl = blogUrl;
-        this.imgUrl = imgUrl;
+    public Project(ProjectRequestDto req, URL imageUrl) {
+        this.title = req.getTitle();
+        this.description = req.getDescription();
+        this.generation = req.getGeneration();
+        this.teamName = req.getTeamName();
+        this.field = req.getField();
+        this.blogUrl = req.getBlogUrl();
+        this.imgUrl = imageUrl.toString();
     }
 
-    public void update(String title, String description, String generation, String teamName, FieldType field, String blogUrl, String imgUrl) {
-        this.title = title;
-        this.description = description;
-        this.generation = generation;
-        this.teamName = teamName;
-        this.field = field;
-        this.blogUrl = blogUrl;
-        this.imgUrl = imgUrl;
+    public Project updateProject(ProjectRequestDto req, URL imageUrl) {
+        this.title = req.getTitle();
+        this.description = req.getDescription();
+        this.generation = req.getGeneration();
+        this.teamName = req.getTeamName();
+        this.field = req.getField();
+        this.blogUrl = req.getBlogUrl();
+        this.imgUrl = imageUrl.toString();
+        return this;
     }
 }
