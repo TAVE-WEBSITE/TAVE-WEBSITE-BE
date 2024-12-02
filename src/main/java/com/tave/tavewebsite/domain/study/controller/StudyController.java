@@ -13,6 +13,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.tave.tavewebsite.domain.study.controller.StudySuccessMessage.*;
+
 @RestController
 @RequestMapping("/v1")
 @RequiredArgsConstructor
@@ -21,11 +23,13 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping("/manager/study")
-    public SuccessResponse createStudy(@RequestPart @Valid StudyRequestDto req, @RequestPart MultipartFile imageFile) {
+    public SuccessResponse<?> createStudy(@RequestPart @Valid StudyRequestDto req, @RequestPart MultipartFile imageFile) {
 
         studyService.createStudy(req, imageFile);
 
-        return SuccessResponse.ok("스터디가 생성되었습니다!");
+        return new SuccessResponse<>(
+                STUDY_CREATE.getMessage()
+        );
     }
 
     @GetMapping("/normal/study")
@@ -34,22 +38,29 @@ public class StudyController {
                                                             @RequestParam(defaultValue = "ALL", name = "field") String field) {
         Page<StudyResponseDto> studies = studyService.getStudies(generation, field, pageable);
 
-        return new SuccessResponse<>(studies);
+        return new SuccessResponse<>(
+                studies,
+                STUDY_GET.getMessage()
+        );
     }
 
     @PutMapping("/manager/study/{studyId}")
-    public SuccessResponse updateStudy(@PathVariable("studyId") Long studyId,
+    public SuccessResponse<?> updateStudy(@PathVariable("studyId") Long studyId,
                                        @RequestPart @Valid StudyRequestDto dto,
                                        @RequestPart MultipartFile imageFile) {
         studyService.modifyStudy(studyId, dto, imageFile);
 
-        return SuccessResponse.ok("수정되었습니다.");
+        return new SuccessResponse<>(
+                STUDY_UPDATE.getMessage()
+        );
     }
 
     @DeleteMapping("/manager/study/{studyId}")
-    public SuccessResponse deleteStudy(@PathVariable("studyId") Long studyId) {
+    public SuccessResponse<?> deleteStudy(@PathVariable("studyId") Long studyId) {
         studyService.deleteStudy(studyId);
 
-        return SuccessResponse.ok("성공적으로 삭제되었습니다!");
+        return new SuccessResponse<>(
+                STUDY_DELETE.getMessage()
+        );
     }
 }
