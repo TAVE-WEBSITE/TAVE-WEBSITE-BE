@@ -4,5 +4,7 @@ public enum FieldType {
     DEEP_LEARNING,
     DATA_ANALYSIS,
     FRONTEND,
-    BACKEND
+    BACKEND,
+    ADVANCED,       // 심화
+    COLLABORATIVE   // 연합
 }
