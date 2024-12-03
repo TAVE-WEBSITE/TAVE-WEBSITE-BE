@@ -6,7 +6,8 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
 
 public record SignInResponseDto(
-        JwtToken token,
+        String grantType,
+        String accessToken,
         Long memberId,
         String email,
         String nickname,
@@ -17,7 +18,8 @@ public record SignInResponseDto(
         JobType job
 ) {
     public static SignInResponseDto from(JwtToken token, Member member) {
-        return new SignInResponseDto(token,
+        return new SignInResponseDto(token.getGrantType(),
+                token.getAccessToken(),
                 member.getId(),
                 member.getEmail(),
                 member.getNickname(),
