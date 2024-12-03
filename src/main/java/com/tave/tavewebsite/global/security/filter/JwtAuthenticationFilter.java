@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new SignOutUserException();
         }
 
+        // 3. 새로고침 시 메모리에 저장된 액세스 토큰이 사라졌을 시 발생시키는 에러
         if (token == null) {
             request.setAttribute("notExistAccessToken", 401);
         }
