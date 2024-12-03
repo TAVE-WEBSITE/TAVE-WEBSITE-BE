@@ -32,7 +32,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new SignOutUserException();
         }
 
-        // 3. validateToken으로 토큰 유효성 검사
+        if (token == null) {
+            request.setAttribute("notExistAccessToken", 401);
+        }
+
+        // 4. validateToken으로 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(request, token)) {
             // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
             Authentication authentication = jwtTokenProvider.getAuthentication(request, token);
