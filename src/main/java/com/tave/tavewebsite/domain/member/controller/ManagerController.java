@@ -2,7 +2,6 @@ package com.tave.tavewebsite.domain.member.controller;
 
 import com.tave.tavewebsite.domain.member.dto.request.ResetPasswordReq;
 import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
-import com.tave.tavewebsite.domain.member.dto.response.AuthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.CheckNickNameResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.service.MemberService;
@@ -47,11 +46,11 @@ public class ManagerController {
         return new SuccessResponse("update Success.");
     }
 
-    @GetMapping("/admin/unauthorized")
-    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
-        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
-        return new SuccessResponse<>(response);
-    }
+//    @GetMapping("/admin/unauthorized")
+//    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
+//        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
+//        return new SuccessResponse<>(response);
+//    }
 
     @GetMapping("/normal/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
@@ -79,9 +78,4 @@ public class ManagerController {
         return "test";
     }
 
-    @GetMapping("/admin/authorized")
-    public SuccessResponse<List<AuthorizedManagerResponseDto>> getAuthorizedAdmins() {
-        List<AuthorizedManagerResponseDto> response = memberService.getAuthorizedAdmins();
-        return new SuccessResponse<>(response);
-    }
 }
