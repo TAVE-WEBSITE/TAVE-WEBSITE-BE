@@ -3,10 +3,8 @@ package com.tave.tavewebsite.domain.member.controller;
 import com.tave.tavewebsite.domain.member.dto.request.ResetPasswordReq;
 import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
 import com.tave.tavewebsite.domain.member.dto.response.CheckNickNameResponseDto;
-import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,12 +44,6 @@ public class ManagerController {
         return new SuccessResponse("update Success.");
     }
 
-    @GetMapping("/admin/unauthorized")
-    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
-        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
-        return new SuccessResponse<>(response);
-    }
-
     @GetMapping("/normal/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
@@ -77,4 +69,5 @@ public class ManagerController {
     public String test() {
         return "test";
     }
+
 }

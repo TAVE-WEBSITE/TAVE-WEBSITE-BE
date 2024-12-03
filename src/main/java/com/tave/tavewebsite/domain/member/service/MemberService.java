@@ -1,8 +1,11 @@
 package com.tave.tavewebsite.domain.member.service;
 
+import static com.amazonaws.services.ec2.model.PrincipalType.Role;
+import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
 import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
 
 import com.tave.tavewebsite.domain.member.dto.request.*;
+import com.tave.tavewebsite.domain.member.dto.response.AuthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.SignInResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
@@ -15,6 +18,8 @@ import com.tave.tavewebsite.global.security.entity.JwtToken;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.NotMatchRefreshTokenException;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -137,6 +142,13 @@ public class MemberService {
         Long id = Long.valueOf(memberId);
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
         member.updateRole();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AuthorizedManagerResponseDto> getAuthorizedAdmins() {
+        return memberRepository.findByRole(MANAGER).stream()
+                .map(AuthorizedManagerResponseDto::fromEntity)
+                .toList();
     }
 
 }
