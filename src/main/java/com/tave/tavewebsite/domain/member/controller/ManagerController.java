@@ -46,12 +46,6 @@ public class ManagerController {
         return new SuccessResponse("update Success.");
     }
 
-//    @GetMapping("/admin/unauthorized")
-//    public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
-//        List<UnauthorizedManagerResponseDto> response = memberService.getUnauthorizedManager();
-//        return new SuccessResponse<>(response);
-//    }
-
     @GetMapping("/normal/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
