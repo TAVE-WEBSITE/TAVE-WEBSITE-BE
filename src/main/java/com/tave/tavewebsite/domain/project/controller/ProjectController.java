@@ -31,7 +31,7 @@ public class ProjectController {
                                                                  @RequestParam(defaultValue = "ALL", name = "generation") String generation,
                                                                  @RequestParam(defaultValue = "ALL", name = "field") String field) {
         Page<ProjectResponseDto> projects = projectService.getProjects(generation, field, pageable);
-        return new SuccessResponse<>(projects);
+        return new SuccessResponse<>(projects, SuccessMessage.PROJECT_READ.getMessage());
     }
 
     @PutMapping("/manager/project/{projectId}")
