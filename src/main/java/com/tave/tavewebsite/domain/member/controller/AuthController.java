@@ -47,7 +47,7 @@ public class AuthController {
     public SuccessResponse<RefreshResponseDto> refreshToken(@RequestBody RefreshTokenRequestDto requestDto,
                                                             @CookieValue("refreshToken") String refreshToken,
                                                             HttpServletResponse response) {
-        return new SuccessResponse<>(authService.refreshToken(requestDto, refreshToken, response));
+        return new SuccessResponse<>(authService.reissueToken(requestDto, refreshToken, response));
     }
 
     @GetMapping("/signout")

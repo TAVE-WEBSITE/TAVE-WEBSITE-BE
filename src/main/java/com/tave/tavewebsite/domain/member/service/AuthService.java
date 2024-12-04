@@ -48,7 +48,7 @@ public class AuthService {
         redisUtil.setBlackList(accessToken, "ban accessToken", ACCESS_TOKEN_MAX_AGE);
     }
 
-    public RefreshResponseDto refreshToken(RefreshTokenRequestDto requestDto, String refreshToken,
+    public RefreshResponseDto reissueToken(RefreshTokenRequestDto requestDto, String refreshToken,
                                            HttpServletResponse response) {
         Object refreshTokenByRedis = redisUtil.get(requestDto.email());
         if (!refreshTokenByRedis.equals(refreshToken)) {
