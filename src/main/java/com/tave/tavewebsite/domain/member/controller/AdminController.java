@@ -32,14 +32,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public SuccessResponse<Void> deleteManager(@PathVariable Long memberId) {
-        Member member = adminService.findMemberById(memberId);
-
-        if (!member.getRole().equals(RoleType.MANAGER)) {
-            throw new NotManagerAccessException();
-        }
-
         adminService.deleteManager(memberId);
         return new SuccessResponse<>(null, SuccessMessage.MANAGER_DELETE.getMessage());
     }
