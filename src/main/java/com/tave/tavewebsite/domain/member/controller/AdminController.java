@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import static com.tave.tavewebsite.domain.member.controller.SuccessMessage.UNAUTHORIZED_MEMBER_READ;
+
 @RestController
 @RequestMapping("/v1/admin")
 @RequiredArgsConstructor
@@ -21,20 +23,20 @@ public class AdminController {
 
     @GetMapping("/unauthorized")
     public SuccessResponse<List<UnauthorizedManagerResponseDto>> getUnauthorizedManager() {
-        List<UnauthorizedManagerResponseDto> response = adminService.getUnauthorizedManager();
-        return new SuccessResponse<>(response, SuccessMessage.UNAUTHORIZED_MEMBER_READ.getMessage());
+       adminService.getUnauthorizedManager();
+       return SuccessResponse.ok(SuccessMessage.UNAUTHORIZED_MEMBER_READ.getMessage());
     }
 
     @GetMapping("/authorized")
     public SuccessResponse<List<AuthorizedManagerResponseDto>> getAuthorizedAdmins() {
-        List<AuthorizedManagerResponseDto> response = adminService.getAuthorizedAdmins();
-        return new SuccessResponse<>(response, SuccessMessage.AUTHORIZED_MEMBER_READ.getMessage());
+        adminService.getAuthorizedAdmins();
+        return SuccessResponse.ok(SuccessMessage.AUTHORIZED_MEMBER_READ.getMessage());
     }
 
     @DeleteMapping("/{memberId}")
-    public SuccessResponse<Void> deleteManager(@PathVariable Long memberId) {
+    public SuccessResponse deleteManager(@PathVariable Long memberId) {
         adminService.deleteManager(memberId);
-        return new SuccessResponse<>(null, SuccessMessage.MANAGER_DELETE.getMessage());
+        return SuccessResponse.ok(SuccessMessage.MANAGER_DELETE.getMessage());
     }
 
 }
