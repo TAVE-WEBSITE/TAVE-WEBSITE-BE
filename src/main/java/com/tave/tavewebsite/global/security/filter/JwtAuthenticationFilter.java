@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.global.security.filter;
 
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
+import com.tave.tavewebsite.global.security.exception.JwtValidException.ExpiredTokenException;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.SignOutUserException;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
@@ -32,8 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new SignOutUserException();
         }
 
-        // 3. validateToken으로 토큰 유효성 검사
-        if (token != null && jwtTokenProvider.validateToken(request, token)) {
+        // 3. 새로고침 시 메모리에 저장된 액세스 토큰이 사라졌을 시 발생시키는 에러
+        if (token == null) {
+            request.setAttribute("notExistAccessToken", 401);
+            throw new ExpiredTokenException();
+        }
+
+        // 4. validateToken으로 토큰 유효성 검사
+        if (jwtTokenProvider.validateToken(request, token)) {
             // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
             Authentication authentication = jwtTokenProvider.getAuthentication(request, token);
             SecurityContextHolder.getContext().setAuthentication(authentication);

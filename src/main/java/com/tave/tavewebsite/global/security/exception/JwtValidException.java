@@ -12,7 +12,8 @@ public abstract class JwtValidException {
 
     public static class ExpiredTokenException extends BaseErrorException {
         public ExpiredTokenException() {
-            super(JwtErrorMessage.EXPIRED_JWT_TOKEN.getErrorCode(), JwtErrorMessage.INVALID_JWT_TOKEN.getMessage());
+            super(JwtErrorMessage.NEED_ACCESS_TOKEN_REFRESH.getErrorCode(),
+                    JwtErrorMessage.NEED_ACCESS_TOKEN_REFRESH.getMessage());
         }
     }
 
@@ -31,8 +32,8 @@ public abstract class JwtValidException {
 
     public static class NotMatchRefreshTokenException extends BaseErrorException {
         public NotMatchRefreshTokenException() {
-            super(JwtErrorMessage.NOT_MATCH_REFRESHTOKEN.getErrorCode(),
-                    JwtErrorMessage.NOT_MATCH_REFRESHTOKEN.getMessage());
+            super(JwtErrorMessage.NOT_MATCH_REFRESH_TOKEN.getErrorCode(),
+                    JwtErrorMessage.NOT_MATCH_REFRESH_TOKEN.getMessage());
         }
     }
 
@@ -45,8 +46,8 @@ public abstract class JwtValidException {
 
     public static class CannotUseRefreshToken extends BaseErrorException {
         public CannotUseRefreshToken() {
-            super(JwtErrorMessage.CANNOT_USE_REFRESHTOKEN.getErrorCode(),
-                    JwtErrorMessage.CANNOT_USE_REFRESHTOKEN.getMessage());
+            super(JwtErrorMessage.CANNOT_USE_REFRESH_TOKEN.getErrorCode(),
+                    JwtErrorMessage.CANNOT_USE_REFRESH_TOKEN.getMessage());
         }
     }
 }
