@@ -1,17 +1,17 @@
 package com.tave.tavewebsite.domain.member.service;
 
-import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
-import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
-
-import com.tave.tavewebsite.domain.member.dto.response.AuthorizedManagerResponseDto;
-import com.tave.tavewebsite.domain.member.dto.response.UnauthorizedManagerResponseDto;
+import com.tave.tavewebsite.domain.member.controller.SuccessMessage;
+import com.tave.tavewebsite.domain.member.dto.response.ManagerResponseDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.entity.RoleType;
+import com.tave.tavewebsite.domain.member.exception.InvalidStatusValueExcception;
 import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
 import com.tave.tavewebsite.domain.member.exception.NotManagerAccessException;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
-import java.util.List;
+import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,18 +28,29 @@ public class AdminService {
         member.updateRole();
     }
 
-    @Transactional(readOnly = true)
-    public List<AuthorizedManagerResponseDto> getAuthorizedAdmins() {
-        return memberRepository.findByRole(MANAGER).stream()
-                .map(AuthorizedManagerResponseDto::fromEntity)
-                .toList();
-    }
+    public SuccessResponse<Page<ManagerResponseDto>> getManagersByStatus(String status, Pageable pageable) {
+        Page<Member> members;
+        String message;
 
-    @Transactional(readOnly = true)
-    public List<UnauthorizedManagerResponseDto> getUnauthorizedManager() {
-        return memberRepository.findByRole(UNAUTHORIZED_MANAGER).stream()
-                .map(UnauthorizedManagerResponseDto::fromEntity)
-                .toList();
+        switch (status.toUpperCase()) {
+            case "ALL":
+                members = memberRepository.findAll(pageable);
+                message = SuccessMessage.ALL_MANAGER_READ.getMessage();
+                break;
+            case "AUTHORIZED":
+                members = memberRepository.findByRole(RoleType.MANAGER, pageable);
+                message = SuccessMessage.AUTHORIZED_MEMBER_READ.getMessage();
+                break;
+            case "UNAUTHORIZED":
+                members = memberRepository.findByRole(RoleType.UNAUTHORIZED_MANAGER, pageable);
+                message = SuccessMessage.UNAUTHORIZED_MEMBER_READ.getMessage();
+                break;
+            default:
+                throw new InvalidStatusValueExcception();
+        }
+
+        Page<ManagerResponseDto> response = members.map(ManagerResponseDto::fromEntity);
+        return new SuccessResponse<>(response, message);
     }
 
     public Member findMemberById(Long memberId) {
