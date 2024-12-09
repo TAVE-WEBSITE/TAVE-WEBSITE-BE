@@ -23,13 +23,11 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping("/manager/study")
-    public SuccessResponse<?> createStudy(@RequestPart @Valid StudyRequestDto req, @RequestPart MultipartFile imageFile) {
+    public SuccessResponse createStudy(@RequestPart @Valid StudyRequestDto req, @RequestPart MultipartFile imageFile) {
 
         studyService.createStudy(req, imageFile);
 
-        return new SuccessResponse<>(
-                STUDY_CREATE.getMessage()
-        );
+        return SuccessResponse.ok(STUDY_CREATE.getMessage());
     }
 
     @GetMapping("/normal/study")
@@ -45,22 +43,18 @@ public class StudyController {
     }
 
     @PutMapping("/manager/study/{studyId}")
-    public SuccessResponse<?> updateStudy(@PathVariable("studyId") Long studyId,
+    public SuccessResponse updateStudy(@PathVariable("studyId") Long studyId,
                                        @RequestPart @Valid StudyRequestDto dto,
                                        @RequestPart MultipartFile imageFile) {
         studyService.modifyStudy(studyId, dto, imageFile);
 
-        return new SuccessResponse<>(
-                STUDY_UPDATE.getMessage()
-        );
+        return SuccessResponse.ok(STUDY_UPDATE.getMessage());
     }
 
     @DeleteMapping("/manager/study/{studyId}")
-    public SuccessResponse<?> deleteStudy(@PathVariable("studyId") Long studyId) {
+    public SuccessResponse deleteStudy(@PathVariable("studyId") Long studyId) {
         studyService.deleteStudy(studyId);
 
-        return new SuccessResponse<>(
-                STUDY_DELETE.getMessage()
-        );
+        return SuccessResponse.ok(STUDY_DELETE.getMessage());
     }
 }
