@@ -42,7 +42,7 @@ public class ManagerController {
     public SuccessResponse updateAuthentication(@PathVariable("memberId") String memberId) {
         adminService.updateAuthentication(memberId);
 
-        return new SuccessResponse("update Success.");
+        return new SuccessResponse("테스트용 update Success.");
     }
 
     @GetMapping("/normal/validate/{nickName}")
