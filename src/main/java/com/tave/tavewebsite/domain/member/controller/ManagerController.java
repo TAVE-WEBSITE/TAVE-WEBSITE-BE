@@ -28,14 +28,14 @@ public class ManagerController {
 
         memberService.sendMessage(requestDto);
 
-        return SuccessResponse.ok("이메일로 인증 번호가 전송되었습니다!");
+        return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
 
     @GetMapping("/normal/verify/number")
     public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
         memberService.verityNumber(requestDto);
 
-        return SuccessResponse.ok("인증되었습니다!");
+        return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS_MESSAGE.getMessage());
     }
 
     @GetMapping("/normal/upgrade/{memberId}")
@@ -49,20 +49,14 @@ public class ManagerController {
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
-        return new SuccessResponse<>(response, nickName + " 사용가능합니다.");
+        return new SuccessResponse<>(response, MemberSuccessMessage.CAN_USE_NICKNAME.getMessage(nickName));
     }
 
     @PutMapping("/normal/reset/password")
     public SuccessResponse resetPassword(@RequestBody ResetPasswordReq requestDto) {
         memberService.resetPassword(requestDto);
 
-        return SuccessResponse.ok("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요!");
-    }
-
-    // ci/cd 이후 배포 성공 테스트용 엔드포인트
-    @GetMapping("/test")
-    public String test() {
-        return "test";
+        return SuccessResponse.ok(MemberSuccessMessage.RESET_PASSWORD_MESSAGE.getMessage());
     }
 
 }

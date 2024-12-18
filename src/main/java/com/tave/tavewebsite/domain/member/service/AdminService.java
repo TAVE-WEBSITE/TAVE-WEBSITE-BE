@@ -1,6 +1,6 @@
 package com.tave.tavewebsite.domain.member.service;
 
-import com.tave.tavewebsite.domain.member.controller.SuccessMessage;
+import com.tave.tavewebsite.domain.member.controller.MemberSuccessMessage;
 import com.tave.tavewebsite.domain.member.dto.response.ManagerResponseDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.entity.RoleType;
@@ -35,15 +35,15 @@ public class AdminService {
         switch (status.toUpperCase()) {
             case "ALL":
                 members = memberRepository.findAll(pageable);
-                message = SuccessMessage.ALL_MANAGER_READ.getMessage();
+                message = MemberSuccessMessage.ALL_MANAGER_READ.getMessage();
                 break;
             case "AUTHORIZED":
                 members = memberRepository.findByRole(RoleType.MANAGER, pageable);
-                message = SuccessMessage.AUTHORIZED_MEMBER_READ.getMessage();
+                message = MemberSuccessMessage.AUTHORIZED_MEMBER_READ.getMessage();
                 break;
             case "UNAUTHORIZED":
                 members = memberRepository.findByRole(RoleType.UNAUTHORIZED_MANAGER, pageable);
-                message = SuccessMessage.UNAUTHORIZED_MEMBER_READ.getMessage();
+                message = MemberSuccessMessage.UNAUTHORIZED_MEMBER_READ.getMessage();
                 break;
             default:
                 throw new InvalidStatusValueExcception();
