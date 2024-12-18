@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.net.URL;
-import java.time.LocalDateTime;
 
 
 @Entity
@@ -74,14 +73,13 @@ public class Study extends BaseEntity {
         this.imgUrl = imgUrl;
     }
 
-    public Study updateStudy(StudyRequestDto req, URL imageUrl) {
+    public void updateStudy(StudyRequestDto req, URL imageUrl) {
         this.topic = req.topic();
         this.teamName = req.teamName();
         this.generation = req.generation();
         this.field = FieldType.valueOf(req.field());
         this.blogUrl = req.blogUrl();
         this.imgUrl = imageUrl.toString();
-        return this;
     }
 
 

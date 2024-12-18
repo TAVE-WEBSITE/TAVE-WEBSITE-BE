@@ -24,6 +24,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
         List<Study> studies = em.createQuery("select s from Study s where s.field=:field and s.generation = :generation", Study.class)
                 .setParameter("field", FieldType.valueOf(field))
                 .setParameter("generation", generation)
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
@@ -34,6 +35,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     public Page<StudyResponseDto> findStudyByField(String field, Pageable pageable) {
         List<Study> studies = em.createQuery("select s from Study s where s.field = :field", Study.class)
                 .setParameter("field", FieldType.valueOf(field))
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
@@ -44,6 +46,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     public Page<StudyResponseDto> findStudyByGeneration(String generation, Pageable pageable) {
         List<Study> studies = em.createQuery("select s from Study s where s.generation = :generation", Study.class)
                 .setParameter("generation", generation)
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
@@ -53,6 +56,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
     @Override
     public Page<StudyResponseDto> findAllStudy(Pageable pageable) {
         List<Study> studies = em.createQuery("select s from Study s order by s.createdAt", Study.class)
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
         log.info("findAllStudy: {}", studies.size());
