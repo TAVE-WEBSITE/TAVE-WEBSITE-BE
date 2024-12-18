@@ -7,7 +7,6 @@ import com.tave.tavewebsite.domain.member.service.AdminService;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,12 +50,6 @@ public class ManagerController {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
         return new SuccessResponse<>(response, nickName + " 사용가능합니다.");
-    }
-
-    @DeleteMapping("/{memberId}")
-    public SuccessResponse deleteMember(@PathVariable("memberId") Long memberId) {
-        memberService.deleteMember(memberId);
-        return SuccessResponse.ok();
     }
 
     @PutMapping("/normal/reset/password")
