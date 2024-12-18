@@ -31,7 +31,7 @@ public class AdminController {
     @DeleteMapping("/{memberId}")
     public SuccessResponse deleteManager(@PathVariable Long memberId) {
         adminService.deleteManager(memberId);
-        return SuccessResponse.ok(MemberSuccessMessage.MANAGER_DELETE.getMessage());
+        return SuccessResponse.ok(SuccessMessage.MANAGER_DELETE.getMessage());
     }
 
 }
