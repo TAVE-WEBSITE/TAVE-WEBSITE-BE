@@ -70,6 +70,7 @@ public class AdminService {
         memberRepository.deleteById(memberId);
     }
 
+    @Transactional
     public void approveManager(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
