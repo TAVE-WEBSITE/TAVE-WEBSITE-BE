@@ -80,4 +80,16 @@ public class AdminService {
 
         member.updateRole(); // Role을 MANAGER로 변경
     }
+
+    @Transactional
+    public void rejectManager(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (member.getRole() != RoleType.UNAUTHORIZED_MANAGER) {
+            throw new NotFoundUnauthorizedManager();
+        }
+
+        memberRepository.deleteById(memberId);
+    }
 }

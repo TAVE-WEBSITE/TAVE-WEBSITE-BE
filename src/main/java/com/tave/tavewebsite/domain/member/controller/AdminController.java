@@ -35,4 +35,10 @@ public class AdminController {
         return SuccessResponse.ok(SuccessMessage.MANAGER_APPROVED.getMessage());
     }
 
+    @PostMapping("/{memberId}/reject")
+    public SuccessResponse rejectManager(@PathVariable Long memberId) {
+        adminService.rejectManager(memberId);
+        return SuccessResponse.ok(SuccessMessage.MANAGER_REJECTED.getMessage());
+    }
+
 }
