@@ -29,4 +29,10 @@ public class AdminController {
         return SuccessResponse.ok(SuccessMessage.MANAGER_DELETE.getMessage());
     }
 
+    @PostMapping("/{memberId}/approve")
+    public SuccessResponse approveManager(@PathVariable Long memberId) {
+        adminService.approveManager(memberId);
+        return SuccessResponse.ok(SuccessMessage.MANAGER_APPROVED.getMessage());
+    }
+
 }
