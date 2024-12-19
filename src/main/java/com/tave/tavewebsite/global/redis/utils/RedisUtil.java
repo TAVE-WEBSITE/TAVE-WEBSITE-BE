@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class RedisUtil {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final RedisTemplate<String, String> redisBlackListTemplate;
 
     public void set(String key, String o, int minutes) {
         redisTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
@@ -26,22 +25,6 @@ public class RedisUtil {
 
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
-    }
-
-    public void setBlackList(String key, String o, int minutes) {
-        redisBlackListTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
-    }
-
-    public Object getBlackList(String key) {
-        return redisBlackListTemplate.opsForValue().get(key);
-    }
-
-    public boolean deleteBlackList(String key) {
-        return Boolean.TRUE.equals(redisBlackListTemplate.delete(key));
-    }
-
-    public boolean hasKeyBlackList(String key) {
-        return Boolean.TRUE.equals(redisBlackListTemplate.hasKey(key));
     }
 
     public Long checkExpired(String key) {

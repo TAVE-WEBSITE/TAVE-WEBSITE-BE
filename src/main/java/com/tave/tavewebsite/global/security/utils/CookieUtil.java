@@ -20,4 +20,16 @@ public class CookieUtil {
 
         response.setHeader("Set-Cookie", cookie.toString());
     }
+
+    public static void deleteCookie(HttpServletResponse response, String name) {
+        ResponseCookie cookie = ResponseCookie.from(name, "value")
+                .maxAge(0)
+                .path("/")
+                .secure(false)
+                .httpOnly(true)
+                .sameSite("None")
+                .build();
+
+        response.setHeader("Set-Cookie", cookie.toString());
+    }
 }

@@ -44,8 +44,9 @@ public class AuthService {
 
     }
 
-    public void singOut(String accessToken) {
-        redisUtil.setBlackList(accessToken, "ban accessToken", ACCESS_TOKEN_MAX_AGE);
+    public void singOut(String accessToken, HttpServletResponse response) {
+        redisUtil.set(accessToken, "ban accessToken", ACCESS_TOKEN_MAX_AGE);
+        CookieUtil.deleteCookie(response, "refreshToken");
     }
 
     public RefreshResponseDto reissueToken(RefreshTokenRequestDto requestDto, String refreshToken,
