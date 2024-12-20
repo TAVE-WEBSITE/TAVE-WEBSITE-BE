@@ -72,18 +72,17 @@ public class AdminService {
 
     @Transactional
     public void approveManager(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(NotFoundMemberException::new);
-
-        if (member.getRole() != RoleType.UNAUTHORIZED_MANAGER) {
-            throw new NotFoundUnauthorizedManager();
-        }
-
-        member.updateRole(); // Role을 MANAGER로 변경
+        Member member = validateUnauthorizedManager(memberId);
+        member.updateRole();
     }
 
     @Transactional
     public void rejectManager(Long memberId) {
+        Member member = validateUnauthorizedManager(memberId);
+        memberRepository.delete(member);
+    }
+
+    private Member validateUnauthorizedManager(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -91,6 +90,7 @@ public class AdminService {
             throw new NotFoundUnauthorizedManager();
         }
 
-        memberRepository.deleteById(memberId);
+        return member;
     }
+
 }
