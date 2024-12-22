@@ -53,12 +53,12 @@ public class AuthController {
     @GetMapping("/signout")
     public SuccessResponse signOut(@RequestHeader("Authorization") String token) {
         authService.singOut(token);
-        return SuccessResponse.ok();
+        return SuccessResponse.ok(SuccessMessage.SIGN_OUT_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/delete/{memberId}")
     public SuccessResponse deleteMember(@PathVariable("memberId") Long memberId) {
         memberService.deleteMember(memberId);
-        return SuccessResponse.ok();
+        return SuccessResponse.ok(SuccessMessage.DELETE_MEMBER_SUCCESS.getMessage());
     }
 }
