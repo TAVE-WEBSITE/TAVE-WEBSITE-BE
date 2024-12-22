@@ -29,4 +29,16 @@ public class AdminController {
         return SuccessResponse.ok(SuccessMessage.MANAGER_DELETE.getMessage());
     }
 
+    @PatchMapping("/unauthorized-manager/{memberId}")
+    public SuccessResponse approveManager(@PathVariable Long memberId) {
+        adminService.approveManager(memberId);
+        return SuccessResponse.ok(SuccessMessage.MANAGER_APPROVED.getMessage());
+    }
+
+    @DeleteMapping("/unauthorized-manager/{memberId}")
+    public SuccessResponse rejectManager(@PathVariable Long memberId) {
+        adminService.rejectManager(memberId);
+        return SuccessResponse.ok(SuccessMessage.MANAGER_REJECTED.getMessage());
+    }
+
 }

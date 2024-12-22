@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.entity.RoleType;
 import com.tave.tavewebsite.domain.member.exception.InvalidStatusValueExcception;
 import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
+import com.tave.tavewebsite.domain.member.exception.NotFoundUnauthorizedManager;
 import com.tave.tavewebsite.domain.member.exception.NotManagerAccessException;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.global.success.SuccessResponse;
@@ -67,6 +68,29 @@ public class AdminService {
         }
 
         memberRepository.deleteById(memberId);
+    }
+
+    @Transactional
+    public void approveManager(Long memberId) {
+        Member member = validateUnauthorizedManager(memberId);
+        member.updateRole();
+    }
+
+    @Transactional
+    public void rejectManager(Long memberId) {
+        Member member = validateUnauthorizedManager(memberId);
+        memberRepository.delete(member);
+    }
+
+    private Member validateUnauthorizedManager(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (member.getRole() != RoleType.UNAUTHORIZED_MANAGER) {
+            throw new NotFoundUnauthorizedManager();
+        }
+
+        return member;
     }
 
 }
