@@ -35,7 +35,7 @@ public class ManagerController {
     public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
         memberService.verityNumber(requestDto);
 
-        return SuccessResponse.ok(SuccessMessage.VERIFY_SUCCESS_MESSAGE.getMessage());
+        return SuccessResponse.ok(SuccessMessage.VERIFY_SUCCESS.getMessage());
     }
 
     @GetMapping("/normal/upgrade/{memberId}")
@@ -56,7 +56,7 @@ public class ManagerController {
     public SuccessResponse resetPassword(@RequestBody ResetPasswordReq requestDto) {
         memberService.resetPassword(requestDto);
 
-        return SuccessResponse.ok(SuccessMessage.RESET_PASSWORD_MESSAGE.getMessage());
+        return SuccessResponse.ok(SuccessMessage.RESET_PASSWORD.getMessage());
     }
 
 }

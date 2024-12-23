@@ -33,7 +33,7 @@ public class ManagerHistoryController {
     public SuccessResponse postHistory(@RequestBody @Valid HistoryRequestDto historyRequestDto) {
         historyService.save(historyRequestDto);
         return SuccessResponse.ok(
-                HistorySuccessMessage.POST_SUCCESS_MESSAGE.getMessage(historyRequestDto.generation()));
+                HistorySuccessMessage.POST_SUCCESS.getMessage(historyRequestDto.generation()));
     }
 
     @PatchMapping("/{historyId}")
@@ -41,12 +41,12 @@ public class ManagerHistoryController {
                                          @RequestBody @Valid HistoryRequestDto historyRequestDto) {
         historyService.patch(id, historyRequestDto);
         return SuccessResponse.ok(
-                HistorySuccessMessage.UPDATE_SUCCESS_MESSAGE.getMessage(historyRequestDto.generation()));
+                HistorySuccessMessage.UPDATE_SUCCESS.getMessage(historyRequestDto.generation()));
     }
 
     @DeleteMapping("/{historyId}")
     public SuccessResponse deleteHistory(@PathVariable("historyId") Long id) {
         historyService.delete(id);
-        return SuccessResponse.ok(HistorySuccessMessage.DELETE_SUCCESS_MESSAGE.getMessage());
+        return SuccessResponse.ok(HistorySuccessMessage.DELETE_SUCCESS.getMessage());
     }
 }
