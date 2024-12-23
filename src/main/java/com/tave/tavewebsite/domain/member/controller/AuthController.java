@@ -51,8 +51,8 @@ public class AuthController {
     }
 
     @GetMapping("/signout")
-    public SuccessResponse signOut(@RequestHeader("Authorization") String token) {
-        authService.singOut(token);
+    public SuccessResponse signOut(@RequestHeader("Authorization") String token, HttpServletResponse response) {
+        authService.singOut(token, response);
         return SuccessResponse.ok();
     }
 
