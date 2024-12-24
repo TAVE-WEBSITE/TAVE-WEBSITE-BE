@@ -53,7 +53,7 @@ public class AuthController {
     @GetMapping("/signout")
     public SuccessResponse signOut(@RequestHeader("Authorization") String token) {
         authService.singOut(token);
-        return SuccessResponse.ok(SuccessMessage.SIGN_OUT_SUCCESS.getMessage());
+        return SuccessResponse.ok();
     }
 
     @DeleteMapping("/delete/{memberId}")
