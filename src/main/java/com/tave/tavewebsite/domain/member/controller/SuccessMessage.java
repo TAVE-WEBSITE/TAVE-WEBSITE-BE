@@ -13,9 +13,12 @@ public enum SuccessMessage {
     DELETE_MEMBER_SUCCESS("멤버 삭제에 성공했습니다."),
 
     SEND_AUTHENTICATION_CODE("인증번호 발송에 성공했습니다."),
-    VERIFY_SUCCESS("인증에 성공했습니다."),
+    VERIFY_SUCCESS_MESSAGE("인증에 성공했습니다."),
     CAN_USE_NICKNAME("닉네임 사용 가능합니다."),
-    RESET_PASSWORD("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요.");
+    RESET_PASSWORD_MESSAGE("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요."),
+
+    MANAGER_APPROVED("대기 운영진이 승인되었습니다."),
+    MANAGER_REJECTED("대기 운영진이 거절되었습니다.");
 
     private final String message;
 
