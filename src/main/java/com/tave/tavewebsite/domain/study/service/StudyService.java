@@ -53,13 +53,12 @@ public class StudyService {
         return map;
     }
 
+    @Transactional
     public void modifyStudy(Long studyId, StudyRequestDto req, MultipartFile file) {
         // 존재 유무 & 직책에 대한 유저 자격 확인
         Study study = studyRepository.findById(studyId).orElseThrow(NotFoundStudy::new); // 스터디 존재 유무 확인
         URL url = s3Service.uploadImages(file);
         study.updateStudy(req, url);
-
-        //studyRepository.save(study);
     }
 
     public void deleteStudy(Long studyId){

@@ -9,8 +9,11 @@ import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailExc
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -26,7 +29,7 @@ public class S3Service {
 
     public URL uploadImages(MultipartFile file) {
         String key = file.getOriginalFilename();
-        checkExistFile(key);
+        key = validateFileName(key);
         // MultipartFile에서 InputStream을 얻어 S3에 업로드합니다.
         try (InputStream inputStream = file.getInputStream()) {
             ObjectMetadata metadata = setMetaData(file);
@@ -65,10 +68,19 @@ public class S3Service {
         return metadata;
     }
 
-    private void checkExistFile(String key) {
-        if (s3Client.doesObjectExist(bucketName, key)) {
-            s3Client.deleteObject(bucketName, key);
+    private String validateFileName(String key) {
+        if (!s3Client.doesObjectExist(bucketName, key) && !StringUtils.hasText(key)) {
+            return UUID.randomUUID() + getFileExtension(key);
         }
+        return key;
+    }
+
+    private String getFileExtension(String key) {
+        int dotIndex = key.lastIndexOf(".");
+        if (dotIndex > 0 && dotIndex < key.length() - 1) {
+            return key.substring(dotIndex);
+        }
+        return ""; // 확장자가 없는 경우 빈 문자열 반환
     }
 
 }
