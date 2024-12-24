@@ -28,14 +28,14 @@ public class ManagerController {
 
         memberService.sendMessage(requestDto);
 
-        return SuccessResponse.ok(SuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
+        return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
 
     @GetMapping("/normal/verify/number")
     public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
         memberService.verityNumber(requestDto);
 
-        return SuccessResponse.ok(SuccessMessage.VERIFY_SUCCESS_MESSAGE.getMessage());
+        return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS.getMessage());
     }
 
     @GetMapping("/normal/upgrade/{memberId}")
@@ -49,14 +49,14 @@ public class ManagerController {
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
-        return new SuccessResponse<>(response, SuccessMessage.CAN_USE_NICKNAME.getMessage(nickName));
+        return new SuccessResponse<>(response, MemberSuccessMessage.CAN_USE_NICKNAME.getMessage(nickName));
     }
 
     @PutMapping("/normal/reset/password")
     public SuccessResponse resetPassword(@RequestBody ResetPasswordReq requestDto) {
         memberService.resetPassword(requestDto);
 
-        return SuccessResponse.ok(SuccessMessage.RESET_PASSWORD_MESSAGE.getMessage());
+        return SuccessResponse.ok(MemberSuccessMessage.RESET_PASSWORD.getMessage());
     }
 
 }
