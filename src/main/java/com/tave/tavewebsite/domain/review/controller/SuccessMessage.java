@@ -7,8 +7,8 @@ import lombok.Getter;
 public enum SuccessMessage {
 
     REVIEW_CREATE("후기를 생성합니다."),
-    REVIEW_GET_PUBLIC("공개 후기를 반환합니다."),
-    REVIEW_GET_PRIVATE("비공개 후기를 반환합니다."),
+    REVIEW_GET_NORMAL("공개 후기를 반환합니다."),
+    REVIEW_GET_MANAGER("모든 후기를 반환합니다."),
     REVIEW_UPDATE("후기를 수정했습니다."),
     REVIEW_DELETE("후기를 삭제했습니다.");
 

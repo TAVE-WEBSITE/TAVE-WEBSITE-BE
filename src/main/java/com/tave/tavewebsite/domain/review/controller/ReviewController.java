@@ -37,7 +37,7 @@ public class ReviewController {
 
         return new SuccessResponse<>(
                 response,
-                REVIEW_GET_PUBLIC.getMessage(generation)
+                REVIEW_GET_MANAGER.getMessage(generation)
         );
     }
 
@@ -47,7 +47,7 @@ public class ReviewController {
         List<ReviewResponseDto> response = reviewService.findPublicReviews();
         return new SuccessResponse<>(
                 response,
-                REVIEW_GET_PRIVATE.getMessage()
+                REVIEW_GET_NORMAL.getMessage()
         );
     }
 
