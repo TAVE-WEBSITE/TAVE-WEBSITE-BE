@@ -29,7 +29,7 @@ public class ReviewMapper {
                 .build();
     }
 
-    public ReviewManagerResponseDto toReviewIdResponseDto(Review review) {
+    public ReviewManagerResponseDto toReviewManagerResponseDto(Review review) {
         return ReviewManagerResponseDto.builder()
                 .id(review.getId())
                 .nickname(review.getNickname())

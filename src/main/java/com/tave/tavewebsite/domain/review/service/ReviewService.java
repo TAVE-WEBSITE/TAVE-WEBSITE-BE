@@ -44,7 +44,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findByGeneration(generation);
 
         return reviews.stream()
-                .map(reviewMapper::toReviewIdResponseDto)
+                .map(reviewMapper::toReviewManagerResponseDto)
                 .toList();
     }
 
