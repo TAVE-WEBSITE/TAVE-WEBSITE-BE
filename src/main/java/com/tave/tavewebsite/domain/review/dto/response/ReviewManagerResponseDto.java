@@ -4,7 +4,7 @@ import com.tave.tavewebsite.global.common.FieldType;
 import lombok.Builder;
 
 @Builder
-public record ReviewIdResponseDto (
+public record ReviewManagerResponseDto(
         Long id,
         String nickname,
         String generation,
