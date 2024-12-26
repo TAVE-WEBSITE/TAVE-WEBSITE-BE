@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.review.mapper;
 
 import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
+import com.tave.tavewebsite.domain.review.dto.response.ReviewIdResponseDto;
 import com.tave.tavewebsite.domain.review.dto.response.ReviewResponseDto;
 import com.tave.tavewebsite.domain.review.entity.Review;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,16 @@ public class ReviewMapper {
 
     public ReviewResponseDto toReviewResponseDto(Review review) {
         return ReviewResponseDto.builder()
+                .nickname(review.getNickname())
+                .generation(review.getGeneration())
+                .field(review.getField())
+                .content(review.getContent())
+                .isPublic(review.isPublic())
+                .build();
+    }
+
+    public ReviewIdResponseDto toReviewIdResponseDto(Review review) {
+        return ReviewIdResponseDto.builder()
                 .id(review.getId())
                 .nickname(review.getNickname())
                 .generation(review.getGeneration())
