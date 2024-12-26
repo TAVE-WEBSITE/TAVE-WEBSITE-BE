@@ -28,7 +28,7 @@ public class ReviewController {
         ReviewResponseDto response = reviewService.saveReview(requestDto);
         return new SuccessResponse<>(
                 response,
-                REVIEW_CREATE.getMessage(response.generation())
+                REVIEW_CREATE.getMessage()
         );
     }
 
