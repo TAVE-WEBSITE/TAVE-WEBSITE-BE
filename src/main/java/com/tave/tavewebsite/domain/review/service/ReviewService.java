@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.review.service;
 
 
+import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerResponseDto;
 import com.tave.tavewebsite.domain.review.exception.ReviewNotFoundException;
 import com.tave.tavewebsite.domain.review.mapper.ReviewMapper;
 import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
@@ -39,11 +40,11 @@ public class ReviewService {
                 .toList();
     }
 
-    public List<ReviewResponseDto> findAllReviewsByGeneration(String generation) {
+    public List<ReviewManagerResponseDto> findAllReviewsByGeneration(String generation) {
         List<Review> reviews = reviewRepository.findByGeneration(generation);
 
         return reviews.stream()
-                .map(reviewMapper::toReviewResponseDto)
+                .map(reviewMapper::toReviewManagerResponseDto)
                 .toList();
     }
 
