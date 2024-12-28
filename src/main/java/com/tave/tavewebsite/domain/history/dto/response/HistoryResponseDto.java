@@ -6,10 +6,11 @@ public record HistoryResponseDto(
         Long id,
         String generation,
         String description,
+        String additionalDescription,
         Boolean isPublic
 ) {
     public static HistoryResponseDto of(History history) {
         return new HistoryResponseDto(history.getId(), history.getGeneration(), history.getDescription(),
-                history.isPublic());
+                history.getAdditionalDescription(), history.isPublic());
     }
 }

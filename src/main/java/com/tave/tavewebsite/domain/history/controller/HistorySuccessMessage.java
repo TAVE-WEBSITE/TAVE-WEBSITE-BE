@@ -10,10 +10,6 @@ public enum HistorySuccessMessage {
 
     private final String message;
 
-    public String getMessage(String generation) {
-        return generation + " " + message;
-    }
-
     public String getMessage() {
         return message;
     }
