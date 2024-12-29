@@ -4,7 +4,9 @@ import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
 import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
 
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,8 +14,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +49,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    @NotNull
     @Size(min = 2, max = 20)
     @Column(length = 20, nullable = false)
     private String nickname;
@@ -66,6 +71,18 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private JobType job;
+
+    @Size(min = 1, max = 13)
+    @Column(length = 13)
+    private String phoneNumber;
+
+    private LocalDate birthday;
+
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Resume> resumes = new ArrayList<>();
 
 
     @Builder
@@ -104,5 +121,9 @@ public class Member extends BaseEntity {
 
     public void updateRole() {
         this.role = MANAGER;
+    }
+
+    public void addResume(Resume resume) {
+        this.resumes.add(resume);
     }
 }
