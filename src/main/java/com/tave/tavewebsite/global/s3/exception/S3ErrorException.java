@@ -15,4 +15,10 @@ public abstract class S3ErrorException {
             super(S3ErrorMessage.NOT_EXIST_NAME.getErrorCode(), S3ErrorMessage.NOT_EXIST_NAME.getMessage());
         }
     }
+
+    public static class S3ConvertFailException extends BaseErrorException {
+        public S3ConvertFailException() {
+            super(S3ErrorMessage.CONVERT_FAIL.getErrorCode(), S3ErrorMessage.CONVERT_FAIL.getMessage());
+        }
+    }
 }
