@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.webp.WebpWriter;
+import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
 import java.io.File;
@@ -76,7 +77,7 @@ public class S3Service {
                     .fromFile(tempFile) // .jpg or .png File 가져옴
                     .output(WebpWriter.DEFAULT, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
         } catch (Exception e) {
-            throw new S3UploadFailException();
+            throw new S3ConvertFailException();
         } finally {
             // 임시 파일 삭제
             if (tempFile != null && tempFile.exists()) {
