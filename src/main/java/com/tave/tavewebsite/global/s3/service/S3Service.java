@@ -34,8 +34,7 @@ public class S3Service {
 
     public URL uploadImages(MultipartFile file) {
         File convertFile = convertToWebp(file.getName(), file);
-        String key = convertFile.getName();
-        key = validateFileName(key);
+        String key = validateFileName(convertFile.getName());
         // MultipartFile에서 InputStream을 얻어 S3에 업로드합니다.
         try (InputStream inputStream = new FileInputStream(convertFile)) {
             ObjectMetadata metadata = setMetaData(convertFile);
