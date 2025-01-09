@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
-    List<History> findByIsPublicOrderByGenerationDesc(Boolean isPublic);
-
-    List<History> findAllByOrderByGenerationDesc();
+    List<History> findByIsPublic(Boolean isPublic);
 }

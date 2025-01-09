@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.history.controller;
 
 import com.tave.tavewebsite.domain.history.dto.request.HistoryRequestDto;
-import com.tave.tavewebsite.domain.history.dto.response.HistoryResponseDto;
+import com.tave.tavewebsite.domain.history.dto.response.HistoryResponseDtoList;
 import com.tave.tavewebsite.domain.history.service.HistoryService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -24,9 +24,8 @@ public class ManagerHistoryController {
     private final HistoryService historyService;
 
     @GetMapping
-    public SuccessResponse<List<HistoryResponseDto>> getAllHistory() {
-        List<HistoryResponseDto> allOrderByGenerationDesc = historyService.findAllOrderByGenerationDesc();
-        return new SuccessResponse<>(allOrderByGenerationDesc);
+    public SuccessResponse<List<HistoryResponseDtoList>> getAllHistory() {
+        return new SuccessResponse<>(historyService.findAll());
     }
 
     @PostMapping
