@@ -57,7 +57,8 @@ public class HistoryService {
     }
 
     private History validate(Long id) {
-        return historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
+        return historyRepository.findById(id)
+                .orElseThrow(HistoryNotFoundException::new);
     }
 
     private Map<Integer, List<HistoryResponseDto>> initializeMap(List<History> histories) {
