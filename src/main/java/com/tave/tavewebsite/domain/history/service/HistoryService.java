@@ -30,12 +30,7 @@ public class HistoryService {
         List<History> histories = historyRepository.findByIsPublic(true);
         Map<Integer, List<HistoryResponseDto>> historyMap = initializeMap(histories);
 
-        List<HistoryResponseDtoList> result = new ArrayList<>();
-        for (Entry<Integer, List<HistoryResponseDto>> integerListEntry : historyMap.entrySet()) {
-            result.add(
-                    HistoryResponseDtoList.of(String.valueOf(integerListEntry.getKey()), integerListEntry.getValue()));
-        }
-        return result;
+        return makeHistoryResponseDtoList(historyMap);
     }
 
     @Transactional(readOnly = true)
@@ -43,12 +38,7 @@ public class HistoryService {
         List<History> histories = historyRepository.findAll();
         Map<Integer, List<HistoryResponseDto>> historyMap = initializeMap(histories);
 
-        List<HistoryResponseDtoList> result = new ArrayList<>();
-        for (Entry<Integer, List<HistoryResponseDto>> integerListEntry : historyMap.entrySet()) {
-            result.add(
-                    HistoryResponseDtoList.of(String.valueOf(integerListEntry.getKey()), integerListEntry.getValue()));
-        }
-        return result;
+        return makeHistoryResponseDtoList(historyMap);
     }
 
     public void save(HistoryRequestDto dto) {
@@ -80,5 +70,28 @@ public class HistoryService {
             historyResponseDtos.add(HistoryResponseDto.of(history));
         }
         return historyMap;
+    }
+
+    private List<HistoryResponseDtoList> makeHistoryResponseDtoList(Map<Integer, List<HistoryResponseDto>> historyMap) {
+        List<HistoryResponseDtoList> result = new ArrayList<>();
+        for (Entry<Integer, List<HistoryResponseDto>> integerListEntry : historyMap.entrySet()) {
+            String suffix = getSuffix(integerListEntry.getKey());
+            result.add(
+                    HistoryResponseDtoList.of(integerListEntry.getKey() + suffix, integerListEntry.getValue()));
+        }
+        return result;
+    }
+
+    private String getSuffix(int number) {
+        if (number % 10 == 1 && number % 100 != 11) {
+            return "st";
+        }
+        if (number % 10 == 2 && number % 100 != 12) {
+            return "nd";
+        }
+        if (number % 10 == 3 && number % 100 != 13) {
+            return "rd";
+        }
+        return "th";
     }
 }
