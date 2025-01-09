@@ -2,11 +2,16 @@ package com.tave.tavewebsite.domain.history.service;
 
 import com.tave.tavewebsite.domain.history.dto.request.HistoryRequestDto;
 import com.tave.tavewebsite.domain.history.dto.response.HistoryResponseDto;
+import com.tave.tavewebsite.domain.history.dto.response.HistoryResponseDtoList;
 import com.tave.tavewebsite.domain.history.entity.History;
 import com.tave.tavewebsite.domain.history.exception.HistoryErrorException.HistoryNotFoundException;
 import com.tave.tavewebsite.domain.history.repository.HistoryRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,26 +20,35 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class HistoryService {
 
+    private static final int PRESENT_GENERATION =
+            (LocalDate.now().getYear() - 2018) * 2;
+
     private final HistoryRepository historyRepository;
 
     @Transactional(readOnly = true)
-    public List<HistoryResponseDto> findPublicOrderByGenerationDesc() {
-        List<History> isPublicOrderByGenerationDesc = historyRepository.findByIsPublicOrderByGenerationDesc(true);
-        List<HistoryResponseDto> historyResponseDtos = new ArrayList<>();
-        for (History history : isPublicOrderByGenerationDesc) {
-            historyResponseDtos.add(HistoryResponseDto.of(history));
+    public List<HistoryResponseDtoList> findPublicOrderByGenerationDesc() {
+        List<History> histories = historyRepository.findByIsPublic(true);
+        Map<Integer, List<HistoryResponseDto>> historyMap = initializeMap(histories);
+
+        List<HistoryResponseDtoList> result = new ArrayList<>();
+        for (Entry<Integer, List<HistoryResponseDto>> integerListEntry : historyMap.entrySet()) {
+            result.add(
+                    HistoryResponseDtoList.of(String.valueOf(integerListEntry.getKey()), integerListEntry.getValue()));
         }
-        return historyResponseDtos;
+        return result;
     }
 
     @Transactional(readOnly = true)
-    public List<HistoryResponseDto> findAllOrderByGenerationDesc() {
-        List<History> orderByGenerationDesc = historyRepository.findAllByOrderByGenerationDesc();
-        List<HistoryResponseDto> historyResponseDtos = new ArrayList<>();
-        for (History history : orderByGenerationDesc) {
-            historyResponseDtos.add(HistoryResponseDto.of(history));
+    public List<HistoryResponseDtoList> findAllOrderByGenerationDesc() {
+        List<History> histories = historyRepository.findAll();
+        Map<Integer, List<HistoryResponseDto>> historyMap = initializeMap(histories);
+
+        List<HistoryResponseDtoList> result = new ArrayList<>();
+        for (Entry<Integer, List<HistoryResponseDto>> integerListEntry : historyMap.entrySet()) {
+            result.add(
+                    HistoryResponseDtoList.of(String.valueOf(integerListEntry.getKey()), integerListEntry.getValue()));
         }
-        return historyResponseDtos;
+        return result;
     }
 
     public void save(HistoryRequestDto dto) {
@@ -54,5 +68,17 @@ public class HistoryService {
 
     private History validate(Long id) {
         return historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
+    }
+
+    private Map<Integer, List<HistoryResponseDto>> initializeMap(List<History> histories) {
+        Map<Integer, List<HistoryResponseDto>> historyMap = new HashMap<>();
+        for (int i = 1; i <= PRESENT_GENERATION + 1; i++) {
+            historyMap.put(i, new ArrayList<>());
+        }
+        for (History history : histories) {
+            List<HistoryResponseDto> historyResponseDtos = historyMap.get(Integer.parseInt(history.getGeneration()));
+            historyResponseDtos.add(HistoryResponseDto.of(history));
+        }
+        return historyMap;
     }
 }
