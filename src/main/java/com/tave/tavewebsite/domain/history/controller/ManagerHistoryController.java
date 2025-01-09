@@ -25,7 +25,7 @@ public class ManagerHistoryController {
 
     @GetMapping
     public SuccessResponse<List<HistoryResponseDtoList>> getAllHistory() {
-        return new SuccessResponse<>(historyService.findAllOrderByGenerationDesc());
+        return new SuccessResponse<>(historyService.findAll());
     }
 
     @PostMapping

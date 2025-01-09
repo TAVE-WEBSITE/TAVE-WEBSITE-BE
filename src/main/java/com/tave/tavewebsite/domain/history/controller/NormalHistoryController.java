@@ -18,6 +18,6 @@ public class NormalHistoryController {
 
     @GetMapping
     public SuccessResponse<List<HistoryResponseDtoList>> getPublicHistory() {
-        return new SuccessResponse<>(historyService.findPublicOrderByGenerationDesc());
+        return new SuccessResponse<>(historyService.findPublic());
     }
 }

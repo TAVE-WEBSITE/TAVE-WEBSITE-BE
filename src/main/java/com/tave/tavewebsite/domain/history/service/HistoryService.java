@@ -26,7 +26,7 @@ public class HistoryService {
     private final HistoryRepository historyRepository;
 
     @Transactional(readOnly = true)
-    public List<HistoryResponseDtoList> findPublicOrderByGenerationDesc() {
+    public List<HistoryResponseDtoList> findPublic() {
         List<History> histories = historyRepository.findByIsPublic(true);
         Map<Integer, List<HistoryResponseDto>> historyMap = initializeMap(histories);
 
@@ -34,7 +34,7 @@ public class HistoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<HistoryResponseDtoList> findAllOrderByGenerationDesc() {
+    public List<HistoryResponseDtoList> findAll() {
         List<History> histories = historyRepository.findAll();
         Map<Integer, List<HistoryResponseDto>> historyMap = initializeMap(histories);
 
