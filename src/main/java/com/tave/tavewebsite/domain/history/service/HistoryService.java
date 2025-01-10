@@ -20,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class HistoryService {
 
-    private static final int PRESENT_GENERATION =
-            (LocalDate.now().getYear() - 2018) * 2;
+    private static final int PRESENT_GENERATION = calculateGeneration();
 
     private final HistoryRepository historyRepository;
 
@@ -63,7 +62,7 @@ public class HistoryService {
 
     private Map<Integer, List<HistoryResponseDto>> initializeMap(List<History> histories) {
         Map<Integer, List<HistoryResponseDto>> historyMap = new HashMap<>();
-        for (int i = 1; i <= PRESENT_GENERATION + 1; i++) {
+        for (int i = 1; i <= PRESENT_GENERATION; i++) {
             historyMap.put(i, new ArrayList<>());
         }
         for (History history : histories) {
@@ -94,5 +93,15 @@ public class HistoryService {
             return "rd";
         }
         return "th";
+    }
+
+    private static int calculateGeneration() {
+        int year = (LocalDate.now().getYear() - 2018) * 2;
+        if (LocalDate.now().getMonthValue() < 2) {
+            year--;
+        } else if (LocalDate.now().getMonthValue() > 7) {
+            year++;
+        }
+        return year;
     }
 }
