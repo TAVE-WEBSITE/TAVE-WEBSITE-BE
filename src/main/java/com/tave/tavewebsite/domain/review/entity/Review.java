@@ -28,6 +28,8 @@ public class Review extends BaseEntity {
     @Column(length = 5, nullable = false)
     private String generation;
 
+    private String companyName;
+
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,9 +43,10 @@ public class Review extends BaseEntity {
     private boolean isPublic;
 
     @Builder
-    public Review(String nickname, String generation, FieldType field, String content, boolean isPublic) {
+    public Review(String nickname, String generation, String companyName,FieldType field, String content, boolean isPublic) {
         this.nickname = nickname;
         this.generation = generation;
+        this.companyName = companyName;
         this.field = field;
         this.content = content;
         this.isPublic = isPublic;

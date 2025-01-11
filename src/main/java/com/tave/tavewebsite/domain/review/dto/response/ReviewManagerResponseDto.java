@@ -8,6 +8,7 @@ public record ReviewManagerResponseDto(
         Long id,
         String nickname,
         String generation,
+        String companyName,
         FieldType field,
         String content,
         boolean isPublic

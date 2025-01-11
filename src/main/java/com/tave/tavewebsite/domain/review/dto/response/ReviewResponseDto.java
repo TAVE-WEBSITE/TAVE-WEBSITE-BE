@@ -8,6 +8,7 @@ import lombok.Builder;
 public record ReviewResponseDto(
         String nickname,
         String generation,
+        String companyName,
         FieldType field,
         String content,
         boolean isPublic
