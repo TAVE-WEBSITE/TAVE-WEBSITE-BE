@@ -20,6 +20,13 @@ services:
 
       hibernate_ddl_auto: update
       REDIS_HOST: redis
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: "ap-northeast-2"
+        awslogs-group: "tavewebsite-log-group"
+        awslogs-multiline-pattern: "^(INFO|ERROR)"
+        awslogs-stream: "tavewebsite-backend-log"
     depends_on:
       - redis
 
