@@ -57,7 +57,6 @@ jobs:
       # 빌드된 Docker 이미지를 Docker Hub에 푸시합니다.
       - name: docker Hub push
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
-          -
 
       # 권한 주입
       - name: Configure AWS credentials
