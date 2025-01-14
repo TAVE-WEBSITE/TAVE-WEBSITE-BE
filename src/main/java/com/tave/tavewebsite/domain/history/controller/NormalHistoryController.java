@@ -20,9 +20,4 @@ public class NormalHistoryController {
     public SuccessResponse<List<HistoryResponseDtoList>> getPublicHistory() {
         return new SuccessResponse<>(historyService.findPublic());
     }
-
-    @GetMapping("/test")
-    public String getPublic() {
-        return "테스트 성공";
-    }
 }
