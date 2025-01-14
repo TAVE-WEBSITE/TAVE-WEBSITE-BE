@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: ${DOCKERHUB_USERNAME}/github-actions-demo
+    image: ss7622/github-actions-demo
     ports:
       - "8080:8080"
     env_file:
