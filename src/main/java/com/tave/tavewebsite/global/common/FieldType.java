@@ -1,8 +1,8 @@
 package com.tave.tavewebsite.global.common;
 
 public enum FieldType {
-    DEEP_LEARNING,
-    DATA_ANALYSIS,
+    DEEPLEARNING,
+    DATAANALYSIS,
     FRONTEND,
     BACKEND,
     ADVANCED,       // 심화
