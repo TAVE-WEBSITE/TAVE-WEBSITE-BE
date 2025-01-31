@@ -36,7 +36,7 @@ public class Review extends BaseEntity {
     private FieldType field;
 
     @NotNull
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "VARCHAR(2000)", nullable = false)
     private String content;
 
     @Column(nullable = false)
