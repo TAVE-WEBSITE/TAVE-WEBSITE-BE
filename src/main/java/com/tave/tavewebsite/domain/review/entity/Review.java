@@ -37,7 +37,7 @@ public class Review extends BaseEntity {
 
     @Lob
     @NotNull
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(nullable = false)
