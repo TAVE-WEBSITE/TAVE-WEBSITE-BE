@@ -35,7 +35,6 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FieldType field;
 
-    @Lob
     @NotNull
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
