@@ -33,7 +33,7 @@ public class ReviewService {
     }
 
     public List<ReviewResponseDto> findPublicReviews() {
-        List<Review> reviews = reviewRepository.findByIsPublic(PUBLIC);
+        List<Review> reviews = reviewRepository.findRandomPublicReviews();
 
         return reviews.stream()
                 .map(reviewMapper::toReviewResponseDto)
