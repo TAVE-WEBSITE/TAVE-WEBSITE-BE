@@ -10,7 +10,6 @@ public class ProjectResponseDto {
     private final String title;
     private final String description;
     private final String generation;
-    private final String teamName;
     private final FieldType field;
     private final String blogUrl;
 
@@ -19,7 +18,6 @@ public class ProjectResponseDto {
         this.title = project.getTitle();
         this.description = project.getDescription();
         this.generation = project.getGeneration();
-        this.teamName = project.getTeamName();
         this.field = project.getField();
         this.blogUrl = project.getBlogUrl();
     }

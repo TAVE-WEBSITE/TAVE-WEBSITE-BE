@@ -29,19 +29,14 @@ public class Project extends BaseEntity {
     private String title;
 
     @NotNull
-    @Size(min = 1, max = 500)
-    @Column(length = 500, nullable = false)
+    @Size(min = 1, max = 100)
+    @Column(length = 100, nullable = false)
     private String description;
 
     @NotNull
     @Size(min = 1, max = 5)
     @Column(length = 5, nullable = false)
     private String generation;
-
-    @NotNull
-    @Size(min = 1, max = 30)
-    @Column(length = 30, nullable = false)
-    private String teamName;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -61,7 +56,6 @@ public class Project extends BaseEntity {
         this.title = req.getTitle();
         this.description = req.getDescription();
         this.generation = req.getGeneration();
-        this.teamName = req.getTeamName();
         this.field = req.getField();
         this.blogUrl = req.getBlogUrl();
         this.imgUrl = imageUrl.toString();
@@ -71,7 +65,6 @@ public class Project extends BaseEntity {
         this.title = req.getTitle();
         this.description = req.getDescription();
         this.generation = req.getGeneration();
-        this.teamName = req.getTeamName();
         this.field = req.getField();
         this.blogUrl = req.getBlogUrl();
         this.imgUrl = imageUrl.toString();
