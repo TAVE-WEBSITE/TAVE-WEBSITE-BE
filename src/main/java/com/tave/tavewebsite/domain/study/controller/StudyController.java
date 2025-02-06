@@ -31,7 +31,7 @@ public class StudyController {
     }
 
     @GetMapping("/normal/study")
-    public SuccessResponse<Page<StudyResponseDto>> getStudy(@PageableDefault(size = 8) Pageable pageable,
+    public SuccessResponse<Page<StudyResponseDto>> getStudy(@PageableDefault(size = Integer.MAX_VALUE) Pageable pageable,
                                                             @RequestParam(defaultValue = "ALL", name = "generation") String generation,
                                                             @RequestParam(defaultValue = "ALL", name = "field") String field) {
         Page<StudyResponseDto> studies = studyService.getStudies(generation, field, pageable);
