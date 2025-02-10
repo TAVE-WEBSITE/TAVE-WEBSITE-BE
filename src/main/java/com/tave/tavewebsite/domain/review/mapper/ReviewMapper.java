@@ -25,7 +25,7 @@ public class ReviewMapper {
                 .nickname(review.getNickname())
                 .generation(review.getGeneration())
                 .companyName(review.getCompanyName())
-                .field(review.getField())
+                .field(review.getField().getMessage())
                 .content(review.getContent())
                 .isPublic(review.isPublic())
                 .build();
