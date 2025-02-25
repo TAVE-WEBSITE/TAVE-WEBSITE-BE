@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.emailnotification.dto.request;
 
-import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -10,7 +9,4 @@ public record EmailNotificationRequeestDto(
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "유효한 이메일 주소를 입력하세요.")
         String email
 ) {
-    public EmailNotification toEmailNotification() {
-        return EmailNotification.builder().email(this.email).build();
-    }
 }
