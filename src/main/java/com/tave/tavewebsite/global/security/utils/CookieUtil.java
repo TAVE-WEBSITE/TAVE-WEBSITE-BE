@@ -13,7 +13,7 @@ public class CookieUtil {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .maxAge(MAX_AGE_OF_COOKIE)
                 .path("/")
-                .secure(false)
+                .secure(true)
                 .httpOnly(true)
                 .sameSite("None")
                 .build();
@@ -25,7 +25,7 @@ public class CookieUtil {
         ResponseCookie cookie = ResponseCookie.from(name, "value")
                 .maxAge(0)
                 .path("/")
-                .secure(false)
+                .secure(true)
                 .httpOnly(true)
                 .sameSite("None")
                 .build();
