@@ -1,7 +1,9 @@
 package com.tave.tavewebsite.domain.member.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public enum MemberSuccessMessage {
     UNAUTHORIZED_MEMBER_READ("승인 대기 중인 운영진을 조회했습니다."),
@@ -18,7 +20,9 @@ public enum MemberSuccessMessage {
     RESET_PASSWORD("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요."),
 
     MANAGER_APPROVED("대기 운영진이 승인되었습니다."),
-    MANAGER_REJECTED("대기 운영진이 거절되었습니다.");
+    MANAGER_REJECTED("대기 운영진이 거절되었습니다."),
+
+    NORMAL_MEMBER_SIGNUP("일반 회원 가입에 성공했습니다.");
 
     private final String message;
 
@@ -26,7 +30,4 @@ public enum MemberSuccessMessage {
         return generation + " " + message;
     }
 
-    public String getMessage() {
-        return message;
-    }
 }
