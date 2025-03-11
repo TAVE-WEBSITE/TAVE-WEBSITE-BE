@@ -104,6 +104,17 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    public static Member toNormalMember(RegisterMemberRequestDto dto, PasswordEncoder encoder) {
+        return Member.builder()
+                .email(dto.email())
+                .username(dto.username())
+                .phoneNumber(dto.phoneNumber())
+                .password(encoder.encode(dto.password()))
+                .birthday(dto.getBirthdayAsLocalDate())
+                .role(MEMBER)
+                .build();
+    }
+
     public void update(String validatedPassword, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(validatedPassword);
     }
