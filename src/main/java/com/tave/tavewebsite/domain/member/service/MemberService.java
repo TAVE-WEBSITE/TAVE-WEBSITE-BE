@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.member.service;
 
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.ResetPasswordReq;
 import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
 import com.tave.tavewebsite.domain.member.entity.Member;
@@ -36,6 +37,12 @@ public class MemberService {
 
         Member saveMember = memberRepository.save(Member.toMember(requestDto, passwordEncoder));
         return mailService.sendManagerRegisterMessage(saveMember.getEmail());
+    }
+
+    public void saveNormalMember(RegisterMemberRequestDto dto) {
+        validateEmail(dto.email());
+
+        memberRepository.save(Member.toNormalMember(dto, passwordEncoder));
     }
 
     public void deleteMember(long id) {
