@@ -1,9 +1,8 @@
 package com.tave.tavewebsite.domain.member.entity;
 
-import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
-import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -24,10 +23,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static com.tave.tavewebsite.domain.member.entity.RoleType.*;
 
 @Entity
 @Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
@@ -76,6 +79,7 @@ public class Member extends BaseEntity {
     @Column(length = 13)
     private String phoneNumber;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
     @Enumerated(EnumType.STRING)
@@ -83,21 +87,6 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Resume> resumes = new ArrayList<>();
-
-
-    @Builder
-    public Member(String email, String password, RoleType role, String nickname, String username, String agitId,
-                  String generation, DepartmentType department, JobType job) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.nickname = nickname;
-        this.username = username;
-        this.agitId = agitId;
-        this.generation = generation;
-        this.department = department;
-        this.job = job;
-    }
 
     // 패스워드 인코딩 필요
     public static Member toMember(RegisterManagerRequestDto registerManagerRequestDto,
