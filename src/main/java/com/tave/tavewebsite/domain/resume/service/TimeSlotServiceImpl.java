@@ -32,14 +32,20 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     }
 
     @Override
-    public void updateTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlot) {
-
+    public void updateTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
+        // 이력서가 사용자의 소유인지 확인
+        Resume resume = findIfResumeExists(resumeId);
     }
 
     @Override
     public List<TimeSlotResDto> getTimeSlots(Long resumeId) {
-        return List.of();
+        findIfResumeExists(resumeId);
+        List<TimeSlot> timeSlots = timeSlotRepository.findAllByResumeId(resumeId);
+
+
+        return timeSlots.stream().map(TimeSlotResDto::from).toList();
     }
+
 
     private Resume findIfResumeExists(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
