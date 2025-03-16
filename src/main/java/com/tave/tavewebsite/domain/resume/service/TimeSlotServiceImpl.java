@@ -1,12 +1,15 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
+import com.tave.tavewebsite.domain.resume.exception.UnauthoirzedResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.domain.resume.repository.TimeSlotRepository;
+import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,10 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
     private final ResumeRepository resumeRepository;
     private final TimeSlotRepository timeSlotRepository;
+
+    private Member getCurrentMember() {
+        return SecurityUtils.getCurrentMember();
+    }
 
     @Transactional
     @Override
@@ -33,8 +40,14 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
     @Override
     public void updateTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
-        // 이력서가 사용자의 소유인지 확인
+        Member currentMember = getCurrentMember();
         Resume resume = findIfResumeExists(resumeId);
+        findIfResumeMine(currentMember, resume);
+
+//        timeSlots.forEach(timeSlotReqDto -> {
+//            TimeSlot timeSlot = timeSlotRepository.
+//            timeSlotRepository.save(timeSlot);
+//        })
     }
 
     @Override
@@ -46,6 +59,12 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return timeSlots.stream().map(TimeSlotResDto::from).toList();
     }
 
+    private void findIfResumeMine(Member currentMember, Resume resume) {
+        Resume resumeByMember = resumeRepository.findByMember(currentMember).orElseThrow(ResumeNotFoundException::new);
+        if(!resumeByMember.equals(resume)) {
+            throw new UnauthoirzedResumeException();
+        }
+    }
 
     private Resume findIfResumeExists(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
