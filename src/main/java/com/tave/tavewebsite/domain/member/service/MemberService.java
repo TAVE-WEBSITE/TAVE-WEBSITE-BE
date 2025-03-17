@@ -51,7 +51,6 @@ public class MemberService {
     }
 
     public void sendMessage(ValidateEmailReq req) {
-        memberRepository.findByNickname(req.nickname()).orElseThrow(NotFoundMemberException::new);
         memberRepository.findByEmail(req.email()).orElseThrow(NotFoundMemberException::new);
 
         mailService.sendAuthenticationCode(req.email());
