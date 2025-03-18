@@ -50,8 +50,11 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public void sendMessage(ValidateEmailReq req) {
-        memberRepository.findByEmail(req.email()).orElseThrow(NotFoundMemberException::new);
+    public void sendMessage(ValidateEmailReq req, String reset) {
+        if(reset.equals("false"))
+            validateEmail(req.email());
+        else
+            findIfEmailExists(req.email());
 
         mailService.sendAuthenticationCode(req.email());
     }
@@ -86,6 +89,10 @@ public class MemberService {
                     throw new DuplicateNicknameException();
                 }
         );
+    }
+
+    private void findIfEmailExists(String email) {
+        memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
     }
 
     private void validateEmail(String email) {

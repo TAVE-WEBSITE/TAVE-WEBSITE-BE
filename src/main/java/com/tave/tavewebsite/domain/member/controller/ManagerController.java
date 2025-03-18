@@ -9,13 +9,7 @@ import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.tave.tavewebsite.domain.member.controller.MemberSuccessMessage.NORMAL_MEMBER_SIGNUP;
 
@@ -35,9 +29,10 @@ public class ManagerController {
     }
 
     @PostMapping("/normal/authenticate/email")
-    public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto) {
+    public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto,
+                                     @RequestParam(required = false, defaultValue = "false") String reset) {
 
-        memberService.sendMessage(requestDto);
+        memberService.sendMessage(requestDto, reset);
 
         return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
