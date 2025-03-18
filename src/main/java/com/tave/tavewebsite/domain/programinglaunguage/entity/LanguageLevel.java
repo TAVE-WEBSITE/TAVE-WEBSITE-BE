@@ -1,9 +1,8 @@
-package com.tave.tavewebsite.domain.resume.entity;
+package com.tave.tavewebsite.domain.programinglaunguage.entity;
 
+import com.tave.tavewebsite.domain.resume.entity.Resume;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,17 +29,18 @@ public class LanguageLevel {
     @Column(length = 20, nullable = false)
     private String language;
 
-    @Enumerated(EnumType.STRING)
-    private Level level;
+    @NotNull
+    @Column(nullable = false)
+    private Integer level;
 
     @ManyToOne
     @JoinColumn(name = "resume_id", nullable = false)
     private Resume resume;
 
     @Builder
-    public LanguageLevel(String language, Level level, Resume resume) {
+    public LanguageLevel(String language, Resume resume) {
         this.language = language;
-        this.level = level;
+        this.level = 0;
         this.resume = resume;
         resume.getLanguageLevels().add(this);
     }
