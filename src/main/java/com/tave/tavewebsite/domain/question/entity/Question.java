@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.question.entity;
 
 import com.tave.tavewebsite.global.common.BaseEntity;
+import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ public class Question extends BaseEntity {
 
     @NotNull
     @Column(nullable = false)
-    private QuestionType questionType;
+    private FieldType fieldType;
 
     @NotNull
     @Column(nullable = false)
