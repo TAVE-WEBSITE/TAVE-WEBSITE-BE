@@ -13,9 +13,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseEntity {
 
@@ -36,10 +38,7 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private Integer ordered;
 
-    @Builder
-    public Question(String content, QuestionType questionType, Integer ordered) {
-        this.content = content;
-        this.questionType = questionType;
-        this.ordered = ordered;
+    public static Question to() {
+        return Question.builder().build();
     }
 }
