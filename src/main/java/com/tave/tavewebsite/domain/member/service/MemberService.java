@@ -50,8 +50,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public void sendMessage(ValidateEmailReq req, String reset) {
-        if(reset.equals("false"))
+    public void sendMessage(ValidateEmailReq req, Boolean reset) {
+        if(reset.equals(Boolean.FALSE))
             validateEmail(req.email());
         else
             findIfEmailExists(req.email());
@@ -91,8 +91,8 @@ public class MemberService {
         );
     }
 
-    private void findIfEmailExists(String email) {
-        memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+    private Member findIfEmailExists(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
     }
 
     private void validateEmail(String email) {

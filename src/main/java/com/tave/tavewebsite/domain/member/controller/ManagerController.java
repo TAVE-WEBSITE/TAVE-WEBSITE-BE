@@ -30,7 +30,7 @@ public class ManagerController {
 
     @PostMapping("/normal/authenticate/email")
     public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto,
-                                     @RequestParam(required = false, defaultValue = "false") String reset) {
+                                     @RequestParam(required = false, defaultValue = "false") Boolean reset) {
 
         memberService.sendMessage(requestDto, reset);
 
