@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -31,6 +33,8 @@ public class LanguageLevel {
 
     @NotNull
     @Column(nullable = false)
+    @Max(5)
+    @Min(0)
     private Integer level;
 
     @ManyToOne
@@ -43,5 +47,9 @@ public class LanguageLevel {
         this.level = 0;
         this.resume = resume;
         resume.getLanguageLevels().add(this);
+    }
+
+    public void patchLanguageLevel(Integer level) {
+        this.level = level;
     }
 }
