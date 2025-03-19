@@ -8,4 +8,6 @@ import java.util.List;
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 
     List<TimeSlot> findAllByResumeId(Long resumeId);
+
+    void deleteAllByResumeId(Long resumeId);
 }

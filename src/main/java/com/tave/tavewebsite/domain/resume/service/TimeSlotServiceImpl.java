@@ -32,22 +32,18 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     public void createTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
         Resume resume = findIfResumeExists(resumeId);
 
-        timeSlots.forEach(timeSlotReqDto -> {
-            TimeSlot timeSlot = TimeSlot.of(timeSlotReqDto.time(), resume);
-            timeSlotRepository.save(timeSlot);
-        });
+        saveTimeSlot(timeSlots, resume);
     }
 
+    @Transactional
     @Override
     public void updateTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
         Member currentMember = getCurrentMember();
         Resume resume = findIfResumeExists(resumeId);
         findIfResumeMine(currentMember, resume);
 
-//        timeSlots.forEach(timeSlotReqDto -> {
-//            TimeSlot timeSlot = timeSlotRepository.
-//            timeSlotRepository.save(timeSlot);
-//        })
+        timeSlotRepository.deleteAllByResumeId(resumeId);
+        saveTimeSlot(timeSlots, resume);
     }
 
     @Override
@@ -68,5 +64,12 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
     private Resume findIfResumeExists(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
+    }
+
+    private void saveTimeSlot(List<TimeSlotReqDto> timeSlots, Resume resume) {
+        timeSlots.forEach(timeSlotReqDto -> {
+            TimeSlot timeSlot = TimeSlot.of(timeSlotReqDto.time(), resume);
+            timeSlotRepository.save(timeSlot);
+        });
     }
 }
