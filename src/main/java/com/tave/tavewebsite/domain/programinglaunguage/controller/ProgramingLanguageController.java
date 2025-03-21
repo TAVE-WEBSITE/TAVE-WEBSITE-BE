@@ -23,7 +23,8 @@ public class ProgramingLanguageController {
 
     @GetMapping("/v1/normal/lan/{id}")
     public SuccessResponse<List<LanguageLevelResponseDto>> getLanguageLevels(@PathVariable("id") Long id) {
-        return new SuccessResponse<>(programingLanguageService.getLanguageLevel(id));
+        return new SuccessResponse<>(programingLanguageService.getLanguageLevel(id),
+                ProgramingLanguageSuccessMessage.READ_SUCCESS.getMessage());
     }
 
     @PatchMapping("/v1/normal/lan/{id}")
