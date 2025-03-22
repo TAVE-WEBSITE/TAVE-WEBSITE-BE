@@ -39,4 +39,11 @@ public class PersonalInfoController {
         personalInfoService.updatePersonalInfo(resumeId, requestDto);
         return SuccessResponse.ok(PersonalInfoSuccessMessage.UPDATE_SUCCESS.getMessage());
     }
+
+    // 개인정보 삭제
+    @DeleteMapping("/{resumeId}")
+    public SuccessResponse deletePersonalInfo(@PathVariable("resumeId") Long resumeId) {
+        personalInfoService.deletePersonalInfo(resumeId);
+        return SuccessResponse.ok(PersonalInfoSuccessMessage.DELETE_SUCCESS.getMessage());
+    }
 }
