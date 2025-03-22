@@ -37,7 +37,7 @@ public class Resume {
     @Column(length = 20)
     private String minor;
 
-    @Size(min = 1, max = 8)
+    @Size(min = 1, max = 15)
     @Column(length = 8)
     private String field;
 
