@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.resume.service;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
@@ -44,6 +45,13 @@ public class PersonalInfoService {
         resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
                 requestDto.getMinor(), fieldType.getMessage());
         resumeRepository.save(resume);
+    }
+
+    public PersonalInfoResponseDto getPersonalInfo(Long resumeId) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        return new PersonalInfoResponseDto(resume);
     }
 
 }
