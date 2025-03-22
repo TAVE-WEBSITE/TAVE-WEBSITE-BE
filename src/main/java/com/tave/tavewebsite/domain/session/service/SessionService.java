@@ -5,6 +5,7 @@ import com.tave.tavewebsite.domain.session.dto.request.SessionRequestDto;
 import com.tave.tavewebsite.domain.session.dto.response.SessionResponseDto;
 import com.tave.tavewebsite.domain.session.exception.SessionNotFoundException;
 import com.tave.tavewebsite.domain.session.repository.SessionRepository;
+import com.tave.tavewebsite.domain.session.util.TimeUtil;
 import com.tave.tavewebsite.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,17 +23,19 @@ import java.util.List;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
+    private final TimeUtil timeUtil;
     private final S3Service s3Service;
 
     public SessionResponseDto saveSession(SessionRequestDto sessionRequestDto, MultipartFile file) {
         URL savedImageUrl = s3Service.uploadImages(file);
-        Session savedSession = sessionRepository.save(Session.of(sessionRequestDto, savedImageUrl));
+        Session savedSession = sessionRepository.save(Session.of(sessionRequestDto, savedImageUrl, timeUtil));
+
         return SessionResponseDto.from(savedSession);
     }
 
-    public List<SessionResponseDto> findSessionByGeneration(String generation, int page, int size) {
-        return sessionRepository.findByGenerationAndIsPublic(generation, true, PageRequest.of(page- 1, size))
-                .getContent()
+    public List<SessionResponseDto> findSessionList() {
+
+        return sessionRepository.findAllByOrderByEventDayAsc()
                 .stream()
                 .map(SessionResponseDto::from)
                 .toList();
@@ -46,7 +49,7 @@ public class SessionService {
     @Transactional
     public void updateSession(Long sessionId, SessionRequestDto sessionRequestDto, MultipartFile file){
         Session findSession = findBySessionId(sessionId);
-        updateSessionField(findSession,sessionRequestDto);
+        updateSessionField(findSession, sessionRequestDto);
         updateSessionImgUrl(findSession, file);
     }
 
@@ -60,9 +63,7 @@ public class SessionService {
     }
 
     private void updateSessionField(Session findSession, SessionRequestDto sessionRequestDto) {
-        log.info(findSession.getTitle(), findSession.getDescription());
-        findSession.updateField(sessionRequestDto);
-        log.info(findSession.getTitle(), findSession.getDescription());
+        findSession.updateField(sessionRequestDto, timeUtil);
     }
 
     private void updateSessionImgUrl( Session findSession, MultipartFile file) {

@@ -15,39 +15,46 @@ import static com.tave.tavewebsite.domain.session.controller.SuccessMessage.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/session")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class SessionController {
 
     private final SessionService sessionService;
 
-    @PostMapping
-    public SuccessResponse<SessionResponseDto> registerSession(@RequestPart(name = "request") SessionRequestDto sessionRequestDto,
-                                                               @RequestPart(name = "file", required = false) MultipartFile file){
+    @PostMapping("/manager/session")
+    public SuccessResponse<SessionResponseDto> registerSession(
+            @RequestPart(name="request") SessionRequestDto sessionRequestDto,
+            @RequestPart(name = "file", required = false) MultipartFile file)
+    {
+
         SessionResponseDto response = sessionService.saveSession(sessionRequestDto, file);
 
         return new SuccessResponse<>(response, SESSION_SUCCESS_REGISTER.getMessage());
     }
 
-    @GetMapping("/{generation}/{page}/{size}")
-    public SuccessResponse<List<SessionResponseDto>> getSession(@PathVariable String generation,
-                                                                @PathVariable int page,
-                                                                @PathVariable int size){
-        List<SessionResponseDto> response = sessionService.findSessionByGeneration(generation, page, size);
-        return new SuccessResponse<>(response, SESSION_SUCCESS_REGISTER.getMessage());
+    @GetMapping("/normal/session")
+    public SuccessResponse<List<SessionResponseDto>> getSessionList(){
+
+        List<SessionResponseDto> response = sessionService.findSessionList();
+
+        return new SuccessResponse<>(response, SESSION_SUCCESS_GET.getMessage());
     }
 
-    @DeleteMapping("/{sessionId}")
+    @DeleteMapping("/manager/session/{sessionId}")
     public SuccessResponse<Void> deleteSession(@PathVariable Long sessionId){
+
         sessionService.deleteSession(sessionId);
+
         return new SuccessResponse<>(null, SESSION_DELETE.getMessage());
     }
 
-    @PatchMapping("/{sessionId}")
+    @PatchMapping("/manager/session/{sessionId}")
     public SuccessResponse<Void> updateSession(@PathVariable Long sessionId,
                                         @RequestPart(name = "request") SessionRequestDto sessionRequestDto,
                                          @RequestPart(name = "file", required = false) MultipartFile file){
+
         sessionService.updateSession(sessionId, sessionRequestDto, file);
+
         return new SuccessResponse<>(null, SESSION_UPDATE.getMessage());
     }
 

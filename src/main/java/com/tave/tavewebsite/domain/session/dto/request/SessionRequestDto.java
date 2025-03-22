@@ -1,13 +1,15 @@
 package com.tave.tavewebsite.domain.session.dto.request;
 
-import com.tave.tavewebsite.domain.session.entity.Session;
+import jakarta.validation.constraints.NotNull;
 
 public record SessionRequestDto(
 
+        @NotNull
         String title,
+        @NotNull
         String description,
-        String generation,
-        boolean isPublic
+
+        String eventDay
 
 ) {
 }

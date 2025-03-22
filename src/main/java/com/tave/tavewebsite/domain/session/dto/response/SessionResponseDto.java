@@ -1,24 +1,25 @@
 package com.tave.tavewebsite.domain.session.dto.response;
 
 import com.tave.tavewebsite.domain.session.entity.Session;
+import lombok.Builder;
 
+import java.time.LocalDate;
+
+@Builder
 public record SessionResponseDto(
         Long sessionId,
         String title,
         String description,
-        String generation,
-        boolean isPublic,
+        LocalDate eventDay,
         String imgUrl
-
 ) {
     public static SessionResponseDto from(Session session) {
-        return new SessionResponseDto(
-                session.getId(),
-                session.getTitle(),
-                session.getDescription(),
-                session.getGeneration(),
-                session.isPublic(),
-                session.getImgUrl()
-        );
+        return SessionResponseDto.builder()
+                .sessionId(session.getId())
+                .title(session.getTitle())
+                .description(session.getDescription())
+                .eventDay(session.getEventDay())
+                .imgUrl(session.getImgUrl())
+                .build();
     }
 }

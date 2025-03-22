@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    Page<Session> findByGenerationAndIsPublic(String generation, boolean isPublic, Pageable pageable);
+    List<Session> findAllByOrderByEventDayAsc();
 
 }

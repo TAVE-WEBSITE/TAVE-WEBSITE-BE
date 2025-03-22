@@ -1,19 +1,24 @@
 package com.tave.tavewebsite.domain.session.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tave.tavewebsite.domain.session.dto.request.SessionRequestDto;
+import com.tave.tavewebsite.domain.session.util.TimeUtil;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.URL;
+
+import java.time.LocalDate;
 
 
 @Entity
 @Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Session extends BaseEntity {
 
@@ -32,47 +37,27 @@ public class Session extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-    /*
-    * 동아리 지원 관리자 페이지에서 사용 시 "세션 진행 날짜" 필드를 추가하는 게 좋다고 생각.
-    * */
-
-    @Size(min = 1, max = 5)
-    @Column(length = 5)
-    private String generation;
-
-    @NotNull
-    @Column(nullable = false)
-    private boolean isPublic;
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    private LocalDate eventDay;
 
     @NotNull
     @URL
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String imgUrl;
 
-    @Builder
-    public Session(String title, String description, String generation,boolean isPublic, String imgUrl) {
-        this.title = title;
-        this.description = description;
-        this.generation = generation;
-        this.isPublic = isPublic;
-        this.imgUrl = imgUrl;
-    }
-
-    public static Session of(SessionRequestDto sessionRequestDto, java.net.URL imgUrl) {
+    public static Session of(SessionRequestDto sessionRequestDto, java.net.URL imgUrl, TimeUtil timeUtil) {
         return Session.builder()
                 .title(sessionRequestDto.title())
                 .description(sessionRequestDto.description())
-                .generation(sessionRequestDto.generation())
-                .isPublic(sessionRequestDto.isPublic())
+                .eventDay(LocalDate.parse(sessionRequestDto.eventDay(), timeUtil.getFormatter()))
                 .imgUrl(imgUrl.toString())
                 .build();
     }
 
-    public void updateField(SessionRequestDto sessionRequestDto) {
+    public void updateField(SessionRequestDto sessionRequestDto, TimeUtil timeUtil) {
         this.title = sessionRequestDto.title();
         this.description = sessionRequestDto.description();
-        this.generation = sessionRequestDto.generation();
-        this.isPublic = sessionRequestDto.isPublic();
+        this.eventDay = LocalDate.parse(sessionRequestDto.eventDay(), timeUtil.getFormatter());
     }
 
     public void updateImgUrl( java.net.URL imgUrl) {
