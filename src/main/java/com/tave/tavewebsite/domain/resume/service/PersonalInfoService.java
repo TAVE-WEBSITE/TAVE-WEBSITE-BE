@@ -54,4 +54,16 @@ public class PersonalInfoService {
         return new PersonalInfoResponseDto(resume);
     }
 
+    @Transactional
+    public void updatePersonalInfo(Long resumeId, PersonalInfoRequestDto requestDto) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        String field = requestDto.getField();
+        Resume.FieldType fieldType = Resume.FieldType.valueOf(field.toUpperCase());
+
+        resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
+                requestDto.getMinor(), fieldType.getMessage());
+    }
+
 }
