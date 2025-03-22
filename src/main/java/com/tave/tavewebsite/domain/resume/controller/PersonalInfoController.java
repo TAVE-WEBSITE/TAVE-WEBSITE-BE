@@ -31,4 +31,12 @@ public class PersonalInfoController {
         return new SuccessResponse<>(personalInfoService.getPersonalInfo(resumeId),
                 PersonalInfoSuccessMessage.READ_SUCCESS.getMessage());
     }
+
+    // 개인정보 수정
+    @PatchMapping("/{resumeId}")
+    public SuccessResponse updatePersonalInfo(@PathVariable("resumeId") Long resumeId,
+                                              @RequestBody @Valid PersonalInfoRequestDto requestDto) {
+        personalInfoService.updatePersonalInfo(resumeId, requestDto);
+        return SuccessResponse.ok(PersonalInfoSuccessMessage.UPDATE_SUCCESS.getMessage());
+    }
 }
