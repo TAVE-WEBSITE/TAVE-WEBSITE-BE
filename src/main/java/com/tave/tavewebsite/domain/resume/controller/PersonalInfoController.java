@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -22,5 +23,12 @@ public class PersonalInfoController {
                                               @RequestBody @Valid PersonalInfoRequestDto requestDto) {
         personalInfoService.createPersonalInfo(memberId, requestDto);
         return SuccessResponse.ok(PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
+    }
+
+    // 개인정보 조회
+    @GetMapping("/{resumeId}")
+    public SuccessResponse<PersonalInfoResponseDto> getPersonalInfo(@PathVariable("resumeId") Long resumeId) {
+        return new SuccessResponse<>(personalInfoService.getPersonalInfo(resumeId),
+                PersonalInfoSuccessMessage.READ_SUCCESS.getMessage());
     }
 }
