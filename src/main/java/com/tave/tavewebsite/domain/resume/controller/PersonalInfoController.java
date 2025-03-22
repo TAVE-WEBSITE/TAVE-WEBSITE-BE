@@ -46,4 +46,12 @@ public class PersonalInfoController {
         personalInfoService.deletePersonalInfo(resumeId);
         return SuccessResponse.ok(PersonalInfoSuccessMessage.DELETE_SUCCESS.getMessage());
     }
+
+    // 임시 저장
+    @PostMapping("/temp-save/{memberId}")
+    public SuccessResponse tempSavePersonalInfo(@PathVariable("memberId") Long memberId,
+                                                @RequestBody @Valid PersonalInfoRequestDto requestDto) {
+        personalInfoService.tempSavePersonalInfo(memberId, requestDto);
+        return SuccessResponse.ok(PersonalInfoSuccessMessage.TEMP_SAVE_SUCCESS.getMessage());
+    }
 }
