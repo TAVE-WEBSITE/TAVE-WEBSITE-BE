@@ -37,20 +37,25 @@ public class History extends BaseEntity {
     @Column(length = 500, nullable = false)
     private String description;
 
+    @Size(min = 1, max = 255)
+    private String additionalDescription;
+
     @NotNull
     @Column(nullable = false)
     private boolean isPublic;
 
     @Builder
-    public History(String generation, String description, boolean isPublic) {
+    public History(String generation, String description, String additionalDescription, boolean isPublic) {
         this.generation = generation;
         this.description = description;
+        this.additionalDescription = additionalDescription;
         this.isPublic = isPublic;
     }
 
     public void patchHistory(HistoryRequestDto historyResponseDto) {
         generation = historyResponseDto.generation();
         description = historyResponseDto.description();
+        additionalDescription = historyResponseDto.additionalDescription();
         isPublic = historyResponseDto.isPublic();
     }
 }

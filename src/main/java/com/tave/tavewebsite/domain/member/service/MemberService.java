@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.member.service;
 
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.ResetPasswordReq;
 import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
 import com.tave.tavewebsite.domain.member.entity.Member;
@@ -38,14 +39,22 @@ public class MemberService {
         return mailService.sendManagerRegisterMessage(saveMember.getEmail());
     }
 
+    public void saveNormalMember(RegisterMemberRequestDto dto) {
+        validateEmail(dto.email());
+
+        memberRepository.save(Member.toNormalMember(dto, passwordEncoder));
+    }
+
     public void deleteMember(long id) {
         memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
         memberRepository.deleteById(id);
     }
 
-    public void sendMessage(ValidateEmailReq req) {
-        memberRepository.findByNickname(req.nickname()).orElseThrow(NotFoundMemberException::new);
-        memberRepository.findByEmail(req.email()).orElseThrow(NotFoundMemberException::new);
+    public void sendMessage(ValidateEmailReq req, Boolean reset) {
+        if(reset.equals(Boolean.FALSE))
+            validateEmail(req.email());
+        else
+            findIfEmailExists(req.email());
 
         mailService.sendAuthenticationCode(req.email());
     }
@@ -80,6 +89,10 @@ public class MemberService {
                     throw new DuplicateNicknameException();
                 }
         );
+    }
+
+    private Member findIfEmailExists(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
     }
 
     private void validateEmail(String email) {

@@ -13,9 +13,12 @@ spring:
         format_sql: true
   data:
     redis:
-      port: 6379
-      host: redis
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
       #host: 127.0.0.1
+      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
 
   servlet:
     multipart:

@@ -13,6 +13,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.tave.tavewebsite.domain.study.controller.StudySuccessMessage.*;
+
 @RestController
 @RequestMapping("/v1")
 @RequiredArgsConstructor
@@ -25,16 +27,19 @@ public class StudyController {
 
         studyService.createStudy(req, imageFile);
 
-        return SuccessResponse.ok("스터디가 생성되었습니다!");
+        return SuccessResponse.ok(STUDY_CREATE.getMessage());
     }
 
     @GetMapping("/normal/study")
-    public SuccessResponse<Page<StudyResponseDto>> getStudy(@PageableDefault(size = 8) Pageable pageable,
+    public SuccessResponse<Page<StudyResponseDto>> getStudy(@PageableDefault(size = Integer.MAX_VALUE) Pageable pageable,
                                                             @RequestParam(defaultValue = "ALL", name = "generation") String generation,
                                                             @RequestParam(defaultValue = "ALL", name = "field") String field) {
         Page<StudyResponseDto> studies = studyService.getStudies(generation, field, pageable);
 
-        return new SuccessResponse<>(studies);
+        return new SuccessResponse<>(
+                studies,
+                STUDY_GET.getMessage()
+        );
     }
 
     @PutMapping("/manager/study/{studyId}")
@@ -43,13 +48,13 @@ public class StudyController {
                                        @RequestPart MultipartFile imageFile) {
         studyService.modifyStudy(studyId, dto, imageFile);
 
-        return SuccessResponse.ok("수정되었습니다.");
+        return SuccessResponse.ok(STUDY_UPDATE.getMessage());
     }
 
     @DeleteMapping("/manager/study/{studyId}")
     public SuccessResponse deleteStudy(@PathVariable("studyId") Long studyId) {
         studyService.deleteStudy(studyId);
 
-        return SuccessResponse.ok("성공적으로 삭제되었습니다!");
+        return SuccessResponse.ok(STUDY_DELETE.getMessage());
     }
 }

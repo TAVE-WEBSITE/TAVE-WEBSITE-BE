@@ -1,20 +1,17 @@
 package com.tave.tavewebsite.domain.member.controller;
 
+import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.ResetPasswordReq;
 import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
 import com.tave.tavewebsite.domain.member.dto.response.CheckNickNameResponseDto;
 import com.tave.tavewebsite.domain.member.service.AdminService;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.tave.tavewebsite.domain.member.controller.MemberSuccessMessage.NORMAL_MEMBER_SIGNUP;
 
 @RestController
 @RequestMapping("/v1")
@@ -24,52 +21,48 @@ public class ManagerController {
     private final MemberService memberService;
     private final AdminService adminService;
 
+    @PostMapping("/normal/signup")
+    public SuccessResponse registerMember(@RequestBody @Valid RegisterMemberRequestDto dto){
+        memberService.saveNormalMember(dto);
+
+        return SuccessResponse.ok(NORMAL_MEMBER_SIGNUP.getMessage());
+    }
+
     @PostMapping("/normal/authenticate/email")
-    public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto) {
+    public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto,
+                                     @RequestParam(required = false, defaultValue = "false") Boolean reset) {
 
-        memberService.sendMessage(requestDto);
+        memberService.sendMessage(requestDto, reset);
 
-        return SuccessResponse.ok("이메일로 인증 번호가 전송되었습니다!");
+        return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
 
     @GetMapping("/normal/verify/number")
     public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
         memberService.verityNumber(requestDto);
 
-        return SuccessResponse.ok("인증되었습니다!");
+        return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS.getMessage());
     }
 
     @GetMapping("/normal/upgrade/{memberId}")
     public SuccessResponse updateAuthentication(@PathVariable("memberId") String memberId) {
         adminService.updateAuthentication(memberId);
 
-        return new SuccessResponse("update Success.");
+        return new SuccessResponse("테스트용 update Success.");
     }
 
     @GetMapping("/normal/validate/{nickName}")
     public SuccessResponse<CheckNickNameResponseDto> checkNickName(@PathVariable("nickName") String nickName) {
         memberService.validateNickname(nickName);
         CheckNickNameResponseDto response = new CheckNickNameResponseDto(nickName);
-        return new SuccessResponse<>(response, nickName + " 사용가능합니다.");
-    }
-
-    @DeleteMapping("/{memberId}")
-    public SuccessResponse deleteMember(@PathVariable("memberId") Long memberId) {
-        memberService.deleteMember(memberId);
-        return SuccessResponse.ok();
+        return new SuccessResponse<>(response, MemberSuccessMessage.CAN_USE_NICKNAME.getMessage(nickName));
     }
 
     @PutMapping("/normal/reset/password")
     public SuccessResponse resetPassword(@RequestBody ResetPasswordReq requestDto) {
         memberService.resetPassword(requestDto);
 
-        return SuccessResponse.ok("비밀번호가 재설정되었습니다.\n 다시 로그인해주세요!");
-    }
-
-    // ci/cd 이후 배포 성공 테스트용 엔드포인트
-    @GetMapping("/test")
-    public String test() {
-        return "test";
+        return SuccessResponse.ok(MemberSuccessMessage.RESET_PASSWORD.getMessage());
     }
 
 }

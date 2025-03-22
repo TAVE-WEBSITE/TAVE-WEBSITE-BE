@@ -28,22 +28,25 @@ public class Review extends BaseEntity {
     @Column(length = 5, nullable = false)
     private String generation;
 
+    private String companyName;
+
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private FieldType field;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(columnDefinition = "VARCHAR(2000)", nullable = false)
     private String content;
 
     @Column(nullable = false)
     private boolean isPublic;
 
     @Builder
-    public Review(String nickname, String generation, FieldType field, String content, boolean isPublic) {
+    public Review(String nickname, String generation, String companyName,FieldType field, String content, boolean isPublic) {
         this.nickname = nickname;
         this.generation = generation;
+        this.companyName = companyName;
         this.field = field;
         this.content = content;
         this.isPublic = isPublic;

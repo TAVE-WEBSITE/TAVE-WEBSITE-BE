@@ -6,10 +6,10 @@ import lombok.Builder;
 
 @Builder
 public record ReviewResponseDto(
-        Long id,
         String nickname,
         String generation,
-        FieldType field,
+        String companyName,
+        String field,
         String content,
         boolean isPublic
 ) {

@@ -13,7 +13,19 @@ public class CookieUtil {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .maxAge(MAX_AGE_OF_COOKIE)
                 .path("/")
-                .secure(false)
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("None")
+                .build();
+
+        response.setHeader("Set-Cookie", cookie.toString());
+    }
+
+    public static void deleteCookie(HttpServletResponse response, String name) {
+        ResponseCookie cookie = ResponseCookie.from(name, "value")
+                .maxAge(0)
+                .path("/")
+                .secure(true)
                 .httpOnly(true)
                 .sameSite("None")
                 .build();

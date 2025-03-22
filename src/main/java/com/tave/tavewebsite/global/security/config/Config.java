@@ -34,7 +34,8 @@ public class Config {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3000", "http://localhost:8080"));
+        corsConfiguration.setAllowedOriginPatterns(
+                List.of("http://localhost:3000", "https://localhost:3000", "http://localhost:8080", "https://www.tave-wave.com"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         corsConfiguration.setExposedHeaders(List.of("Set-Cookie"));

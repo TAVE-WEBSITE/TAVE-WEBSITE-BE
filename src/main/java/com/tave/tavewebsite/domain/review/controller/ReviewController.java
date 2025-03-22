@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.review.controller;
 
 
 import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
+import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerResponseDto;
 import com.tave.tavewebsite.domain.review.dto.response.ReviewResponseDto;
 import com.tave.tavewebsite.domain.review.service.ReviewService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
@@ -27,17 +28,17 @@ public class ReviewController {
         ReviewResponseDto response = reviewService.saveReview(requestDto);
         return new SuccessResponse<>(
                 response,
-                REVIEW_CREATE.getMessage(response.generation())
+                REVIEW_CREATE.getMessage()
         );
     }
 
     @GetMapping("/manager/review/{generation}")
-    public SuccessResponse<List<ReviewResponseDto>> getAllReviews(@PathVariable String generation) {
-        List<ReviewResponseDto> response = reviewService.findAllReviewsByGeneration(generation);
+    public SuccessResponse<List<ReviewManagerResponseDto>> getAllReviews(@PathVariable String generation) {
+        List<ReviewManagerResponseDto> response = reviewService.findAllReviewsByGeneration(generation);
 
         return new SuccessResponse<>(
                 response,
-                REVIEW_GET_PUBLIC.getMessage(generation)
+                REVIEW_GET_MANAGER.getMessage(generation)
         );
     }
 
@@ -47,7 +48,7 @@ public class ReviewController {
         List<ReviewResponseDto> response = reviewService.findPublicReviews();
         return new SuccessResponse<>(
                 response,
-                REVIEW_GET_PRIVATE.getMessage()
+                REVIEW_GET_NORMAL.getMessage()
         );
     }
 
