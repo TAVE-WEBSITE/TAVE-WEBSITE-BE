@@ -25,15 +25,13 @@ public class PersonalInfoService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Resume resume = ResumeMapper.toResume(requestDto, member);
-        resumeRepository.save(resume);
-
         // 지원 분야 값 검증 및 변환
         Resume.FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
 
-        // 개인 정보 저장
+        Resume resume = ResumeMapper.toResume(requestDto, member);
         resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
                 requestDto.getMinor(), fieldType.getMessage());
+
         resumeRepository.save(resume);
     }
 
