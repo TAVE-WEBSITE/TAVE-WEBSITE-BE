@@ -47,6 +47,18 @@ public class PersonalInfoService {
         resumeRepository.save(resume);
     }
 
+    // 임시 저장 기능 (현재까지 입력한 정보 저장)
+    @Transactional
+    public void tempSavePersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
+        Resume resume = resumeRepository.findByMemberId(memberId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        // 기존 정보 갱신(임시 저장 위해)
+        resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
+                requestDto.getMinor(), requestDto.getField());
+
+    }
+
     public PersonalInfoResponseDto getPersonalInfo(Long resumeId) {
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
