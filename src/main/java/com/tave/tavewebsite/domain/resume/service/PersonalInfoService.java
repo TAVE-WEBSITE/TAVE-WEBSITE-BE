@@ -28,14 +28,8 @@ public class PersonalInfoService {
         Resume resume = ResumeMapper.toResume(requestDto, member);
         resumeRepository.save(resume);
 
-        // 지원 분야 값 검증
-        String field = requestDto.getField();
-        Resume.FieldType fieldType;
-        try {
-            fieldType = Resume.FieldType.valueOf(field.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ResumeNotFoundException();
-        }
+        // 지원 분야 값 검증 및 변환
+        Resume.FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
 
         // 개인 정보 저장
         resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
@@ -82,4 +76,12 @@ public class PersonalInfoService {
         resumeRepository.delete(resume);
     }
 
+    // 지원 분야 값 검증 및 변환 메서드
+    private Resume.FieldType validateAndConvertFieldType(String field) {
+        try {
+            return Resume.FieldType.valueOf(field.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ResumeNotFoundException();
+        }
+    }
 }
