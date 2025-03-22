@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.resume.entity;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
+import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -110,11 +111,11 @@ public class Resume {
         this.languageLevels.add(languageLevel);
     }
 
-    public void updatePersonalInfo(String school, String major, String minor, String field) {
-        this.school = school;
-        this.major = major;
-        this.minor = minor;
-        this.field = field;
+    public void updatePersonalInfo(PersonalInfoRequestDto requestDto) {
+        this.school = requestDto.getSchool();
+        this.major = requestDto.getMajor();
+        this.minor = requestDto.getMinor();
+        this.field = requestDto.getField();
     }
 
     public enum FieldType {

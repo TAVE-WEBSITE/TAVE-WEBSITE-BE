@@ -29,9 +29,9 @@ public class PersonalInfoService {
         Resume.FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
 
         Resume resume = ResumeMapper.toResume(requestDto, member);
-        resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
-                requestDto.getMinor(), fieldType.getMessage());
+        resumeRepository.save(resume);
 
+        resume.updatePersonalInfo(requestDto);
         resumeRepository.save(resume);
     }
 
@@ -41,10 +41,8 @@ public class PersonalInfoService {
         Resume resume = resumeRepository.findByMemberId(memberId)
                 .orElseThrow(ResumeNotFoundException::new);
 
-        // 기존 정보 갱신(임시 저장 위해)
-        resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
-                requestDto.getMinor(), requestDto.getField());
-
+        // 기존 정보 갱신 (임시 저장 위해)
+        resume.updatePersonalInfo(requestDto);
     }
 
     public PersonalInfoResponseDto getPersonalInfo(Long resumeId) {
@@ -59,11 +57,10 @@ public class PersonalInfoService {
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
 
-        String field = requestDto.getField();
-        Resume.FieldType fieldType = Resume.FieldType.valueOf(field.toUpperCase());
+        // 지원 분야 값 검증 및 변환
+        Resume.FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
 
-        resume.updatePersonalInfo(requestDto.getSchool(), requestDto.getMajor(),
-                requestDto.getMinor(), fieldType.getMessage());
+        resume.updatePersonalInfo(requestDto);
     }
 
     @Transactional
