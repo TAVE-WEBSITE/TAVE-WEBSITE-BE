@@ -66,4 +66,12 @@ public class PersonalInfoService {
                 requestDto.getMinor(), fieldType.getMessage());
     }
 
+    @Transactional
+    public void deletePersonalInfo(Long resumeId) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        resumeRepository.delete(resume);
+    }
+
 }
