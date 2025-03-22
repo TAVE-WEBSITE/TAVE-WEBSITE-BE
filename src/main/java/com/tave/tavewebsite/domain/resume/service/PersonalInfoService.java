@@ -7,6 +7,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
+import com.tave.tavewebsite.domain.resume.mapper.ResumeMapper;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +25,15 @@ public class PersonalInfoService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Resume resume = Resume.builder()
-                .member(member)
-                .school(requestDto.getSchool())
-                .major(requestDto.getMajor())
-                .minor(requestDto.getMinor())
-                .field(requestDto.getField())
-                .build();
+        Resume resume = ResumeMapper.toResume(requestDto, member);
+        resumeRepository.save(resume);
 
         // 지원 분야 값 검증
         String field = requestDto.getField();
         Resume.FieldType fieldType;
-        try{
+        try {
             fieldType = Resume.FieldType.valueOf(field.toUpperCase());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResumeNotFoundException();
         }
 
@@ -63,7 +59,7 @@ public class PersonalInfoService {
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
 
-        return new PersonalInfoResponseDto(resume);
+        return ResumeMapper.toPersonalInfoResponseDto(resume);
     }
 
     @Transactional
