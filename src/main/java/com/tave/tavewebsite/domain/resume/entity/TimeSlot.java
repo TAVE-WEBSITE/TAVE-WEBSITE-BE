@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.entity;
 
+import com.tave.tavewebsite.domain.resume.exception.NotValidTimeException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,5 +39,22 @@ public class TimeSlot {
         this.time = time;
         this.resume = resume;
         resume.getTimeSlots().add(this);
+    }
+
+    public static TimeSlot of(String time, Resume resume) {
+        return TimeSlot.builder().
+                time(getTime(time)).
+                resume(resume).
+                build();
+    }
+
+    private static LocalDateTime getTime(String time) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+
+            return LocalDateTime.parse(time, formatter);
+        } catch (Exception e) {
+            throw new NotValidTimeException();
+        }
     }
 }
