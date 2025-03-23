@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/v1/normal/info")
+@RequestMapping("/v1/member/info")
 public class PersonalInfoController {
 
     private final PersonalInfoService personalInfoService;
