@@ -2,7 +2,6 @@ package com.tave.tavewebsite.domain.resume.exception;
 
 import com.tave.tavewebsite.global.exception.BaseErrorException;
 
-import static com.tave.tavewebsite.domain.project.exception.ErrorMessage.PROJECT_NOT_FOUND;
 import static com.tave.tavewebsite.domain.resume.exception.ErrorMessage.NOT_VALID_TIME;
 
 public class NotValidTimeException extends BaseErrorException {

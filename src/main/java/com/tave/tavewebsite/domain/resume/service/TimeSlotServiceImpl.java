@@ -6,7 +6,7 @@ import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
-import com.tave.tavewebsite.domain.resume.exception.UnauthoirzedResumeException;
+import com.tave.tavewebsite.domain.resume.exception.UnauthorizedResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.domain.resume.repository.TimeSlotRepository;
 import com.tave.tavewebsite.global.security.utils.SecurityUtils;
@@ -58,7 +58,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     private void findIfResumeMine(Member currentMember, Resume resume) {
         Resume resumeByMember = resumeRepository.findByMember(currentMember).orElseThrow(ResumeNotFoundException::new);
         if(!resumeByMember.equals(resume)) {
-            throw new UnauthoirzedResumeException();
+            throw new UnauthorizedResumeException();
         }
     }
 
