@@ -2,18 +2,15 @@ package com.tave.tavewebsite.domain.resume.entity;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,12 +38,12 @@ public class Resume {
     @Column(length = 20)
     private String minor;
 
-    @Size(min = 1, max = 8)
+    @Size(min = 1, max = 15)
     @Column(length = 8)
     private String field;
 
-    @Size(min = 1, max = 5)
-    @Column(length = 5)
+    @Min(1)
+    @Max(5)
     private Integer resumeGeneration;
 
     @Size(min = 1, max = 50)
@@ -112,5 +109,31 @@ public class Resume {
 
     public void addLanguageLevel(LanguageLevel languageLevel) {
         this.languageLevels.add(languageLevel);
+    }
+
+    public void updatePersonalInfo(PersonalInfoRequestDto requestDto) {
+        this.school = requestDto.getSchool();
+        this.major = requestDto.getMajor();
+        this.minor = requestDto.getMinor();
+        this.field = requestDto.getField();
+    }
+
+    public enum FieldType {
+        DESIGNER("designer"),
+        WEBFRONTEND("Web Frontend"),
+        APPFRONTEND("App Frontend"),
+        BACKEND("Backend"),
+        DATAANALYSIS("Data Analysis"),
+        DEEPLEARNING("Deep Learning");
+
+        private final String message;
+
+        FieldType(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 }
