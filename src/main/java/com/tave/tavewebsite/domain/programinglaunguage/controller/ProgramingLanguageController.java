@@ -27,7 +27,7 @@ public class ProgramingLanguageController {
                 ProgramingLanguageSuccessMessage.READ_SUCCESS.getMessage());
     }
 
-    @PatchMapping("/v1/manager/lan/{id}")
+    @PatchMapping("/v1/member/lan/{id}")
     public SuccessResponse patchLanguageLevels(@PathVariable("id") Long id,
                                                @RequestBody @Valid List<LanguageLevelRequestDto> languageLevelRequestDtos) {
         programingLanguageService.patchLanguageLevel(id, languageLevelRequestDtos);
