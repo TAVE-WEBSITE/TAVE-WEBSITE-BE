@@ -67,9 +67,14 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     }
 
     private void saveTimeSlot(List<TimeSlotReqDto> timeSlots, Resume resume) {
-        timeSlots.forEach(timeSlotReqDto -> {
-            TimeSlot timeSlot = TimeSlot.of(timeSlotReqDto.time(), resume);
-            timeSlotRepository.save(timeSlot);
-        });
+        List<TimeSlot> result = timeSlots.stream().map(
+                timeslot -> TimeSlot.of(timeslot.time(), resume)
+        ).toList();
+        timeSlotRepository.saveAll(result);
+
+//        timeSlots.forEach(timeSlotReqDto -> {
+//            TimeSlot timeSlot = TimeSlot.of(timeSlotReqDto.time(), resume);
+//            timeSlotRepository.save(timeSlot);
+//        });
     }
 }
