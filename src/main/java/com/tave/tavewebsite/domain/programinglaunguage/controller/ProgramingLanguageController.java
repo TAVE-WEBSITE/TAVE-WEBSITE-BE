@@ -21,13 +21,13 @@ public class ProgramingLanguageController {
 
     private final ProgramingLanguageService programingLanguageService;
 
-    @GetMapping("/v1/normal/lan/{id}")
+    @GetMapping("/v1/member/lan/{id}")
     public SuccessResponse<List<LanguageLevelResponseDto>> getLanguageLevels(@PathVariable("id") Long id) {
         return new SuccessResponse<>(programingLanguageService.getLanguageLevel(id),
                 ProgramingLanguageSuccessMessage.READ_SUCCESS.getMessage());
     }
 
-    @PatchMapping("/v1/normal/lan/{id}")
+    @PatchMapping("/v1/manager/lan/{id}")
     public SuccessResponse patchLanguageLevels(@PathVariable("id") Long id,
                                                @RequestBody @Valid List<LanguageLevelRequestDto> languageLevelRequestDtos) {
         programingLanguageService.patchLanguageLevel(id, languageLevelRequestDtos);
