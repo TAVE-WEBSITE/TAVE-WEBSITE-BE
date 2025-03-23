@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.entity;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
