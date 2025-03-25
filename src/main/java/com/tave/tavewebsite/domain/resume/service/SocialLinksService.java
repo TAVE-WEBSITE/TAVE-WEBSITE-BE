@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.SocialLinksResponseDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
@@ -31,5 +32,14 @@ public class SocialLinksService {
                 .orElseThrow(ResumeNotFoundException::new);
 
         return new SocialLinksResponseDto(resume.getBlogUrl(), resume.getGithubUrl(), resume.getPortfolioUrl());
+    }
+
+    // 소셜 링크 업데이트
+    @Transactional
+    public void updateSocialLinks(Long resumeId, SocialLinksRequestDto socialLinksRequestDto) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        resume.updateSocialLinks(socialLinksRequestDto);
     }
 }

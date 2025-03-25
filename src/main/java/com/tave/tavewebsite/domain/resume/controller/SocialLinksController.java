@@ -31,4 +31,11 @@ public class SocialLinksController {
                 SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
     }
 
+    // 소셜 링크 업데이트
+    @PatchMapping
+    public SuccessResponse updateSocialLinks(@PathVariable("resumeId") Long resumeId,
+                                             @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
+        socialLinksService.updateSocialLinks(resumeId, socialLinksRequestDto);
+        return SuccessResponse.ok(SocialLinksSuccessMessage.UPDATE_SUCCESS.getMessage());
+    }
 }
