@@ -137,4 +137,10 @@ public class Resume {
             return message;
         }
     }
+
+    public void updateSocialLinks(SocialLinksRequestDto socialLinksRequestDto) {
+        this.blogUrl = socialLinksRequestDto.getBlogUrl();
+        this.githubUrl = socialLinksRequestDto.getGithubUrl();
+        this.portfolioUrl = socialLinksRequestDto.getPortfolioUrl();
+    }
 }
