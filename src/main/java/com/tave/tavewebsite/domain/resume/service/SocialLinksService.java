@@ -24,4 +24,12 @@ public class SocialLinksService {
 
         resume.updateSocialLinks(socialLinksRequestDto); // 이미 존재하는 resume 객체에 소셜 링크 정보 추가
     }
+
+    // 소셜 링크 조회
+    public SocialLinksResponseDto getSocialLinks(Long resumeId) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        return new SocialLinksResponseDto(resume.getBlogUrl(), resume.getGithubUrl(), resume.getPortfolioUrl());
+    }
 }
