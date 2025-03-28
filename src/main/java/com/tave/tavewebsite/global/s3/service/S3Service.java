@@ -73,6 +73,13 @@ public class S3Service {
             // MultipartFile을 File로 변환
             tempFile = convertMultipartFileToFile(multipartFile);
 
+            tempFile.setWritable(true);
+            tempFile.setReadable(true);
+            tempFile.setReadable(true, false);
+            tempFile.setWritable(true, false);
+
+            log.warn("체크 포인트 ============");
+
             // WebP로 변환
             return ImmutableImage.loader() // 라이브러리 객체 생성
                     .fromFile(tempFile) // .jpg or .png File 가져옴
