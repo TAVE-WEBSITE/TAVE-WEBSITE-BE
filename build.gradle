@@ -75,8 +75,6 @@ dependencies {
     // Image Processing
     implementation "com.sksamuel.scrimage:scrimage-core:4.0.32"
     implementation "com.sksamuel.scrimage:scrimage-webp:4.0.32"
-    implementation "com.sksamuel.scrimage:scrimage-native:4.0.32"
-
 
 }
 
