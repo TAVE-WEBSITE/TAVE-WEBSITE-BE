@@ -73,8 +73,8 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
     // Image Processing
-    implementation "com.sksamuel.scrimage:scrimage-core:4.0.32"
-    implementation "com.sksamuel.scrimage:scrimage-webp:4.0.32"
+//    implementation "com.sksamuel.scrimage:scrimage-core:4.3.0"
+    implementation "com.sksamuel.scrimage:scrimage-webp:4.3.0"
 
 }
 
