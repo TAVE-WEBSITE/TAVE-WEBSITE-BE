@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URL;
 
 @RestController
-@RequestMapping("/v1/normal/resume/{resumeId}/social-links")
+@RequestMapping("/v1/member/resume/{resumeId}/social-links")
 public class SocialLinksController {
 
     private final SocialLinksService socialLinksService;
