@@ -141,7 +141,6 @@ public class Resume {
     public void updateSocialLinks(SocialLinksRequestDto socialLinksRequestDto) {
         this.blogUrl = socialLinksRequestDto.getBlogUrl();
         this.githubUrl = socialLinksRequestDto.getGithubUrl();
-        this.portfolioUrl = socialLinksRequestDto.getPortfolioUrl();
     }
 
     public void updatePortfolio(String portfolioUrl) {
