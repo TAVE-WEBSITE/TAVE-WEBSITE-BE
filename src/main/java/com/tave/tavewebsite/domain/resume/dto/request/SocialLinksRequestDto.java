@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class SocialLinksRequestDto {
     private String blogUrl;
     private String githubUrl;
-    private String portfolioUrl;
 }
