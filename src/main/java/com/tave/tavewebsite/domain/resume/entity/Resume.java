@@ -143,4 +143,8 @@ public class Resume {
         this.githubUrl = socialLinksRequestDto.getGithubUrl();
         this.portfolioUrl = socialLinksRequestDto.getPortfolioUrl();
     }
+
+    public void updatePortfolio(String portfolioUrl) {
+        this.portfolioUrl = portfolioUrl;
+    }
 }

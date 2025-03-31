@@ -42,4 +42,12 @@ public class SocialLinksService {
 
         resume.updateSocialLinks(socialLinksRequestDto);
     }
+
+    @Transactional
+    public void updatePortfolio(Long resumeId, String portfolioUrl) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+
+        resume.updatePortfolio(portfolioUrl); // Resume 엔티티에 메서드 추가 필요
+    }
 }
