@@ -37,7 +37,7 @@ public class ManagerController {
         return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
 
-    @GetMapping("/normal/verify/number")
+    @PostMapping("/normal/verify/number")
     public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
         memberService.verityNumber(requestDto);
 
