@@ -16,12 +16,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 public class S3Service {
 
     private final AmazonS3 s3Client;
@@ -71,11 +73,19 @@ public class S3Service {
             // MultipartFile을 File로 변환
             tempFile = convertMultipartFileToFile(multipartFile);
 
+            tempFile.setWritable(true);
+            tempFile.setReadable(true);
+            tempFile.setReadable(true, false);
+            tempFile.setWritable(true, false);
+
+            log.warn("체크 포인트 ============");
+
             // WebP로 변환
             return ImmutableImage.loader() // 라이브러리 객체 생성
                     .fromFile(tempFile) // .jpg or .png File 가져옴
                     .output(WebpWriter.DEFAULT, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
         } catch (Exception e) {
+            log.error("이미지 변환 에러 메세지: {}", e.getMessage(), e);
             throw new S3ConvertFailException();
         } finally {
             // 임시 파일 삭제
