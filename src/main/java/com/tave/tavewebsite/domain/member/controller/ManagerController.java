@@ -38,8 +38,9 @@ public class ManagerController {
     }
 
     @PostMapping("/normal/verify/number")
-    public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
-        memberService.verityNumber(requestDto);
+    public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto,
+                                        @RequestParam(required = false, defaultValue = "false") Boolean reset) {
+        memberService.verityNumber(requestDto, reset);
 
         return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS.getMessage());
     }
