@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.member.controller;
 
 import com.tave.tavewebsite.domain.member.dto.request.RefreshTokenRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
+import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.SignUpRequestDto;
 import com.tave.tavewebsite.domain.member.dto.response.RefreshResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.SignInResponseDto;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.tave.tavewebsite.domain.member.controller.MemberSuccessMessage.NORMAL_MEMBER_SIGNUP;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/auth")
@@ -34,6 +37,13 @@ public class AuthController {
     public SuccessResponse<MailResponseDto> registerManager(@RequestBody @Valid RegisterManagerRequestDto requestDto) {
         MailResponseDto response = memberService.saveMember(requestDto);
         return new SuccessResponse<>(response);
+    }
+
+    @PostMapping("/normal/signup")
+    public SuccessResponse registerMember(@RequestBody @Valid RegisterMemberRequestDto dto){
+        memberService.saveNormalMember(dto);
+
+        return SuccessResponse.ok(NORMAL_MEMBER_SIGNUP.getMessage());
     }
 
     @PostMapping("/signin")

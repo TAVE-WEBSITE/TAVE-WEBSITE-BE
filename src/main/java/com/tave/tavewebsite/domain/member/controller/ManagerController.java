@@ -21,13 +21,6 @@ public class ManagerController {
     private final MemberService memberService;
     private final AdminService adminService;
 
-    @PostMapping("/normal/signup")
-    public SuccessResponse registerMember(@RequestBody @Valid RegisterMemberRequestDto dto){
-        memberService.saveNormalMember(dto);
-
-        return SuccessResponse.ok(NORMAL_MEMBER_SIGNUP.getMessage());
-    }
-
     @PostMapping("/normal/authenticate/email")
     public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto,
                                      @RequestParam(required = false, defaultValue = "false") Boolean reset) {
