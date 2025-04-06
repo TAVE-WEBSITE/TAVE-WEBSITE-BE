@@ -48,7 +48,7 @@ public class SocialLinksController {
     @PostMapping("/portfolio")
     public SuccessResponse updatePortfolio(@PathVariable("resumeId") Long resumeId,
                                            @RequestParam("file") MultipartFile file) {
-        URL portfolioUrl = s3Service.uploadImages(file);
+        URL portfolioUrl = s3Service.uploadFile(file);
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
