@@ -9,6 +9,7 @@ import com.sksamuel.scrimage.webp.WebpWriter;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,38 @@ public class S3Service {
             return getImageUrl(key);
         } catch (IOException e) {
             throw new S3UploadFailException();
+        }
+    }
+
+    public URL uploadFile(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        String contentType = file.getContentType();
+
+        if (contentType == null || !contentType.equals("application/pdf")) {
+            throw new RuntimeException("PDF 파일만 업로드할 수 있습니다.");
+        }
+
+        File uploadFile;
+        try {
+            uploadFile = convertMultipartFileToFile(file);
+
+            String key = validateFileName(uploadFile.getName());
+
+            try (InputStream inputStream = new FileInputStream(uploadFile)) {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentLength(uploadFile.length());
+                metadata.setContentType(contentType); // application/pdf
+
+                PutObjectRequest putRequest = new PutObjectRequest(bucketName, key, inputStream, metadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead);
+
+                s3Client.putObject(putRequest);
+                return getImageUrl(key);
+            }
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        } finally {
+            new File(System.getProperty("java.io.tmpdir") + "/" + originalFilename).delete();
         }
     }
 

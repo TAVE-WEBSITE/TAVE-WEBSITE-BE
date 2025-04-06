@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.resume.entity;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -46,15 +47,15 @@ public class Resume {
     @Max(5)
     private Integer resumeGeneration;
 
-    @Size(min = 1, max = 50)
+    @Size(max = 255)
     @Column(length = 50)
     private String blogUrl;
 
-    @Size(min = 1, max = 50)
+    @Size(max = 255)
     @Column(length = 50)
     private String githubUrl;
 
-    @Size(min = 1, max = 50)
+    @Size(max = 255)
     @Column(length = 50)
     private String portfolioUrl;
 
@@ -135,5 +136,14 @@ public class Resume {
         public String getMessage() {
             return message;
         }
+    }
+
+    public void updateSocialLinks(SocialLinksRequestDto socialLinksRequestDto) {
+        this.blogUrl = socialLinksRequestDto.getBlogUrl();
+        this.githubUrl = socialLinksRequestDto.getGithubUrl();
+    }
+
+    public void updatePortfolio(String portfolioUrl) {
+        this.portfolioUrl = portfolioUrl;
     }
 }
