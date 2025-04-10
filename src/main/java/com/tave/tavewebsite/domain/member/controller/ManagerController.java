@@ -21,13 +21,6 @@ public class ManagerController {
     private final MemberService memberService;
     private final AdminService adminService;
 
-    @PostMapping("/normal/signup")
-    public SuccessResponse registerMember(@RequestBody @Valid RegisterMemberRequestDto dto){
-        memberService.saveNormalMember(dto);
-
-        return SuccessResponse.ok(NORMAL_MEMBER_SIGNUP.getMessage());
-    }
-
     @PostMapping("/normal/authenticate/email")
     public SuccessResponse sendEmail(@RequestBody ValidateEmailReq requestDto,
                                      @RequestParam(required = false, defaultValue = "false") Boolean reset) {
@@ -37,9 +30,10 @@ public class ManagerController {
         return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
 
-    @GetMapping("/normal/verify/number")
-    public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto) {
-        memberService.verityNumber(requestDto);
+    @PostMapping("/normal/verify/number")
+    public SuccessResponse verifyNumber(@RequestBody ValidateEmailReq requestDto,
+                                        @RequestParam(required = false, defaultValue = "false") Boolean reset) {
+        memberService.verityNumber(requestDto, reset);
 
         return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS.getMessage());
     }

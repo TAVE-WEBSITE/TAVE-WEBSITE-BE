@@ -59,8 +59,12 @@ public class MemberService {
         mailService.sendAuthenticationCode(req.email());
     }
 
-    public void verityNumber(ValidateEmailReq req) {
-        memberRepository.findByEmail(req.email()).orElseThrow(NotFoundMemberException::new);
+    public void verityNumber(ValidateEmailReq req, Boolean reset) {
+        if(reset.equals(Boolean.FALSE))
+            validateEmail(req.email());
+        else
+            findIfEmailExists(req.email());
+
         String validatedNumber = (String) redisUtil.get(req.email());
 
         if (!req.number().equals(validatedNumber)) {
