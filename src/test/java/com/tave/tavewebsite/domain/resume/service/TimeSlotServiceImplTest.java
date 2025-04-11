@@ -31,7 +31,7 @@ class TimeSlotServiceImplTest {
     private TimeSlotRepository timeSlotRepository;
 
     @InjectMocks
-    private TimeSlotServiceImpl timeSlotService;
+    private TimeSlotService timeSlotService;
 
     @DisplayName("체크한 면접 가능 시간을 DB에 저장합니다.")
     @Test
