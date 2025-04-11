@@ -1,10 +1,12 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.domain.resume.repository.TimeSlotRepository;
+import org.joda.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,8 +60,8 @@ class TimeSlotServiceImplTest {
 
         when(resumeRepository.findById(resume.getId())).thenReturn(Optional.of(resume));
 
-        List<LocalDateTime> reqDtos = new ArrayList<>();
-        reqDtos.add(LocalDateTime.parse("2025-04-12T14:30:00"));
+        List<TimeSlotReqDto> reqDtos = new ArrayList<>();
+        reqDtos.add(new TimeSlotReqDto(LocalDateTime.now()));
 
         // When
         timeSlotService.createTimeSlot(1L, reqDtos);
