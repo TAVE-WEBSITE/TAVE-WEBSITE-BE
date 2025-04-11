@@ -128,4 +128,17 @@ public class MemberService {
 
         redisUtil.delete(email);
     }
+
+    public void resetNormalMemberPassword(ResetNormalPasswordRequestDto req) {
+        Member member = memberRepository.findByEmail(req.email())
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (!req.password().equals(req.validatedPassword())) {
+            throw new NotMatchedPassword();
+        }
+
+        member.update(req.validatedPassword(), passwordEncoder);
+        memberRepository.save(member);
+    }
+
 }

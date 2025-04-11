@@ -73,4 +73,10 @@ public class AuthController {
         memberService.verifyAuthCodeForPasswordReset(email, code);
         return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS.getMessage());
     }
+
+    @PostMapping("/normal/reset/password")
+    public SuccessResponse resetNormalPassword(@RequestBody @Valid ResetNormalPasswordRequestDto requestDto) {
+        memberService.resetNormalMemberPassword(requestDto);
+        return SuccessResponse.ok(MemberSuccessMessage.RESET_PASSWORD.getMessage());
+    }
 }
