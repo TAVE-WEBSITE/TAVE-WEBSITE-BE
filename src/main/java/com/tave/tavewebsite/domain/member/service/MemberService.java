@@ -115,4 +115,17 @@ public class MemberService {
         mailService.sendAuthenticationCode(req.email());
     }
 
+    public void verifyAuthCodeForPasswordReset(String email, String code) {
+        String validatedNumber = (String) redisUtil.get(email);
+
+        if (validatedNumber == null || redisUtil.checkExpired(email) <= 0) {
+            throw new ExpiredNumberException();
+        }
+
+        if (!validatedNumber.equals(code)) {
+            throw new NotMatchedNumberException();
+        }
+
+        redisUtil.delete(email);
+    }
 }
