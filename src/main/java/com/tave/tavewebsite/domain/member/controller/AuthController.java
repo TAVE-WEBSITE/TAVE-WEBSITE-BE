@@ -62,19 +62,19 @@ public class AuthController {
         return SuccessResponse.ok(MemberSuccessMessage.DELETE_MEMBER_SUCCESS.getMessage());
     }
 
-    @PostMapping("/normal/reset/verify")
+    @PostMapping("/reset/verify")
     public SuccessResponse sendPasswordResetCode(@RequestBody ResetPasswordVerifyRequestDto requestDto) {
         memberService.verifyNormalMemberForPasswordReset(requestDto);
         return SuccessResponse.ok(MemberSuccessMessage.SEND_AUTHENTICATION_CODE.getMessage());
     }
 
-    @PostMapping("/normal/reset/verify/code")
+    @PostMapping("/reset/verify/code")
     public SuccessResponse verifyResetCode(@RequestParam String email, @RequestParam String code) {
         memberService.verifyAuthCodeForPasswordReset(email, code);
         return SuccessResponse.ok(MemberSuccessMessage.VERIFY_SUCCESS.getMessage());
     }
 
-    @PostMapping("/normal/reset/password")
+    @PostMapping("/reset/password")
     public SuccessResponse resetNormalPassword(@RequestBody @Valid ResetNormalPasswordRequestDto requestDto) {
         memberService.resetNormalMemberPassword(requestDto);
         return SuccessResponse.ok(MemberSuccessMessage.RESET_PASSWORD.getMessage());
