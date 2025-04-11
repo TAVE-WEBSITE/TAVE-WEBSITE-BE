@@ -1,7 +1,6 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
@@ -14,11 +13,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,8 +57,8 @@ class TimeSlotServiceImplTest {
 
         when(resumeRepository.findById(resume.getId())).thenReturn(Optional.of(resume));
 
-        List<TimeSlotReqDto> reqDtos = new ArrayList<>();
-        reqDtos.add(new TimeSlotReqDto("2025/04/20 15:30"));
+        List<LocalDateTime> reqDtos = new ArrayList<>();
+        reqDtos.add(LocalDateTime.parse("2025-04-12T14:30:00"));
 
         // When
         timeSlotService.createTimeSlot(1L, reqDtos);

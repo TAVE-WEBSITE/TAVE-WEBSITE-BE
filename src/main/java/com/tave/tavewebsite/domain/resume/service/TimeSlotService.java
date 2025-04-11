@@ -1,7 +1,6 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
@@ -14,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,14 +28,14 @@ public class TimeSlotService {
     }
 
     @Transactional
-    public void createTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
+    public void createTimeSlot(Long resumeId, List<LocalDateTime> timeSlots) {
         Resume resume = findIfResumeExists(resumeId);
 
         saveTimeSlot(timeSlots, resume);
     }
 
     @Transactional
-    public void updateTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
+    public void updateTimeSlot(Long resumeId, List<LocalDateTime> timeSlots) {
         Member currentMember = getCurrentMember();
         Resume resume = findIfResumeExists(resumeId);
         findIfResumeMine(currentMember, resume);
@@ -63,9 +63,9 @@ public class TimeSlotService {
         return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
     }
 
-    private void saveTimeSlot(List<TimeSlotReqDto> timeSlots, Resume resume) {
+    private void saveTimeSlot(List<LocalDateTime> timeSlots, Resume resume) {
         List<TimeSlot> result = timeSlots.stream().map(
-                timeslot -> TimeSlot.of(timeslot.time(), resume)
+                timeslot -> TimeSlot.of(timeslot, resume)
         ).toList();
         timeSlotRepository.saveAll(result);
 

@@ -41,20 +41,10 @@ public class TimeSlot {
         resume.getTimeSlots().add(this);
     }
 
-    public static TimeSlot of(String time, Resume resume) {
+    public static TimeSlot of(LocalDateTime time, Resume resume) {
         return TimeSlot.builder().
-                time(getTime(time)).
+                time(time).
                 resume(resume).
                 build();
-    }
-
-    private static LocalDateTime getTime(String time) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-
-            return LocalDateTime.parse(time, formatter);
-        } catch (Exception e) {
-            throw new NotValidTimeException();
-        }
     }
 }
