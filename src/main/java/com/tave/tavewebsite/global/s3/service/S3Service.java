@@ -146,7 +146,7 @@ public class S3Service {
     }
 
     private String validateFileName(String key) {
-        if (!s3Client.doesObjectExist(bucketName, key) && !StringUtils.hasText(key)) {
+        if (s3Client.doesObjectExist(bucketName, key) || !StringUtils.hasText(key)) {
             return UUID.randomUUID() + getFileExtension(key);
         }
         return key;
