@@ -1,9 +1,6 @@
 package com.tave.tavewebsite.domain.member.service;
 
-import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
-import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
-import com.tave.tavewebsite.domain.member.dto.request.ResetPasswordReq;
-import com.tave.tavewebsite.domain.member.dto.request.ValidateEmailReq;
+import com.tave.tavewebsite.domain.member.dto.request.*;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.exception.DuplicateEmailException;
 import com.tave.tavewebsite.domain.member.exception.DuplicateNicknameException;
@@ -51,7 +48,7 @@ public class MemberService {
     }
 
     public void sendMessage(ValidateEmailReq req, Boolean reset) {
-        if(reset.equals(Boolean.FALSE))
+        if (reset.equals(Boolean.FALSE))
             validateEmail(req.email());
         else
             findIfEmailExists(req.email());
@@ -60,7 +57,7 @@ public class MemberService {
     }
 
     public void verityNumber(ValidateEmailReq req, Boolean reset) {
-        if(reset.equals(Boolean.FALSE))
+        if (reset.equals(Boolean.FALSE))
             validateEmail(req.email());
         else
             findIfEmailExists(req.email());
@@ -105,6 +102,42 @@ public class MemberService {
                     throw new DuplicateEmailException();
                 }
         );
+    }
+
+    public void verifyNormalMemberForPasswordReset(ResetPasswordVerifyRequestDto req) {
+        Member member = memberRepository.findByEmail(req.email())
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (!member.getUsername().equals(req.name()) || !member.getBirthday().toString().equals(req.birth())) {
+            throw new NotFoundMemberException();
+        }
+
+        mailService.sendAuthenticationCode(req.email());
+    }
+
+    public void verifyAuthCodeForPasswordReset(String email, String code) {
+        String validatedNumber = (String) redisUtil.get(email);
+
+        if (validatedNumber == null || redisUtil.checkExpired(email) <= 0) {
+            throw new ExpiredNumberException();
+        }
+
+        if (!validatedNumber.equals(code)) {
+            throw new NotMatchedNumberException();
+        }
+
+        redisUtil.delete(email);
+    }
+
+    public void resetNormalMemberPassword(ResetNormalPasswordRequestDto req) {
+        Member member = memberRepository.findByEmail(req.email())
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (!req.password().equals(req.validatedPassword())) {
+            throw new NotMatchedPassword();
+        }
+
+        member.update(req.validatedPassword(), passwordEncoder);
     }
 
 }
