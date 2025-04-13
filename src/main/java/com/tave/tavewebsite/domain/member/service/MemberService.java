@@ -138,7 +138,6 @@ public class MemberService {
         }
 
         member.update(req.validatedPassword(), passwordEncoder);
-        memberRepository.save(member);
     }
 
 }
