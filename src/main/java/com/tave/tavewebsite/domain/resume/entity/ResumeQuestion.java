@@ -63,4 +63,8 @@ public class ResumeQuestion extends BaseEntity {
 
         return resumeQuestion;
     }
+
+    public void updateAnswer(String answer) {
+        this.answer = answer;
+    }
 }
