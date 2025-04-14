@@ -9,7 +9,8 @@ public record QuestionDetailsResponse(
         Long id,
         String content,
         FieldType fieldType,
-        Integer ordered
+        Integer ordered,
+        Integer textLength
 ) {
     public static QuestionDetailsResponse of(Question question) {
         return QuestionDetailsResponse.builder()
@@ -17,6 +18,7 @@ public record QuestionDetailsResponse(
                 .content(question.getContent())
                 .fieldType(question.getFieldType())
                 .ordered(question.getOrdered())
+                .textLength(question.getTextLength())
                 .build();
     }
 }
