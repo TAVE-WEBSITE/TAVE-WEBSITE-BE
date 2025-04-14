@@ -46,7 +46,9 @@ public class TimeSlotService {
     }
 
     public List<TimeSlotResDto> getTimeSlots(Long resumeId) {
-        findIfResumeExists(resumeId);
+        Member currentMember = getCurrentMember();
+        Resume resume = findIfResumeExists(resumeId);
+        findIfResumeMine(currentMember, resume);
         List<TimeSlot> timeSlots = timeSlotRepository.findAllByResumeId(resumeId);
 
 
