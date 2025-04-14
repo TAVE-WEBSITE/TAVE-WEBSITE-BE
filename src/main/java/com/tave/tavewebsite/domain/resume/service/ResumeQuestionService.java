@@ -2,10 +2,13 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.question.entity.Question;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
+import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.global.common.FieldType;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +40,16 @@ public class ResumeQuestionService {
 
         for(Question q: questionList) {
             resumeQuestionList.add(ResumeQuestion.of(resume, q, fieldType));
+        }
+
+        return resumeQuestionList;
+    }
+
+    public List<ResumeQuestion> findResumeQuestionsByResumeId(Long resumeId) {
+        List<ResumeQuestion> resumeQuestionList = resumeQuestionRepository.findByResumeId(resumeId);
+
+        if(!resumeQuestionList.isEmpty()) {
+            throw new ResumeQuestionNotMatchResumeException();
         }
 
         return resumeQuestionList;
