@@ -36,11 +36,14 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private Integer ordered;
 
+    private Integer textLength;
+
     public static Question from(QuestionSaveRequest dto) {
         return Question.builder()
                 .content(dto.content())
                 .fieldType(dto.fieldType())
                 .ordered(dto.ordered())
+                .textLength(dto.textLength())
                 .build();
     }
 
@@ -48,5 +51,6 @@ public class Question extends BaseEntity {
         this.content = dto.content();
         this.fieldType = dto.fieldType();
         this.ordered = dto.ordered();
+        this.textLength = dto.textLength();
     }
 }
