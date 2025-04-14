@@ -35,7 +35,7 @@ public class QuestionService {
     }
 
     public List<QuestionDetailsResponse> findQuestionListByFieldType(FieldType fieldType) {
-        return questionRepository.findQuestionByFieldTypeOrderByOrderedAscContentAsc(fieldType)
+        return findQuestionsByFieldType(fieldType)
                 .stream()
                 .map(QuestionDetailsResponse::of)
                 .toList();
@@ -59,5 +59,9 @@ public class QuestionService {
 
     public Question findQuestionById(Long id) {
         return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+    }
+
+    public List<Question> findQuestionsByFieldType(FieldType fieldType) {
+        return questionRepository.findQuestionByFieldTypeOrderByOrderedAscContentAsc(fieldType);
     }
 }
