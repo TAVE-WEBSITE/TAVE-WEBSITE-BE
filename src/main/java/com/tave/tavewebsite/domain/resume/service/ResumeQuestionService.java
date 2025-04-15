@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.resume.service;
 
-import com.tave.tavewebsite.domain.question.entity.Question;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
 import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -46,6 +44,7 @@ public class ResumeQuestionService {
     }
 
     // 분야 별 ResumeQuestion 조회하기
+    // todo N+1 해결을 위해 Fetch Join 적용할 것.
     public List<DetailResumeQuestionResponse> getResumeQuestionList(Resume resume, FieldType fieldType) {
         List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType);
 
