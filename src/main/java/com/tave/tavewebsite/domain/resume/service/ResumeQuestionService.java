@@ -9,6 +9,7 @@ import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResume
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,23 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class ResumeQuestionService {
 
-    ResumeQuestionRepository resumeQuestionRepository;
-    QuestionService questionService;
+    private final ResumeQuestionRepository resumeQuestionRepository;
+    private final QuestionService questionService;
 
     // ResumeQuestion 생성하기
+    // todo 반환 타입 Dto 설정
     public List<ResumeQuestion> createCommonResumeQuestion(Resume resume, FieldType fieldType) {
         List<Question> questionList = questionService.findQuestionsByFieldType(fieldType);
         List<ResumeQuestion> resumeQuestionList = new ArrayList<>();
 
-        for(Question q: questionList) {
-            resumeQuestionList.add(ResumeQuestion.of(resume, q, fieldType));
+        for(Question question : questionList) {
+            resumeQuestionList.add(ResumeQuestion.of(resume, question));
         }
 
+        resumeQuestionRepository.saveAll(resumeQuestionList);
         return resumeQuestionList;
     }
 
