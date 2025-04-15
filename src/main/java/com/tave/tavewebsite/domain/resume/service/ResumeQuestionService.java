@@ -25,7 +25,7 @@ public class ResumeQuestionService {
 
     // ResumeQuestion 생성하기
     // todo 반환 타입 Dto 설정
-    public List<ResumeQuestionResponse> createCommonResumeQuestion(Resume resume, FieldType fieldType) {
+    public List<ResumeQuestionResponse> createResumeQuestion(Resume resume, FieldType fieldType) {
         List<Question> questionList = questionService.findQuestionsByFieldType(fieldType);
         List<ResumeQuestion> resumeQuestionList = new ArrayList<>();
 
@@ -80,9 +80,11 @@ public class ResumeQuestionService {
     public List<ResumeQuestion> findResumeQuestionsByResumeId(Resume resume, FieldType fieldType) {
         List<ResumeQuestion> resumeQuestionList = resumeQuestionRepository.findByResumeAndFieldType(resume, fieldType);
 
-        if(!resumeQuestionList.isEmpty()) {
-            throw new ResumeQuestionNotMatchResumeException();
-        }
+        log.info("조회 테스트 list 사이즈: " + resumeQuestionList.size());
+
+//        if(resumeQuestionList.isEmpty()) {
+//            throw new ResumeQuestionNotMatchResumeException();
+//        }
 
         return resumeQuestionList;
     }
