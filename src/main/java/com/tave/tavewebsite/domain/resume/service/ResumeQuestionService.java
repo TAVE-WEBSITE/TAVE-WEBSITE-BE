@@ -2,12 +2,14 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.question.entity.Question;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.global.common.FieldType;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,31 +48,18 @@ public class ResumeQuestionService {
         return mapResumeQuestionListToResponse(resumeQuestionList);
     }
 
-//    // 공통 질문 수정
-//    @Transactional
-//    public void updateCommonResumeQuestion(Resume resume, List<ResumeQuestionUpdateRequest> updateRequestList) {
-//
-//        List<ResumeQuestion> commonResumeQuestionList = resume.getCommonResumeQuestion();
-//
-//        for(int i = 0 ; i < commonResumeQuestionList.size() ; i++) {
-//            ResumeQuestion target = commonResumeQuestionList.get(i);
-//            String answer = updateRequestList.get(i).answer();
-//            target.updateAnswer(answer);
-//        }
-//    }
-//
-//    // 특정 분야 질문 수정
-//    @Transactional
-//    public void updateSpecificResumeQuestion(Resume resume, List<ResumeQuestionUpdateRequest> updateRequestList) {
-//
-//        List<ResumeQuestion> specificResumeQuestionList = resume.getSpecificResumeQuestion();
-//
-//        for(int i = 0 ; i < specificResumeQuestionList.size() ; i++) {
-//            ResumeQuestion target = specificResumeQuestionList.get(i);
-//            String answer = updateRequestList.get(i).answer();
-//            target.updateAnswer(answer);
-//        }
-//    }
+    // 공통 질문 수정
+    @Transactional
+    public void updateCommonResumeQuestion(Resume resume, List<ResumeQuestionUpdateRequest> updateRequestList, FieldType fieldType) {
+
+        List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType);
+
+        for(int i = 0 ; i < resumeQuestionList.size() ; i++) {
+            ResumeQuestion target = resumeQuestionList.get(i);
+            String answer = updateRequestList.get(i).answer();
+            target.updateAnswer(answer);
+        }
+    }
 
     /*
     * refactor
@@ -82,9 +71,9 @@ public class ResumeQuestionService {
 
         log.info("조회 테스트 list 사이즈: " + resumeQuestionList.size());
 
-//        if(resumeQuestionList.isEmpty()) {
-//            throw new ResumeQuestionNotMatchResumeException();
-//        }
+        if(resumeQuestionList.isEmpty()) {
+            throw new ResumeQuestionNotMatchResumeException();
+        }
 
         return resumeQuestionList;
     }
