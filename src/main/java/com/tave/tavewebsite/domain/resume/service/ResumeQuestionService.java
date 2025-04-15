@@ -3,10 +3,12 @@ package com.tave.tavewebsite.domain.resume.service;
 import com.tave.tavewebsite.domain.question.entity.Question;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
+import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResumeException;
+import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.transaction.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -23,29 +26,30 @@ import java.util.List;
 public class ResumeQuestionService {
 
     private final ResumeQuestionRepository resumeQuestionRepository;
+    private final ResumeQuestionJdbcRepository resumeQuestionJdbcRepository;
     private final QuestionService questionService;
 
-    // ResumeQuestion 생성하기
-    // todo 반환 타입 Dto 설정
-    public List<ResumeQuestionResponse> createResumeQuestion(Resume resume, FieldType fieldType) {
-        List<Question> questionList = questionService.findQuestionsByFieldType(fieldType);
-        List<ResumeQuestion> resumeQuestionList = new ArrayList<>();
+    public ResumeQuestionResponse createResumeQuestion(Resume resume, FieldType fieldType) {
+        // 공통 + 전공별 질문 생성
+        List<ResumeQuestion> commonQuestions = createResumeQuestions(resume, FieldType.COMMON);
+        List<ResumeQuestion> specificQuestions = createResumeQuestions(resume, fieldType);
 
-        for(Question question : questionList) {
-            resumeQuestionList.add(ResumeQuestion.of(resume, question));
-        }
+        // Bulk Insert
+        List<ResumeQuestion> allResumeQuestions = concatResumeQuestion(commonQuestions, specificQuestions);
+        resumeQuestionJdbcRepository.bulkInsert(allResumeQuestions, resume);
 
-        resumeQuestionRepository.saveAll(resumeQuestionList);
-        return mapResumeQuestionListToResponse(resumeQuestionList);
+        // 응답 변환
+        return ResumeQuestionResponse.of(
+                mapResumeQuestionListToDetailResponse(commonQuestions),
+                mapResumeQuestionListToDetailResponse(specificQuestions)
+        );
     }
 
     // 분야 별 ResumeQuestion 조회하기
-    public List<ResumeQuestionResponse> getResumeQuestionList(Resume resume, FieldType fieldType) {
+    public List<DetailResumeQuestionResponse> getResumeQuestionList(Resume resume, FieldType fieldType) {
+        List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType);
 
-        List<ResumeQuestion> resumeQuestionList =
-                findResumeQuestionsByResumeId(resume, fieldType);
-
-        return mapResumeQuestionListToResponse(resumeQuestionList);
+        return mapResumeQuestionListToDetailResponse(resumeQuestionList);
     }
 
     // 공통 질문 수정
@@ -69,8 +73,6 @@ public class ResumeQuestionService {
     public List<ResumeQuestion> findResumeQuestionsByResumeId(Resume resume, FieldType fieldType) {
         List<ResumeQuestion> resumeQuestionList = resumeQuestionRepository.findByResumeAndFieldType(resume, fieldType);
 
-        log.info("조회 테스트 list 사이즈: " + resumeQuestionList.size());
-
         if(resumeQuestionList.isEmpty()) {
             throw new ResumeQuestionNotMatchResumeException();
         }
@@ -78,10 +80,21 @@ public class ResumeQuestionService {
         return resumeQuestionList;
     }
 
-    public List<ResumeQuestionResponse> mapResumeQuestionListToResponse(List<ResumeQuestion> resumeQuestionList) {
+    public List<DetailResumeQuestionResponse> mapResumeQuestionListToDetailResponse(List<ResumeQuestion> resumeQuestionList) {
         return resumeQuestionList
                 .stream()
-                .map(ResumeQuestionResponse::from)
+                .map(DetailResumeQuestionResponse::from)
+                .toList();
+    }
+
+    private List<ResumeQuestion> createResumeQuestions(Resume resume, FieldType fieldType) {
+        return questionService.findQuestionsByFieldType(fieldType).stream()
+                .map(q -> ResumeQuestion.of(resume, q))
+                .toList();
+    }
+
+    private List<ResumeQuestion> concatResumeQuestion(List<ResumeQuestion> commonQuestionList, List<ResumeQuestion> specificQuestionList) {
+        return Stream.concat(commonQuestionList.stream(), specificQuestionList.stream())
                 .toList();
     }
 }
