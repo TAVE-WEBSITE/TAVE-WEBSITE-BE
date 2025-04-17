@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface ResumeQuestionRepository extends JpaRepository<ResumeQuestion, Long> {
     List<ResumeQuestion> findByResumeId(Long resumeId);
 
