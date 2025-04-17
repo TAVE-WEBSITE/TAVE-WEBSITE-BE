@@ -10,10 +10,10 @@ import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResume
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.global.common.FieldType;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;
