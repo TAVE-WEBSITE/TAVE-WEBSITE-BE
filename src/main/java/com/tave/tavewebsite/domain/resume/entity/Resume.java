@@ -68,12 +68,6 @@ public class Resume {
     private Member member;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
-    private List<ResumeQuestion> specificResumeQuestion = new ArrayList<>();
-
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
-    private List<ResumeQuestion> commonResumeQuestion = new ArrayList<>();
-
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
     private List<TimeSlot> timeSlots = new ArrayList<>();
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
@@ -94,14 +88,6 @@ public class Resume {
         this.member = member;
 
         member.addResume(this);
-    }
-
-    public void addSpecificQuestion(ResumeQuestion resumeQuestion) {
-        this.specificResumeQuestion.add(resumeQuestion);
-    }
-
-    public void addCommonQuestion(ResumeQuestion resumeQuestion) {
-        this.commonResumeQuestion.add(resumeQuestion);
     }
 
     public void addTimeSlot(TimeSlot timeSlot) {

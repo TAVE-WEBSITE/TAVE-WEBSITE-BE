@@ -5,6 +5,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorMessage {
+    // ResumeQuestion
+    RESUME_QUESTION_NOT_MATCH_RESUME(400, "해당 Resume의 ResumeQuestion이 없습니다."),
+
+    // Resume
     RESUME_NOT_FOUND(404, "해당 이력서가 존재하지 않습니다."),
     MEMBER_NOT_FOUND(400, "회원이 존재하지 않습니다."),
 

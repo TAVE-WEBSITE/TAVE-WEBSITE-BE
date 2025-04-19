@@ -42,4 +42,13 @@
         <appender-ref ref="ASYNC_FILE" /> <!-- 비동기 파일 로깅 사용 -->
     </root>
 
+    <!-- JDBC 관련 로깅 -->
+    <logger name="jdbc" level="OFF"/> <!-- 기본 JDBC 로깅은 OFF -->
+    <logger name="jdbc.sqlonly" level="DEBUG"/>
+    <logger name="jdbc.sqltiming" level="OFF"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="DEBUG"/>
+
 </configuration>
