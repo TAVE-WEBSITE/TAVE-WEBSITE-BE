@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.question.dto.response.QuestionDetailsResponse
 import com.tave.tavewebsite.domain.question.service.QuestionService;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @PostMapping("/question")
-    public SuccessResponse questionSave(@RequestBody QuestionSaveRequest dto) {
+    public SuccessResponse questionSave(@RequestBody @Valid QuestionSaveRequest dto) {
 
         questionService.saveQuestion(dto);
 
@@ -50,7 +51,7 @@ public class QuestionController {
     }
 
     @PatchMapping("/question")
-    public SuccessResponse questionUpdate(@RequestBody QuestionUpdateRequest dto) {
+    public SuccessResponse questionUpdate(@RequestBody @Valid QuestionUpdateRequest dto) {
 
         questionService.updateQuestion(dto);
 
