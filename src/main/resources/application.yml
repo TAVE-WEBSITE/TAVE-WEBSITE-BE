@@ -48,6 +48,15 @@ cloud:
     region:
       static: ${region}
 
-logging.level:
-  org.hibernate.SQL: debug
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            PreparedStatementCreator: OFF
+            JdbcTemplate$SimplePreparedStatementCreator: OFF
 #  org.hibernate.type: trace
