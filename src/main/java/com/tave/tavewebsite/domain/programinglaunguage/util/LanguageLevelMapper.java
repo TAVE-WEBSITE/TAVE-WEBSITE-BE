@@ -5,8 +5,8 @@ import com.tave.tavewebsite.domain.programinglaunguage.dto.response.LanguageLeve
 import com.tave.tavewebsite.domain.programinglaunguage.dto.response.ProgrammingLanguageResponseDto;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.ProgramingLanguage;
+import com.tave.tavewebsite.domain.programinglaunguage.exception.LanguageErrorException.NotFoundFieldException;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.global.common.FieldType;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class LanguageLevelMapper {
         try {
             return FieldType.valueOf(field.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ResumeNotFoundException();
+            throw new NotFoundFieldException();
         }
     }
 }
