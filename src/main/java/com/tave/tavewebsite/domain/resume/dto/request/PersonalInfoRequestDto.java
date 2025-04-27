@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.dto.request;
 
+import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -19,5 +20,5 @@ public class PersonalInfoRequestDto {
     private String minor;
 
     @NotNull
-    private String field;
+    private FieldType field;
 }
