@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.programinglaunguage.service;
 import com.tave.tavewebsite.domain.programinglaunguage.dto.request.LanguageLevelRequestDto;
 import com.tave.tavewebsite.domain.programinglaunguage.dto.response.LanguageLevelResponseDto;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
+import com.tave.tavewebsite.domain.programinglaunguage.repository.LanguageLevelRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProgramingLanguageService {
 
     private final ResumeRepository resumeRepository;
+    private final LanguageLevelRepository languageLevelRepository;
 
     public List<LanguageLevelResponseDto> getLanguageLevel(Long resumeId) {
         Resume resume = resumeRepository.findResumeWithLanguageLevels(resumeId);
