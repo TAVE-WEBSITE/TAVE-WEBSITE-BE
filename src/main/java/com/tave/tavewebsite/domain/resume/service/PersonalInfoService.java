@@ -40,8 +40,8 @@ public class PersonalInfoService {
 
         // 필드값 기준으로 질문들을 찾은 후 해당 질문들을 모두 저장시키는 과정
         List<ProgramingLanguage> byField = programingLanguageRepository.findByField(
-                FieldType.valueOf(savedResume.getField())); // *****지우야**** 여기 지금 String으로 돼있어서 내가 강제러 바꿔놧는데
-        // field 타입 바꾸고 나서 여기 코드도 수정해줘
+                FieldType.valueOf(
+                        savedResume.getField())); //todo *****지우야**** 여기 지금 resume field가 String으로 돼있어서 내가 강제로 바꿔놨는데 field 타입 바꾸고 나서 여기 코드도 수정해줘
         List<LanguageLevel> languageLevel = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
 
         languageLevelRepository.saveAll(languageLevel);

@@ -32,7 +32,8 @@ public class ProgramingLanguageAdminService {
 
     @Transactional
     public void deleteProgramingLanguage(Long id) {
-        programingLanguageRepository.findById(id).orElseThrow(LanguageErrorException.NotFoundLanguageException::new);
+        programingLanguageRepository.findById(id)
+                .orElseThrow(LanguageErrorException.NotFoundLanguageException::new);
         programingLanguageRepository.deleteById(id);
     }
 

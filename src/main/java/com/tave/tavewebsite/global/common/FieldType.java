@@ -9,6 +9,7 @@ public enum FieldType {
     DESIGN("Design"),
     DEEPLEARNING("Deep Learning"),
     DATAANALYSIS("Data Analysis"),
+    FRONTEND("Frontend"),
     WEBFRONTEND("Web Frontend"),
     APPFRONTEND("App Frontend"),
     BACKEND("Backend"),
