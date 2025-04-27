@@ -103,7 +103,7 @@ public class Resume {
         this.school = requestDto.getSchool();
         this.major = requestDto.getMajor();
         this.minor = requestDto.getMinor();
-        this.field = FieldType.fromMessage(requestDto.getField());
+        this.field = requestDto.getField();
     }
 
     public void updateSocialLinks(SocialLinksRequestDto socialLinksRequestDto) {
