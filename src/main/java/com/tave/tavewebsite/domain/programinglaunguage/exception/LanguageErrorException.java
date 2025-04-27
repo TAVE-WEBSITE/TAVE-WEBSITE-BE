@@ -13,8 +13,8 @@ public abstract class LanguageErrorException {
 
     public static class NotFoundFieldException extends BaseErrorException {
         public NotFoundFieldException() {
-            super(ProgrammingLanguageErrorMessage.NOT_FOUND_PROGRAMMING_LANGUAGE.getCode(),
-                    ProgrammingLanguageErrorMessage.NOT_FOUND_PROGRAMMING_LANGUAGE.getMessage());
+            super(ProgrammingLanguageErrorMessage.NOT_FOUND_FIELD_LANGUAGE.getCode(),
+                    ProgrammingLanguageErrorMessage.NOT_FOUND_FIELD_LANGUAGE.getMessage());
         }
     }
 
