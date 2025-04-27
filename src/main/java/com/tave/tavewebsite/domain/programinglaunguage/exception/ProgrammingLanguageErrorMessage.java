@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum ProgrammingLanguageErrorMessage {
 
     NOT_FOUND_PROGRAMMING_LANGUAGE(400, "해당 언어를 찾을 수 없습니다."),
-    NOT_FOUND_FIELD_LANGUAGE(400, "해당 분야를 찾을 수 없습니다.");
+    NOT_FOUND_FIELD_LANGUAGE(400, "해당 언어를 찾을 수 없습니다.");
 
 
     final int code;
