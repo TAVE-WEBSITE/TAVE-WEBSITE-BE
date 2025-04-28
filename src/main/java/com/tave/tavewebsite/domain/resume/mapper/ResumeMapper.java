@@ -4,16 +4,17 @@ import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.global.common.FieldType;
 
 public class ResumeMapper {
 
-    public static Resume toResume(PersonalInfoRequestDto requestDto, Member member) {
+    public static Resume toResume(PersonalInfoRequestDto requestDto, Member member, FieldType fieldType) {
         return Resume.builder()
                 .member(member)
                 .school(requestDto.getSchool())
                 .major(requestDto.getMajor())
                 .minor(requestDto.getMinor())
-                .field(requestDto.getField())
+                .field(fieldType)
                 .build();
     }
 
@@ -22,7 +23,7 @@ public class ResumeMapper {
                 resume.getSchool(),
                 resume.getMajor(),
                 resume.getMinor(),
-                resume.getField()
+                resume.getField().getMessage()
         );
     }
 }

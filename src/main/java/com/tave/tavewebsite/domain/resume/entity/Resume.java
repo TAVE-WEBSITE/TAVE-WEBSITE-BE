@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -16,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static net.bytebuddy.matcher.ElementMatchers.fieldType;
 
 @Entity
 @Getter
@@ -39,9 +42,9 @@ public class Resume {
     @Column(length = 20)
     private String minor;
 
-    @Size(min = 1, max = 15)
-    @Column(length = 8)
-    private String field;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private FieldType field;
 
     @Min(1)
     @Max(5)
@@ -75,7 +78,7 @@ public class Resume {
 
     @Builder
     public Resume(String school, String major, String minor, Integer resumeGeneration, String blogUrl, String githubUrl,
-                  String portfolioUrl, String state, String field, Member member) {
+                  String portfolioUrl, String state, FieldType field, Member member) {
         this.school = school;
         this.major = major;
         this.minor = minor;
@@ -98,30 +101,11 @@ public class Resume {
         this.languageLevels.add(languageLevel);
     }
 
-    public void updatePersonalInfo(PersonalInfoRequestDto requestDto) {
+    public void updatePersonalInfo(PersonalInfoRequestDto requestDto, FieldType fieldType) {
         this.school = requestDto.getSchool();
         this.major = requestDto.getMajor();
         this.minor = requestDto.getMinor();
-        this.field = requestDto.getField();
-    }
-
-    public enum FieldType {
-        DESIGNER("designer"),
-        WEBFRONTEND("Web Frontend"),
-        APPFRONTEND("App Frontend"),
-        BACKEND("Backend"),
-        DATAANALYSIS("Data Analysis"),
-        DEEPLEARNING("Deep Learning");
-
-        private final String message;
-
-        FieldType(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
+        this.field = fieldType;
     }
 
     public void updateSocialLinks(SocialLinksRequestDto socialLinksRequestDto) {
