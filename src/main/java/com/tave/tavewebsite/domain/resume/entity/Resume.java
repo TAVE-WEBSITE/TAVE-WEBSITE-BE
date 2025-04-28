@@ -18,6 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static net.bytebuddy.matcher.ElementMatchers.fieldType;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -99,11 +101,11 @@ public class Resume {
         this.languageLevels.add(languageLevel);
     }
 
-    public void updatePersonalInfo(PersonalInfoRequestDto requestDto) {
+    public void updatePersonalInfo(PersonalInfoRequestDto requestDto, FieldType fieldType) {
         this.school = requestDto.getSchool();
         this.major = requestDto.getMajor();
         this.minor = requestDto.getMinor();
-        this.field = requestDto.getField();
+        this.field = fieldType;
     }
 
     public void updateSocialLinks(SocialLinksRequestDto socialLinksRequestDto) {
