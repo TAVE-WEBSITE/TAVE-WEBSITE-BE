@@ -53,7 +53,7 @@ public class Member extends BaseEntity {
     private RoleType role;
 
     @Size(min = 2, max = 20)
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = true)
     private String nickname;
 
     @NotNull
