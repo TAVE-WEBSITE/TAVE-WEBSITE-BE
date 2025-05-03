@@ -48,7 +48,7 @@ public class JwtTokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 1800000);
         String accessToken = Jwts.builder()
-                .setSubject(member.getNickname())
+                .setSubject(String.valueOf(member.getId()))
                 .claim("auth", "ROLE_" + member.getRole().name())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
