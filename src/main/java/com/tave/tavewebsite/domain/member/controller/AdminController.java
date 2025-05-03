@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +16,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @PostMapping("/manager")
+    @GetMapping("/manager")
     public SuccessResponse<Page<ManagerResponseDto>> getManagersByStatus(
             @RequestParam(defaultValue = "AUTHORIZED") String status,
             @RequestParam(defaultValue = "1") int page,
