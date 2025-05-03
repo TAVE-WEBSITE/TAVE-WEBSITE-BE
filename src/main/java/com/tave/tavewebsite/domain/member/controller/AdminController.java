@@ -17,26 +17,15 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    // 승인 완료 운영진 조회
-    @PostMapping("/manager/authorized")
-    public SuccessResponse<Page<ManagerResponseDto>> getAuthorizedManagers(
+    @PostMapping("/manager")
+    public SuccessResponse<Page<ManagerResponseDto>> getManagersByStatus(
+            @RequestParam(defaultValue = "AUTHORIZED") String status,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
 
-        Pageable pageable = PageRequest.of(page - 1, size);
-        return adminService.getManagersByStatus("AUTHORIZED", pageable);
+        Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
+        return adminService.getManagersByStatus(status.toUpperCase(), pageable);
     }
-
-    // 승인 대기 운영진 조회
-    @PostMapping("/manager/unauthorized")
-    public SuccessResponse<Page<ManagerResponseDto>> getUnauthorizedManagers(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size) {
-
-        Pageable pageable = PageRequest.of(page - 1, size);
-        return adminService.getManagersByStatus("UNAUTHORIZED", pageable);
-    }
-
 
     @DeleteMapping("/{memberId}")
     public SuccessResponse deleteManager(@PathVariable Long memberId) {
