@@ -9,6 +9,7 @@ import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLang
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
+import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.exception.FieldTypeInvalidException;
 import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
@@ -30,21 +31,21 @@ public class PersonalInfoService {
     private final MemberRepository memberRepository;
     private final ProgramingLanguageRepository programingLanguageRepository;
     private final LanguageLevelRepository languageLevelRepository;
+    private final ResumeQuestionService resumeQuestionService;
 
-    // 개인정보 저장
     @Transactional
-    public void createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
+    public ResumeQuestionResponse createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
         Resume savedResume = resumeRepository.save(ResumeMapper.toResume(requestDto, member, fieldType));
 
-        // 필드값 기준으로 질문들을 찾은 후 해당 질문들을 모두 저장시키는 과정
         List<ProgramingLanguage> byField = programingLanguageRepository.findByField(savedResume.getField());
-        List<LanguageLevel> languageLevel = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
+        List<LanguageLevel> languageLevels = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
+        languageLevelRepository.saveAll(languageLevels);
 
-        languageLevelRepository.saveAll(languageLevel);
+        return resumeQuestionService.createResumeQuestion(savedResume, fieldType);
     }
 
     // 임시 저장 기능 (현재까지 입력한 정보 저장)
