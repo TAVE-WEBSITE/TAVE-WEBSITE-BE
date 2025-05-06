@@ -31,10 +31,9 @@ public class PersonalInfoService {
     private final MemberRepository memberRepository;
     private final ProgramingLanguageRepository programingLanguageRepository;
     private final LanguageLevelRepository languageLevelRepository;
-    private final ResumeQuestionService resumeQuestionService;
 
     @Transactional
-    public ResumeQuestionResponse createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
+    public void createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -44,8 +43,6 @@ public class PersonalInfoService {
         List<ProgramingLanguage> byField = programingLanguageRepository.findByField(savedResume.getField());
         List<LanguageLevel> languageLevels = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
         languageLevelRepository.saveAll(languageLevels);
-
-        return resumeQuestionService.createResumeQuestion(savedResume, fieldType);
     }
 
     // 임시 저장 기능 (현재까지 입력한 정보 저장)

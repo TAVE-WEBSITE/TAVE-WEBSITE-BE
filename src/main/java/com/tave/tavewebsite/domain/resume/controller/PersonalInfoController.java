@@ -19,18 +19,6 @@ public class PersonalInfoController {
 
     private final PersonalInfoService personalInfoService;
 
-    // 개인정보 저장 및 질문 목록 반환
-    @PostMapping("/resume/{memberId}")
-    public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(@PathVariable("memberId") Long memberId,
-                                                                                       @RequestBody @Valid PersonalInfoRequestDto requestDto) {
-        ResumeQuestionResponse questions = personalInfoService.createPersonalInfo(memberId, requestDto);
-
-        CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
-                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(), questions);
-
-        return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
-    }
-
     // 개인정보 저장 (새로운 지원서 생성)
     @PostMapping("/{memberId}")
     public SuccessResponse createPersonalInfo(@PathVariable("memberId") Long memberId,
