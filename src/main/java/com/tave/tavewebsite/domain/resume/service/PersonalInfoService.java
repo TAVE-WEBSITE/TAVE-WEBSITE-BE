@@ -90,4 +90,10 @@ public class PersonalInfoService {
             throw new FieldTypeInvalidException();
         }
     }
+
+    public Resume getResumeEntityById(Long resumeId) {
+        return resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+    }
+
 }
