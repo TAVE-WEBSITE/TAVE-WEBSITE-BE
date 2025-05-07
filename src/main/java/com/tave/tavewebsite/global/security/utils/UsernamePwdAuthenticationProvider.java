@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.global.security.utils;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.member.exception.UnauthorizedMemberException;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.global.security.exception.LoginFailException.AuthenticationNotFoundException;
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class UsernamePwdAuthenticationProvider implements AuthenticationProvider
 
         if (customer.isPresent()) {
             if (passwordEncoder.matches(pwd, customer.get().getPassword())) {
+                if (customer.get().getRole().name().equals("UNAUTHORIZED_MANAGER")) {
+                    throw new UnauthorizedMemberException();
+                }
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority(customer.get().getRole().name()));
                 return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
