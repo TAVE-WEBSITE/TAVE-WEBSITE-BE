@@ -17,7 +17,9 @@ public enum ErrorMessage {
 
     SOCIAL_LINK_NOT_FOUND(404, "url이 존재하지 않습니다."),
 
-    FIELD_TYPE_INVALID(400, "유효하지 않은 필드 타입입니다.");
+    FIELD_TYPE_INVALID(400, "유효하지 않은 필드 타입입니다."),
+
+    INVALID_PAGE_NUMBER(400, "유효하지 않은 페이지 번호입니다.");
 
     private final int code;
     private final String message;

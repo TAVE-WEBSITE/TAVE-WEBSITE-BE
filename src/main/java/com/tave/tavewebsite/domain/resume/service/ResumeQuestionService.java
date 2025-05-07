@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionRespo
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
+import com.tave.tavewebsite.domain.resume.exception.InvalidPageNumberException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
@@ -95,4 +96,20 @@ public class ResumeQuestionService {
         return Stream.concat(commonQuestionList.stream(), specificQuestionList.stream())
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<DetailResumeQuestionResponse> getResumeQuestionPage(Resume resume, int page) {
+        FieldType targetFieldType;
+
+        if (page == 1) {
+            targetFieldType = resume.getField(); // 사용자가 지원한 분야
+        } else if (page == 2) {
+            targetFieldType = FieldType.COMMON; // 공통
+        } else {
+            throw new InvalidPageNumberException();
+        }
+
+        return getResumeQuestionList(resume, targetFieldType);
+    }
+
 }
