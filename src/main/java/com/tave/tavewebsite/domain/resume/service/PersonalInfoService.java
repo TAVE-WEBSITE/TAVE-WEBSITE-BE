@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
@@ -8,15 +9,14 @@ import com.tave.tavewebsite.domain.programinglaunguage.repository.LanguageLevelR
 import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLanguageRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
-import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.domain.resume.exception.FieldTypeInvalidException;
-import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
-import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
+import com.tave.tavewebsite.domain.resume.exception.*;
 import com.tave.tavewebsite.domain.resume.mapper.ResumeMapper;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
+import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -31,6 +31,9 @@ public class PersonalInfoService {
     private final MemberRepository memberRepository;
     private final ProgramingLanguageRepository programingLanguageRepository;
     private final LanguageLevelRepository languageLevelRepository;
+
+    private final RedisUtil redisUtil;
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public void createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
@@ -48,12 +51,35 @@ public class PersonalInfoService {
     // 임시 저장 기능 (현재까지 입력한 정보 저장)
     @Transactional
     public void tempSavePersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
-        Resume resume = resumeRepository.findByMemberId(memberId)
-                .orElseThrow(ResumeNotFoundException::new);
+        TempPersonalInfoDto tempDto = new TempPersonalInfoDto(
+                requestDto.getSchool(),
+                requestDto.getMajor(),
+                requestDto.getMinor(),
+                requestDto.getField()
+        );
 
-        FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
-        // 기존 정보 갱신 (임시 저장 위해)
-        resume.updatePersonalInfo(requestDto, fieldType);
+        try {
+            String json = objectMapper.writeValueAsString(tempDto);
+            String key = "temp-resume:" + memberId;
+            redisUtil.set(key, json, 60 * 24 * 30);
+        } catch (Exception e) {
+            throw new TempSerializeFailedException();
+        }
+    }
+
+    // Redis에서 임시저장 불러오기
+    public TempPersonalInfoDto getTempSavedPersonalInfo(Long memberId) {
+        String key = "temp-resume:" + memberId;
+        Object data = redisUtil.get(key);
+        if (data == null) {
+            throw new TempNotFoundException();
+        }
+
+        try {
+            return objectMapper.readValue(data.toString(), TempPersonalInfoDto.class);
+        } catch (Exception e) {
+            throw new TempParseFailedException();
+        }
     }
 
     public PersonalInfoResponseDto getPersonalInfo(Long resumeId) {
