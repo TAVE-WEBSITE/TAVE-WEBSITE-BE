@@ -85,7 +85,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resume> resumes = new ArrayList<>();
 
     // 패스워드 인코딩 필요
