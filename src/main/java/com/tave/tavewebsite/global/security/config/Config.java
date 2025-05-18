@@ -35,7 +35,8 @@ public class Config {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowedOriginPatterns(
-                List.of("http://localhost:3000", "https://localhost:3000", "http://localhost:8080", "https://www.tave-wave.com"));
+                List.of("http://localhost:3000", "https://localhost:3000", "http://localhost:8080",
+                        "https://www.tave-wave.com", "https://tave-admin.info", "https://www.tave-admin.info"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         corsConfiguration.setExposedHeaders(List.of("Set-Cookie"));
@@ -61,7 +62,8 @@ public class Config {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
-                        .requestMatchers("/v1/normal/**", "/v1/auth/signup", "/v1/auth/signin", "/v1/auth/refresh", "/v1/auth/normal/signup")
+                        .requestMatchers("/v1/normal/**", "/v1/auth/signup", "/v1/auth/signin", "/v1/auth/refresh",
+                                "/v1/auth/normal/signup")
                         .permitAll()
 
                         // 일반 회원 전용 api

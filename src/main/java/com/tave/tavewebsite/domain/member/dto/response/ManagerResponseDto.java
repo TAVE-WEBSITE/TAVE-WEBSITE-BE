@@ -9,7 +9,7 @@ public record ManagerResponseDto(
         String username,
         DepartmentType department,
         JobType job,
-        String nickname,
+        String email,
         String generation,
         String agitId
 ) {
@@ -19,7 +19,7 @@ public record ManagerResponseDto(
                 member.getUsername(),
                 member.getDepartment(),
                 member.getJob(),
-                member.getNickname(),
+                member.getEmail(),
                 member.getGeneration(),
                 member.getAgitId()
         );
