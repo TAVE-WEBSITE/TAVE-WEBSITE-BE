@@ -2,7 +2,9 @@ package com.tave.tavewebsite.domain.resume.controller;
 
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
+import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
+import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -20,12 +22,16 @@ public class PersonalInfoController {
 
     private final PersonalInfoService personalInfoService;
 
-    // 개인정보 저장 (새로운 지원서 생성)
-    @PostMapping("/{memberId}")
-    public SuccessResponse createPersonalInfo(@PathVariable("memberId") Long memberId,
-                                              @RequestBody @Valid PersonalInfoRequestDto requestDto) {
-        personalInfoService.createPersonalInfo(memberId, requestDto);
-        return SuccessResponse.ok(CREATE_SUCCESS.getMessage());
+    // 개인정보 저장 및 질문 목록 반환
+    @PostMapping("/resume/{memberId}")
+    public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(@PathVariable("memberId") Long memberId,
+                                                                                       @RequestBody @Valid PersonalInfoRequestDto requestDto) {
+        ResumeQuestionResponse questions = personalInfoService.createPersonalInfo(memberId, requestDto);
+
+        CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
+                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(), questions);
+
+        return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
     }
 
     // 개인정보 조회
