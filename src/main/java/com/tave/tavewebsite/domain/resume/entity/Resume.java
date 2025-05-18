@@ -76,6 +76,9 @@ public class Resume {
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
     private List<LanguageLevel> languageLevels = new ArrayList<>();
 
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ResumeQuestion> resumeQuestions = new ArrayList<>();
+
     @Builder
     public Resume(String school, String major, String minor, Integer resumeGeneration, String blogUrl, String githubUrl,
                   String portfolioUrl, String state, FieldType field, Member member) {
