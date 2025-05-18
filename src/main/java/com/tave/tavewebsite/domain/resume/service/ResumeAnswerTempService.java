@@ -1,8 +1,8 @@
 package com.tave.tavewebsite.domain.resume.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempWrapper;
 import com.tave.tavewebsite.domain.resume.exception.TempParseFailedException;
 import com.tave.tavewebsite.domain.resume.exception.TempNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.TempSaveFailedException;
@@ -22,23 +22,24 @@ public class ResumeAnswerTempService {
     @Transactional
     public void tempSaveAnswers(Long resumeId, int page, List<ResumeAnswerTempDto> answers) {
         try {
-            String json = objectMapper.writeValueAsString(answers);
-            String key = "temp-resume-answer:" + resumeId + ":" + page;
+            ResumeAnswerTempWrapper wrapper = new ResumeAnswerTempWrapper(page, answers);
+            String json = objectMapper.writeValueAsString(wrapper);
+            String key = "temp-resume-answer:" + resumeId;
             redisUtil.set(key, json, 60 * 24 * 30); // 30일 유효
         } catch (Exception e) {
             throw new TempSaveFailedException();
         }
     }
 
-    public List<ResumeAnswerTempDto> getTempSavedAnswers(Long resumeId, int page) {
-        String key = "temp-resume-answer:" + resumeId + ":" + page;
+    public ResumeAnswerTempWrapper getTempSavedAnswers(Long resumeId) {
+        String key = "temp-resume-answer:" + resumeId;
         Object data = redisUtil.get(key);
         if (data == null) {
             throw new TempNotFoundException();
         }
 
         try {
-            return objectMapper.readValue(data.toString(), new TypeReference<>() {});
+            return objectMapper.readValue(data.toString(), ResumeAnswerTempWrapper.class);
         } catch (Exception e) {
             throw new TempParseFailedException();
         }
