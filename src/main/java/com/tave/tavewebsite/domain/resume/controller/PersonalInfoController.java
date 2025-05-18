@@ -17,13 +17,13 @@ import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessM
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/v1/normal/info")
+@RequestMapping("/v1/member/info")
 public class PersonalInfoController {
 
     private final PersonalInfoService personalInfoService;
 
     // 개인정보 저장 및 질문 목록 반환
-    @PostMapping("/resume/{memberId}")
+    @PostMapping("/{memberId}")
     public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(@PathVariable("memberId") Long memberId,
                                                                                        @RequestBody @Valid PersonalInfoRequestDto requestDto) {
         ResumeQuestionResponse questions = personalInfoService.createPersonalInfo(memberId, requestDto);
