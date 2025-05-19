@@ -70,11 +70,14 @@ public class Resume {
     @JoinColumn(name = "memberId", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimeSlot> timeSlots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LanguageLevel> languageLevels = new ArrayList<>();
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ResumeQuestion> resumeQuestions = new ArrayList<>();
 
     @Builder
     public Resume(String school, String major, String minor, Integer resumeGeneration, String blogUrl, String githubUrl,
