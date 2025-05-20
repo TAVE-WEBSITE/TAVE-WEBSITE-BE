@@ -17,7 +17,15 @@ public enum ErrorMessage {
 
     SOCIAL_LINK_NOT_FOUND(404, "url이 존재하지 않습니다."),
 
-    FIELD_TYPE_INVALID(400, "유효하지 않은 필드 타입입니다.");
+    FIELD_TYPE_INVALID(400, "유효하지 않은 필드 타입입니다."),
+
+    INVALID_PAGE_NUMBER(400, "유효하지 않은 페이지 번호입니다."),
+
+    // Redis 임시 저장
+    TEMP_NOT_FOUND(404, "임시 저장된 정보가 없습니다."),
+    TEMP_PARSE_FAILED(500, "임시 정보를 파싱하는 데 실패했습니다."),
+    TEMP_SERIALIZE_FAILED(500, "임시 저장 데이터를 JSON으로 변환하는 데 실패했습니다."),
+    TEMP_SAVE_FAILED(500, "임시 저장에 실패했습니다.");
 
     private final int code;
     private final String message;
