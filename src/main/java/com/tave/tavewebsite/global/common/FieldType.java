@@ -15,7 +15,10 @@ public enum FieldType {
     BACKEND("Backend"),
     ADVANCED("Advanced"),       // 심화
     COMMON("Common"),
-    COLLABORATIVE("Collaborative");   // 연합
+    COLLABORATIVE("Collaborative"),   // 연합
+
+    EXCEL_PARSING_NULL("Parsing Error"),
+    PARSING_NULL("분석 실패");
 
     private final String message;
 }
