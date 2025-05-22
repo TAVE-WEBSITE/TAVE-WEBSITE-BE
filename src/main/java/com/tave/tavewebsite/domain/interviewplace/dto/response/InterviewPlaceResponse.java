@@ -28,7 +28,7 @@ public record InterviewPlaceResponse(
                 .fourthOpenChatLink(interviewPlace.getFourthOpenChatLink())
                 .firstDocumentLink(interviewPlace.getFirstDocumentLink())
                 .secondDocumentLink(interviewPlace.getSecondDocumentLink())
-                .thirdDocumentLink(interviewPlace.getThridDocumentLink())
+                .thirdDocumentLink(interviewPlace.getThirdDocumentLink())
                 .fourthDocumentLink(interviewPlace.getFourthDocumentLink())
                 .build();
     }
