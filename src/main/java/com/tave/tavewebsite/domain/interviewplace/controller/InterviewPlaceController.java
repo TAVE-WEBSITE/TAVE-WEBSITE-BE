@@ -26,4 +26,12 @@ public class InterviewPlaceController {
         return new SuccessResponse<>(response, INTERVIEW_PLACE_CREATED.getMessage());
     }
 
+    @GetMapping("/v1/manager/interview-place")
+    public SuccessResponse<InterviewPlaceResponse> getInterviewPlace() {
+
+        InterviewPlaceResponse response = interviewPlaceService.getInterviewPlace();
+
+        return new SuccessResponse<>(response, INTERVIEW_PLACE_GET.getMessage());
+    }
+
 }
