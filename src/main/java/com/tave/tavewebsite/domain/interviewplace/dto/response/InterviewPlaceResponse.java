@@ -14,7 +14,7 @@ public record InterviewPlaceResponse(
         String fourthOpenChatLink,
         String firstDocumentLink,
         String secondDocumentLink,
-        String thridDocumentLink,
+        String thirdDocumentLink,
         String fourthDocumentLink
 ) {
     public static InterviewPlaceResponse of(InterviewPlace interviewPlace) {
@@ -28,7 +28,7 @@ public record InterviewPlaceResponse(
                 .fourthOpenChatLink(interviewPlace.getFourthOpenChatLink())
                 .firstDocumentLink(interviewPlace.getFirstDocumentLink())
                 .secondDocumentLink(interviewPlace.getSecondDocumentLink())
-                .thridDocumentLink(interviewPlace.getThridDocumentLink())
+                .thirdDocumentLink(interviewPlace.getThridDocumentLink())
                 .fourthDocumentLink(interviewPlace.getFourthDocumentLink())
                 .build();
     }
