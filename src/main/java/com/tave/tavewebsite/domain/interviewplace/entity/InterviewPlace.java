@@ -35,16 +35,16 @@ public class InterviewPlace extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     public String fourthOpenChatLink;
 
-    @Column(columnDefinition = "TEXTX")
+    @Column(columnDefinition = "TEXT")
     public String firstDocumentLink;
 
-    @Column(columnDefinition = "TEXTX")
+    @Column(columnDefinition = "TEXT")
     public String secondDocumentLink;
 
-    @Column(columnDefinition = "TEXTX")
+    @Column(columnDefinition = "TEXT")
     public String thridDocumentLink;
 
-    @Column(columnDefinition = "TEXTX")
+    @Column(columnDefinition = "TEXT")
     public String fourthDocumentLink;
 
     public static InterviewPlace of(InterviewPlaceSaveDto dto) {
