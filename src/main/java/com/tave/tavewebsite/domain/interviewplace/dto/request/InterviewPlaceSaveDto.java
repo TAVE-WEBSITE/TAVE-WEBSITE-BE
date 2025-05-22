@@ -11,7 +11,7 @@ public record InterviewPlaceSaveDto(
         String fourthOpenChatLink,
         String firstDocumentLink,
         String secondDocumentLink,
-        String thridDocumentLink,
+        String thirdDocumentLink,
         String fourthDocumentLink
 ) {
 }

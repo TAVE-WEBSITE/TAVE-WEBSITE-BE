@@ -42,7 +42,7 @@ public class InterviewPlace extends BaseEntity {
     public String secondDocumentLink;
 
     @Column(columnDefinition = "TEXT")
-    public String thridDocumentLink;
+    public String thirdDocumentLink;
 
     @Column(columnDefinition = "TEXT")
     public String fourthDocumentLink;
@@ -57,7 +57,7 @@ public class InterviewPlace extends BaseEntity {
                 .fourthOpenChatLink(dto.fourthOpenChatLink())
                 .firstDocumentLink(dto.firstDocumentLink())
                 .secondDocumentLink(dto.secondDocumentLink())
-                .thridDocumentLink(dto.thridDocumentLink())
+                .thirdDocumentLink(dto.thirdDocumentLink())
                 .fourthDocumentLink(dto.fourthDocumentLink())
                 .build();
     }
