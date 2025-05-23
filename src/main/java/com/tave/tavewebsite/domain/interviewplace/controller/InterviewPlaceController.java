@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.interviewplace.dto.request.InterviewPlaceSave
 import com.tave.tavewebsite.domain.interviewplace.dto.response.InterviewPlaceResponse;
 import com.tave.tavewebsite.domain.interviewplace.service.InterviewPlaceService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class InterviewPlaceController {
     private final InterviewPlaceService interviewPlaceService;
 
     @PostMapping("/v1/manager/interview-place")
-    public SuccessResponse<InterviewPlaceResponse> saveInterviewPlace(@RequestBody InterviewPlaceSaveDto dto) {
+    public SuccessResponse<InterviewPlaceResponse> saveInterviewPlace(@RequestBody @Valid InterviewPlaceSaveDto dto) {
 
         InterviewPlaceResponse response = interviewPlaceService.saveInterviewPlace(dto);
 
