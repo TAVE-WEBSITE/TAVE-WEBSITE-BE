@@ -32,9 +32,9 @@ public class EmailWriterConfig {
 
         retryTemplate.setBackOffPolicy(backOffPolicy);
 
+        // 재시도 횟수 설정
         SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(3); // 최대 3회 시도
-
+        retryPolicy.setMaxAttempts(3);
         retryTemplate.setRetryPolicy(retryPolicy);
 
         return items -> {
@@ -43,20 +43,23 @@ public class EmailWriterConfig {
                     retryTemplate.execute(context -> {
                         mailService.sendManagerRegisterMessage(item.getEmail());
                         item.changeStatus(EmailStatus.SUCCESS);
+                        log.info("메일 전송 성공: {}", item.getEmail());
                         return null;
                     }, context -> {
-                        // RecoveryCallback - 재시도 실패 후 수행 (DLQ 처리)
                         item.changeStatus(EmailStatus.FAILED);
                         log.error("DLQ 처리 - {}: {}", item.getEmail(), context.getLastThrowable().getMessage());
                         return null;
                     });
                 } catch (Exception e) {
-                    log.error("Unexpected failure: {}", e.getMessage());
+                    item.changeStatus(EmailStatus.FAILED);
+                    log.error("Unexpected failure: {}", item.getEmail(), e);
                 }
+                emailNotificationRepository.save(item);
             }
             emailNotificationRepository.flush();
         };
     }
+}
 
 //    @Bean
 //    public ItemWriter<EmailNotification> emailWriter() {
@@ -76,5 +79,5 @@ public class EmailWriterConfig {
 //            emailNotificationRepository.flush();
 //        };
 //    }
-}
+
 
