@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
 import com.tave.tavewebsite.global.mail.service.MailService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
@@ -47,7 +48,8 @@ public class EmailWriterConfig {
                         return null;
                     }, context -> {
                         item.changeStatus(EmailStatus.FAILED);
-                        log.error("DLQ 처리 - {}: {}", item.getEmail(), context.getLastThrowable().getMessage());
+                        log.error("DLQ 처리 - {}: {}", item.getEmail(), Objects.requireNonNull(context.getLastThrowable())
+                                .getMessage());
                         return null;
                     });
                 } catch (Exception e) {
