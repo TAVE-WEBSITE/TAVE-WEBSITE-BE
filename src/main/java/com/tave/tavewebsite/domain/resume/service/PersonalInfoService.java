@@ -138,11 +138,13 @@ public class PersonalInfoService {
 
     @Transactional
     public void updatePersonalInfoByMemberId(Long memberId, PersonalInfoRequestDto requestDto) {
-        Resume resume = resumeRepository.findByMemberId(memberId)
-                .orElseThrow(ResumeNotFoundException::new);
-
         FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
-        resume.updatePersonalInfo(requestDto, fieldType);
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        resumeRepository.findByMemberId(memberId)
+                .ifPresent(resume -> resume.updatePersonalInfo(requestDto, fieldType));
     }
 
 
