@@ -34,14 +34,22 @@ public class PersonalInfoController {
         return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
     }
 
-    // 개인정보 조회
-    @GetMapping("/{resumeId}")
-    public SuccessResponse<PersonalInfoResponseDto> getPersonalInfo(@PathVariable("resumeId") Long resumeId) {
-        return new SuccessResponse<>(personalInfoService.getPersonalInfo(resumeId),
-                READ_SUCCESS.getMessage());
+    // 전체 개인정보 조회
+    @GetMapping("/{memberId}")
+    public SuccessResponse<PersonalInfoResponseDto> getAllPersonalInfo(@PathVariable("memberId") Long memberId) {
+        PersonalInfoResponseDto response = personalInfoService.getAllPersonalInfo(memberId);
+        return new SuccessResponse<>(response, READ_SUCCESS.getMessage());
     }
 
-    // 개인정보 수정
+    // 이력서 정보 수정 (memberId)
+    @PatchMapping("/update/{memberId}")
+    public SuccessResponse updatePersonalResumeInfo(@PathVariable("memberId") Long memberId,
+                                                    @RequestBody @Valid PersonalInfoRequestDto requestDto) {
+        personalInfoService.updatePersonalInfoByMemberId(memberId, requestDto);
+        return SuccessResponse.ok(UPDATE_SUCCESS.getMessage());
+    }
+
+    // 개인정보 수정 (resumeId)
     @PatchMapping("/{resumeId}")
     public SuccessResponse updatePersonalInfo(@PathVariable("resumeId") Long resumeId,
                                               @RequestBody @Valid PersonalInfoRequestDto requestDto) {
