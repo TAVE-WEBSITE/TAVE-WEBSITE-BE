@@ -86,13 +86,6 @@ public class PersonalInfoService {
         }
     }
 
-    public PersonalInfoResponseDto getPersonalInfo(Long resumeId) {
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(ResumeNotFoundException::new);
-
-        return ResumeMapper.toPersonalInfoResponseDto(resume);
-    }
-
     @Transactional
     public void updatePersonalInfo(Long resumeId, PersonalInfoRequestDto requestDto) {
         Resume resume = resumeRepository.findById(resumeId)
@@ -122,5 +115,37 @@ public class PersonalInfoService {
         return resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
     }
+
+    public PersonalInfoResponseDto getAllPersonalInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Resume resume = resumeRepository.findByMemberId(memberId)
+                .orElse(null); // 없을 수도 있음
+
+        return PersonalInfoResponseDto.builder()
+                .username(member.getUsername())
+                .sex(member.getSex().name())
+                .birthday(member.getBirthday().toString())
+                .phoneNumber(member.getPhoneNumber())
+                .email(member.getEmail())
+                .school(resume != null ? resume.getSchool() : null)
+                .major(resume != null ? resume.getMajor() : null)
+                .minor(resume != null ? resume.getMinor() : null)
+                .field(resume != null ? resume.getField().name() : null)
+                .build();
+    }
+
+    @Transactional
+    public void updatePersonalInfoByMemberId(Long memberId, PersonalInfoRequestDto requestDto) {
+        FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        resumeRepository.findByMemberId(memberId)
+                .ifPresent(resume -> resume.updatePersonalInfo(requestDto, fieldType));
+    }
+
 
 }

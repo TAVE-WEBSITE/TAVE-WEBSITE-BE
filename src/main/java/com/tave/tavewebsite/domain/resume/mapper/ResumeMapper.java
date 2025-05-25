@@ -18,12 +18,17 @@ public class ResumeMapper {
                 .build();
     }
 
-    public static PersonalInfoResponseDto toPersonalInfoResponseDto(Resume resume) {
-        return new PersonalInfoResponseDto(
-                resume.getSchool(),
-                resume.getMajor(),
-                resume.getMinor(),
-                resume.getField().getMessage()
-        );
+    public static PersonalInfoResponseDto toPersonalInfoResponseDto(Resume resume, Member member) {
+        return PersonalInfoResponseDto.builder()
+                .username(member.getUsername())
+                .sex(member.getSex().name())
+                .birthday(member.getBirthday().toString())
+                .phoneNumber(member.getPhoneNumber())
+                .email(member.getEmail())
+                .school(resume.getSchool())
+                .major(resume.getMajor())
+                .minor(resume.getMinor())
+                .field(resume.getField().getMessage())
+                .build();
     }
 }
