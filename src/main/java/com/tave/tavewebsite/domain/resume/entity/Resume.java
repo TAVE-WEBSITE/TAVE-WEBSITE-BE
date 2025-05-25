@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.domain.resume.exception.AlreadySubmittedResumeException;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -62,9 +63,9 @@ public class Resume {
     @Column(length = 50)
     private String portfolioUrl;
 
-    @Size(min = 1, max = 10)
     @Column(length = 10)
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private ResumeState state = ResumeState.TEMPORARY;
 
     @ManyToOne
     @JoinColumn(name = "memberId", nullable = false)
@@ -81,7 +82,7 @@ public class Resume {
 
     @Builder
     public Resume(String school, String major, String minor, Integer resumeGeneration, String blogUrl, String githubUrl,
-                  String portfolioUrl, String state, FieldType field, Member member) {
+                  String portfolioUrl, ResumeState state, FieldType field, Member member) {
         this.school = school;
         this.major = major;
         this.minor = minor;
@@ -119,4 +120,12 @@ public class Resume {
     public void updatePortfolio(String portfolioUrl) {
         this.portfolioUrl = portfolioUrl;
     }
+
+    public void submit() {
+        if (this.state == ResumeState.SUBMITTED) {
+            throw new AlreadySubmittedResumeException();
+        }
+        this.state = ResumeState.SUBMITTED;
+    }
+
 }
