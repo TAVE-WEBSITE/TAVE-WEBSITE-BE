@@ -45,6 +45,10 @@ public class ResumeQuestion extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FieldType fieldType;
 
+    @Enumerated(EnumType.STRING)
+    private AnswerType answerType;
+
+
     public static ResumeQuestion of(Resume resume, Question question) {
 
         return ResumeQuestion.builder()
