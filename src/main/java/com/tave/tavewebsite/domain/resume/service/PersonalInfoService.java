@@ -38,7 +38,7 @@ public class PersonalInfoService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public ResumeQuestionResponse createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
+    public Resume createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -49,8 +49,13 @@ public class PersonalInfoService {
         List<LanguageLevel> languageLevels = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
         languageLevelRepository.saveAll(languageLevels);
 
-        return resumeQuestionService.createResumeQuestion(savedResume, fieldType);
+        return savedResume;
     }
+
+    public ResumeQuestionResponse createResumeQuestions(Resume resume) {
+        return resumeQuestionService.createResumeQuestion(resume, resume.getField());
+    }
+
 
     // 임시 저장 기능 (현재까지 입력한 정보 저장)
     @Transactional
