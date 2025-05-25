@@ -84,4 +84,11 @@ public class PersonalInfoController {
         return new SuccessResponse<>(response, TEMP_LOAD_SUCCESS.getMessage());
     }
 
+    // 지원서 최종 제출
+    @PostMapping("/{resumeId}/submit")
+    public SuccessResponse<String> submitResume(@PathVariable("resumeId") Long resumeId) {
+        personalInfoService.submitResume(resumeId);
+        return SuccessResponse.ok(SUBMIT_SUCCESS.getMessage());
+    }
+
 }

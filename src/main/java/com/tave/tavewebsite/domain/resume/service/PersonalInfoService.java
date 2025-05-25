@@ -152,5 +152,10 @@ public class PersonalInfoService {
                 .ifPresent(resume -> resume.updatePersonalInfo(requestDto, fieldType));
     }
 
+    public void submitResume(Long resumeId) {
+        Resume resume = getResumeEntityById(resumeId);
+        resume.submit();
+        resumeRepository.save(resume);
+    }
 
 }
