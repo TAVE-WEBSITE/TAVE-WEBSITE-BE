@@ -5,6 +5,7 @@ import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -26,10 +27,14 @@ public class PersonalInfoController {
     @PostMapping("/{memberId}")
     public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(@PathVariable("memberId") Long memberId,
                                                                                        @RequestBody @Valid PersonalInfoRequestDto requestDto) {
-        ResumeQuestionResponse questions = personalInfoService.createPersonalInfo(memberId, requestDto);
+        Resume resume = personalInfoService.createPersonalInfo(memberId, requestDto);
+        ResumeQuestionResponse questions = personalInfoService.createResumeQuestions(resume);
 
         CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
-                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(), questions);
+                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
+                questions,
+                resume.getId()
+        );
 
         return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
     }
