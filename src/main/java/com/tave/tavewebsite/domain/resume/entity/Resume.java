@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -23,12 +24,14 @@ import static net.bytebuddy.matcher.ElementMatchers.fieldType;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Resume {
+public class Resume extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "resume_id")
     private Long id;
+
+    private boolean haschecked = false;
 
     @Size(min = 1, max = 20)
     @Column(length = 20)
@@ -79,6 +82,9 @@ public class Resume {
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ResumeQuestion> resumeQuestions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ResumeEvaluation> resumeEvaluations = new ArrayList<>();
+
     @Builder
     public Resume(String school, String major, String minor, Integer resumeGeneration, String blogUrl, String githubUrl,
                   String portfolioUrl, String state, FieldType field, Member member) {
@@ -118,5 +124,9 @@ public class Resume {
 
     public void updatePortfolio(String portfolioUrl) {
         this.portfolioUrl = portfolioUrl;
+    }
+
+    public void updateChecked(boolean checked) {
+        this.haschecked = checked;
     }
 }
