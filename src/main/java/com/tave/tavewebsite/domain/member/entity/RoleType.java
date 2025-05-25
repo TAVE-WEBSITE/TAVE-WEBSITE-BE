@@ -4,5 +4,6 @@ public enum RoleType {
     MEMBER,
     MANAGER,
     ADMIN,
+    VICE_PRESIDENT,
     UNAUTHORIZED_MANAGER
 }

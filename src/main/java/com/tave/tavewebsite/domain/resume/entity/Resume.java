@@ -19,8 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static net.bytebuddy.matcher.ElementMatchers.fieldType;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,7 +29,8 @@ public class Resume extends BaseEntity {
     @Column(name = "resume_id")
     private Long id;
 
-    private boolean haschecked = false;
+    @Column(nullable = false)
+    private Boolean hasChecked;
 
     @Size(min = 1, max = 20)
     @Column(length = 20)
@@ -98,6 +97,7 @@ public class Resume extends BaseEntity {
         this.portfolioUrl = portfolioUrl;
         this.state = state;
         this.member = member;
+        this.hasChecked = Boolean.FALSE;
 
         member.addResume(this);
     }
@@ -127,6 +127,6 @@ public class Resume extends BaseEntity {
     }
 
     public void updateChecked(boolean checked) {
-        this.haschecked = checked;
+        this.hasChecked = checked;
     }
 }

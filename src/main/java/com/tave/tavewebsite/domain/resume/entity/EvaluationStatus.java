@@ -13,5 +13,5 @@ public enum EvaluationStatus {
     NOTCHECKED("평가 진행 전"),
     COMPLETE("평가 완료");
 
-    private String status;
+    private final String status;
 }
