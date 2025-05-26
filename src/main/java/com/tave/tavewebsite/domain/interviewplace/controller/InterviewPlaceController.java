@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.*;
+import static com.tave.tavewebsite.domain.interviewplace.controller.SuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor

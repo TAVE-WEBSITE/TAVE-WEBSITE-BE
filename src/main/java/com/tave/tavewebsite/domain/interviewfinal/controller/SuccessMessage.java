@@ -7,9 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SuccessMessage {
 
-    INTERVIEW_PLACE_GET("면접 장소 정보를 조회합니다"),
-    INTERVIEW_PLACE_CREATED("면접 장소 정보를 성공적으로 생성했습니다.");
+    INTERVIEW_FINAL_CREATED(200, "최종면접 데이터를 엑셀로부터 추출해 성공적으로 DB에 저장했습니다.");
 
-
+    private final int code;
     private final String message;
 }
