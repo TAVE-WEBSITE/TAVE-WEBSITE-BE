@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.interviewfinal.utils;
 
 import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.global.common.FieldType;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.springframework.stereotype.Component;
@@ -10,10 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+@Slf4j
 @Component
 public class ExcelUtils {
 
-    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("M월 d일");
+    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("M/d");
     public static final String PARSING_NULL = "분석 실패";
     public static final String WEB_FRONTEND = "Web 프론트엔드";
     public static final String APP_FRONTEND = "App 프론트엔드";
