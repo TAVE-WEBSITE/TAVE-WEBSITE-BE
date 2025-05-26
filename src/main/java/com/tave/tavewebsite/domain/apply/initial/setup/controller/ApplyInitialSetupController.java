@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.apply.initial.setup.dto.request.ApplyInitialS
 import com.tave.tavewebsite.domain.apply.initial.setup.dto.response.ApplyInitialSetupReadResponseDto;
 import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +28,13 @@ public class ApplyInitialSetupController {
     }
 
     @PostMapping
-    public SuccessResponse saveApplyInitialSetup(@RequestBody ApplyInitialSetupRequestDto dto) {
+    public SuccessResponse saveApplyInitialSetup(@RequestBody @Valid ApplyInitialSetupRequestDto dto) {
         applyInitialSetupService.saveInitialSetup(dto);
         return SuccessResponse.ok(ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_SAVE_SUCCESS.getMessage());
     }
 
     @PatchMapping
-    public SuccessResponse updateApplyInitialSetup(@RequestBody ApplyInitialSetupRequestDto dto) {
+    public SuccessResponse updateApplyInitialSetup(@RequestBody @Valid ApplyInitialSetupRequestDto dto) {
         applyInitialSetupService.updateInitialSetup(dto);
         return SuccessResponse.ok(ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_UPDATE_SUCCESS.getMessage());
     }
