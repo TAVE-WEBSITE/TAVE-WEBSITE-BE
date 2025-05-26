@@ -33,14 +33,4 @@ public class InterviewFinalController {
                 .body(dto.inputStreamResource());
     }
 
-    @PostMapping("/v1/manager/interview-final")
-    public SuccessResponse interviewFinal(
-            @RequestPart(name="file")MultipartFile file
-    )
-    {
-        interviewFinalUseCase.insertInterviewEntityFromExcel(file);
-
-        return SuccessResponse.ok(INTERVIEW_FINAL_CREATED.getMessage());
-    }
-
 }
