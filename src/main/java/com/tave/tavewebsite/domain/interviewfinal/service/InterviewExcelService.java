@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.interviewfinal.service;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.exception.ExcelBadRequestException;
+import com.tave.tavewebsite.domain.interviewfinal.exception.ExcelNullPointException;
 import com.tave.tavewebsite.domain.interviewfinal.utils.ExcelUtils;
 import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.global.common.FieldType;
@@ -45,6 +46,8 @@ public class InterviewExcelService {
                 dtoList.add(dto);
             }
 
+        }catch (NullPointerException e) {
+            throw new ExcelNullPointException();
         }catch (IOException e) {
             throw new ExcelBadRequestException();
         }
