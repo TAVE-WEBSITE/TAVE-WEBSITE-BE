@@ -1,20 +1,20 @@
 package com.tave.tavewebsite.domain.interviewfinal.controller;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.INTERVIEW_FINAL_CREATED;
+import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.INTERVIEW_FINAL_LIST_GET;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +41,16 @@ public class InterviewFinalController {
         interviewFinalUseCase.insertInterviewEntityFromExcel(file);
 
         return SuccessResponse.ok(INTERVIEW_FINAL_CREATED.getMessage());
+    }
+
+    @GetMapping("/v1/manager/interview-final")
+    public SuccessResponse interviewFinalPageNation(
+        @RequestParam int pageNum,
+        @RequestParam int pageSize
+    ) {
+        List<InterviewFinalDetailDto> response = interviewFinalUseCase.getInterviewFinalList(pageNum, pageSize);
+
+        return new SuccessResponse(response, INTERVIEW_FINAL_LIST_GET.getMessage());
     }
 
 }
