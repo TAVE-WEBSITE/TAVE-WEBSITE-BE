@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.member.service;
 
 import com.tave.tavewebsite.domain.member.dto.request.*;
+import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.exception.DuplicateEmailException;
 import com.tave.tavewebsite.domain.member.exception.DuplicateNicknameException;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -138,6 +141,10 @@ public class MemberService {
         }
 
         member.update(req.validatedPassword(), passwordEncoder);
+    }
+
+    public List<MemberResumeDto> findMemberResumeDto(Integer generation, List<String> email){
+        return memberRepository.findMemberIdAndResumeIdByGenAndEmails(generation, email);
     }
 
 }
