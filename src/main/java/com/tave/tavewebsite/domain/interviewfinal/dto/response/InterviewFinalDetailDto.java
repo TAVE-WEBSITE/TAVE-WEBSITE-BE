@@ -15,17 +15,15 @@ public record InterviewFinalDetailDto(
         Long memberId,
         Long resumeId
 ) {
+    public static String format = "%s %s";
     public static InterviewFinalDetailDto from(InterviewFinal interviewFinal) {
-
-        String interviewDate = interviewFinal.getInterviewDay() + " " + interviewFinal.getInterviewTime();
-
         return InterviewFinalDetailDto.builder()
                 .id(interviewFinal.getId())
                 .field(interviewFinal.getFieldType().getDisplayName())
                 .username(interviewFinal.getUsername())
                 .sex(interviewFinal.getSex().getDisplayName())
                 .university(interviewFinal.getUniversity())
-                .interviewDate(interviewDate)
+                .interviewDate(String.format(format, interviewFinal.getInterviewDay(), interviewFinal.getInterviewTime()))
                 .memberId(interviewFinal.getMemberId())
                 .resumeId(interviewFinal.getResumeId())
                 .build();
