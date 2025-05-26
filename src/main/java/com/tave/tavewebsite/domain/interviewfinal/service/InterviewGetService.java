@@ -7,14 +7,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class InterviewGetService {
 
     private final InterviewFinalRepository interviewFinalRepository;
 
-    public Page<InterviewFinal> getInterviewFinalList(Pageable pageable) {
+    public Page<InterviewFinal> getInterviewFinalPageableList(Pageable pageable) {
         return interviewFinalRepository.findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc(pageable);
+    }
+
+    public List<InterviewFinal> getInterviewFinalList() {
+        return interviewFinalRepository.findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc();
     }
 
 }

@@ -11,4 +11,6 @@ public interface InterviewFinalRepository extends JpaRepository<InterviewFinal, 
 
     Page<InterviewFinal> findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc(Pageable pageable);
 
+    List<InterviewFinal> findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc();
+
 }
