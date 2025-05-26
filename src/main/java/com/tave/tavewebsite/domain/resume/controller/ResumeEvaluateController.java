@@ -5,7 +5,6 @@ import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
 import com.tave.tavewebsite.domain.resume.service.ResumeEvaluateService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSucces
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member/resume")
+@RequestMapping("/v1/admin/resume")
 public class ResumeEvaluateController {
 
     private final ResumeEvaluateService resumeEvaluateService;

@@ -84,8 +84,7 @@ public class JwtTokenProvider {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority((String) claims.get("auth")));
 
-        // UserDetails 객체를 만들어서 Authentication return
-        // UserDetails: interface, User: UserDetails를 구현한 class
+        // CustomUserDetails 객체를 만들어서 Authentication return
         Member member = memberRepository.findById(Long.valueOf(claims.getSubject())).orElseThrow(NotFoundMemberException::new);
         CustomUserDetails userDetails = new CustomUserDetails(member);
 
