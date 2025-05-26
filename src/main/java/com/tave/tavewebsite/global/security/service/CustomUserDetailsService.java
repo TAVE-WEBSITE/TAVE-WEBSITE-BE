@@ -2,6 +2,7 @@ package com.tave.tavewebsite.global.security.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
+import com.tave.tavewebsite.global.security.entity.CustomUserDetails;
 import com.tave.tavewebsite.global.security.exception.LoginFailException.EmailNotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -20,22 +21,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        Optional<Member> byEmail = memberRepository.findByEmail(email);
+        Member byEmail = memberRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
 
-        if (byEmail.isPresent()) {
-            return this.createUserDetails(byEmail.get());
-        } else {
-            throw new EmailNotFoundException();
-        }
+        return new CustomUserDetails(byEmail);
     }
 
     // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
-    private UserDetails createUserDetails(Member member) {
-        return User.builder()
-                .username(member.getEmail())
-                .password(passwordEncoder.encode(member.getPassword()))
-                .roles("ROLE_" + member.getRole().name())
-                .build();
-    }
+//    private UserDetails createUserDetails(Member member) {
+//        return User.builder()
+//                .username(member.getEmail())
+//                .password(passwordEncoder.encode(member.getPassword()))
+//                .roles("ROLE_" + member.getRole().name())
+//                .build();
+//    }
 
 }

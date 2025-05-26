@@ -1,6 +1,9 @@
 package com.tave.tavewebsite.global.security.utils;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
+import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
+import com.tave.tavewebsite.global.security.entity.CustomUserDetails;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.CannotUseRefreshToken;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.EmptyClaimsException;
@@ -33,9 +36,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
     private final Key key;
+    private final MemberRepository memberRepository;
 
     // application.yml에서 secret 값 가져와서 key에 저장
-    public JwtTokenProvider(@Value("${JWT_SECRET}") String secretKey) {
+    public JwtTokenProvider(@Value("${JWT_SECRET}") String secretKey, MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -83,8 +88,15 @@ public class JwtTokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication return
         // UserDetails: interface, User: UserDetails를 구현한 class
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        Member member = memberRepository.findById(Long.valueOf(claims.getSubject())).orElseThrow(NotFoundMemberException::new);
+        CustomUserDetails userDetails = new CustomUserDetails(member);
+
+        // 3) AuthenticationToken 에 principal 로 CustomUserDetails 넣기
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,                          // <- CustomUserDetails
+                accessToken,                          // credentials 필드에 토큰을 넣어도 되고, null 여도 됩니다
+                userDetails.getAuthorities()          // 권한
+        );
     }
 
     // 토큰 정보를 검증하는 메서드
