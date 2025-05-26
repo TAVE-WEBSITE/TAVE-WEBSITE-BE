@@ -8,7 +8,6 @@ import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewSaveService;
 import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
-import com.tave.tavewebsite.domain.member.service.AdminService;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.s3.service.S3DownloadSerivce;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +62,7 @@ public class InterviewFinalUseCase {
     public List<InterviewFinalDetailDto> getInterviewFinalList(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
 
-        return interviewGetService.getInterviewFinalList(pageable)
+        return interviewGetService.getInterviewFinalPageableList(pageable)
                 .getContent()
                 .stream()
                 .map(InterviewFinalDetailDto::from)
