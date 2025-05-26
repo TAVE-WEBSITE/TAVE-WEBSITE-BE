@@ -21,7 +21,7 @@ public class InterviewFinalJdbcRepository {
 
         // INSERT 쿼리
         String sql = """
-            INSERT INTO interview_final (username, last_tel, generation, sex, university, field_type, member_id, resume_id, interview_day, interview_time , created_at, updated_at)
+            INSERT INTO interview_final (username, email, generation, sex, university, field_type, member_id, resume_id, interview_day, interview_time , created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
         """;
 
