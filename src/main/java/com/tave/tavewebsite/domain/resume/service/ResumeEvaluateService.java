@@ -39,7 +39,6 @@ public class ResumeEvaluateService {
         ResumeEvaluation resumeEvaluation = ResumeEvaluation.of(resumeEvaluateReqDto, currentMember, resume);
         resumeEvaluationRepository.save(resumeEvaluation);
         resume.updateChecked(true);
-        resumeRepository.save(resume);
     }
 
     @Transactional(readOnly = true)
