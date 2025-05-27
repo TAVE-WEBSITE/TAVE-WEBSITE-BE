@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.member.exception.AlreadyExixtsResumeException;
+import com.tave.tavewebsite.domain.member.exception.AlreadyExistsResumeException;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeEvaluateReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
@@ -34,7 +34,7 @@ public class ResumeEvaluateService {
         Member currentMember = getCurrentMember();
 
         if(resumeEvaluationRepository.existsByMemberId(currentMember.getId())){
-            throw new AlreadyExixtsResumeException();
+            throw new AlreadyExistsResumeException();
         }
         ResumeEvaluation resumeEvaluation = ResumeEvaluation.of(resumeEvaluateReqDto, currentMember, resume);
         resumeEvaluationRepository.save(resumeEvaluation);
