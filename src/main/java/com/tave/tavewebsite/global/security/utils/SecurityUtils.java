@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.global.security.utils;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.global.security.entity.CustomUserDetails;
 import com.tave.tavewebsite.global.security.exception.AuthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,12 @@ public class SecurityUtils {
 
         Object principal = authentication.getPrincipal();
 
-        return (Member) principal;
+        // principal이 CustomUerDetails 같은 커스텀 클래스인 경우
+        if (principal instanceof CustomUserDetails userDetails) {
+            return userDetails.getMember();
+        }
+
+        // 그 외에는 예외 처리
+        throw new AuthorizedException();
     }
 }

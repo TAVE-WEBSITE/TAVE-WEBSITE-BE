@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.question.entity;
 
 import com.tave.tavewebsite.domain.question.dto.request.QuestionSaveRequest;
 import com.tave.tavewebsite.domain.question.dto.request.QuestionUpdateRequest;
+import com.tave.tavewebsite.domain.resume.entity.AnswerType;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
@@ -36,6 +37,12 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private Integer ordered;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AnswerType answerType;
+
+
     private Integer textLength;
 
     public static Question from(QuestionSaveRequest dto) {
@@ -44,6 +51,7 @@ public class Question extends BaseEntity {
                 .fieldType(dto.fieldType())
                 .ordered(dto.ordered())
                 .textLength(dto.textLength())
+                .answerType(dto.answerType())
                 .build();
     }
 
@@ -52,5 +60,6 @@ public class Question extends BaseEntity {
         this.fieldType = dto.fieldType();
         this.ordered = dto.ordered();
         this.textLength = dto.textLength();
+        this.answerType = dto.answerType();
     }
 }
