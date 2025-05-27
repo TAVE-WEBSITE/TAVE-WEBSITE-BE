@@ -18,4 +18,6 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     Resume findResumeWithLanguageLevels(@Param("id") Long id);
 
     Optional<Resume> findByMemberId(Long memberId);
+
+    int countByHasChecked(Boolean hasChecked);
 }

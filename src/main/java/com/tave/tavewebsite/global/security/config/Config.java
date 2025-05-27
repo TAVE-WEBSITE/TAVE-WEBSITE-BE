@@ -80,6 +80,10 @@ public class Config {
                         .requestMatchers("/v1/manager/**")
                         .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
 
+                        // 처장+회장 전용 api
+                        .requestMatchers("/v1/admin/resume/**")
+                        .hasAnyRole(RoleType.VICE_PRESIDENT.name(), RoleType.ADMIN.name())
+
                         // 회장 전용 api
                         .requestMatchers("/v1/admin/**").hasRole(RoleType.ADMIN.name())
                         .anyRequest().authenticated()
