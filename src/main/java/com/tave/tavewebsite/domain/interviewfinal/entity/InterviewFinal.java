@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Getter
 @SuperBuilder
+@Table(name="interview_final")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InterviewFinal extends BaseEntity {
 
