@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.emailnotification.batch.exception.EmailNotifi
 import com.tave.tavewebsite.domain.emailnotification.dto.request.EmailNotificationRequeestDto;
 import com.tave.tavewebsite.domain.emailnotification.dto.response.EmailNotificationApplyResponseDto;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
+import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
 import com.tave.tavewebsite.domain.emailnotification.util.EmailNotificationMapper;
 import com.tave.tavewebsite.global.mail.service.SESMailService;
@@ -47,6 +48,7 @@ public class EmailNotificationService {
         EmailNotification emailNotification = emailNotificationRepository.findById(id)
                 .orElseThrow(ApplyEmailFindException::new);
         sesMailService.sendApplyNotification(emailNotification.getEmail());
+        emailNotification.changeStatus(EmailStatus.SUCCESS);
     }
 
     public Page<EmailNotificationApplyResponseDto> getEmailNotificationByPageble(Pageable pageable) {
