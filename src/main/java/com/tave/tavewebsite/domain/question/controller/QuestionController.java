@@ -59,7 +59,7 @@ public class QuestionController {
         return SuccessResponse.ok(QUESTION_UPDATED.getMessage());
     }
 
-    @PatchMapping("/question")
+    @PatchMapping("/question/swap")
     public SuccessResponse swapQuestionOrdered(@RequestBody QuestionSwapRequest dto) {
 
         questionService.swapQuestionsOrdered(dto);
