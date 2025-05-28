@@ -12,10 +12,10 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeEvaluationRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class ResumeEvaluateService {
         Resume resume = findIfResumeExists(resumeId);
         Member currentMember = getCurrentMember();
 
-        if(resumeEvaluationRepository.existsByMemberId(currentMember.getId())){
+        if(resumeEvaluationRepository.existsByMemberIdAndResumeId(currentMember.getId(), resumeId)){
             throw new AlreadyExistsResumeException();
         }
         ResumeEvaluation resumeEvaluation = ResumeEvaluation.of(resumeEvaluateReqDto, currentMember, resume);
@@ -42,14 +42,14 @@ public class ResumeEvaluateService {
     }
 
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getResumes() {
-        List<Resume> resumes = resumeRepository.findAll();
+    public ResumeEvaluateResDto getResumes(Pageable pageable) {
+        Page<Resume> resumes = resumeRepository.findAllResume(pageable);
 
-        List<ResumeResDto> resumeDtos = resumes.stream().map(
+        Page<ResumeResDto> resumeDtos = resumes.map(
                 ResumeResDto::from
-        ).toList();
+        );
 
-        return ResumeEvaluateResDto.fromResume(resumes.size(),
+        return ResumeEvaluateResDto.fromResume(resumeRepository.countAll(),
                 resumeRepository.countByHasChecked(Boolean.FALSE),
                 resumeRepository.countByHasChecked(Boolean.TRUE),
                 resumeDtos);

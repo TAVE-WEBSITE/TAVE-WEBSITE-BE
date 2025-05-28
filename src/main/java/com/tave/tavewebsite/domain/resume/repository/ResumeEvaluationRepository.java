@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ResumeEvaluationRepository extends JpaRepository<ResumeEvaluation, Long> {
 
-    boolean existsByMemberId(Long memberId);
+    boolean existsByMemberIdAndResumeId(Long memberId, Long resumeId);
 }

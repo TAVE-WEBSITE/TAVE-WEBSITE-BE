@@ -3,26 +3,31 @@ package com.tave.tavewebsite.domain.resume.service;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
+import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
+import com.tave.tavewebsite.domain.resume.entity.ResumeTimeSlot;
+import com.tave.tavewebsite.domain.resume.exception.NotFoundInterviewTimeException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.UnauthorizedResumeException;
+import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
-import com.tave.tavewebsite.domain.resume.repository.TimeSlotRepository;
+import com.tave.tavewebsite.domain.resume.repository.ResumeTimeSlotRepository;
 import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TimeSlotService {
+public class ResumeTimeService {
 
     private final ResumeRepository resumeRepository;
-    private final TimeSlotRepository timeSlotRepository;
+    private final ResumeTimeSlotRepository resumeTimeSlotRepository;
+    private final InterviewTimeRepository interviewTimeRepository;
 
     private Member getCurrentMember() {
         return SecurityUtils.getCurrentMember();
@@ -41,18 +46,18 @@ public class TimeSlotService {
         Resume resume = findIfResumeExists(resumeId);
         findIfResumeMine(currentMember, resume);
 
-        timeSlotRepository.deleteAllByResumeId(resumeId);
+        resumeTimeSlotRepository.deleteAllByResumeId(resumeId);
         saveTimeSlot(timeSlots, resume);
     }
 
+    // 사용자가 체크한 면접 가능 시간대 조회
     public List<TimeSlotResDto> getTimeSlots(Long resumeId) {
         Member currentMember = getCurrentMember();
         Resume resume = findIfResumeExists(resumeId);
         findIfResumeMine(currentMember, resume);
-        List<TimeSlot> timeSlots = timeSlotRepository.findAllByResumeId(resumeId);
+        List<ResumeTimeSlot> resumeTimeSlots = resumeTimeSlotRepository.findAllByResumeId(resumeId);
 
-
-        return timeSlots.stream().map(TimeSlotResDto::from).toList();
+        return resumeTimeSlots.stream().map(TimeSlotResDto::from).toList();
     }
 
     private void findIfResumeMine(Member currentMember, Resume resume) {
@@ -66,15 +71,30 @@ public class TimeSlotService {
         return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
     }
 
+    // timeSlots 받은 각각의 객체에 대해 해당 시간이 InterviewTime 엔티티에 저장되어 있는지 확인
     private void saveTimeSlot(List<TimeSlotReqDto> timeSlots, Resume resume) {
-        List<TimeSlot> result = timeSlots.stream().map(
-                timeslot -> TimeSlot.of(timeslot.time(), resume)
-        ).toList();
-        timeSlotRepository.saveAll(result);
 
-//        timeSlots.forEach(timeSlotReqDto -> {
-//            TimeSlot timeSlot = TimeSlot.of(timeSlotReqDto.time(), resume);
-//            timeSlotRepository.save(timeSlot);
-//        });
+        for(TimeSlotReqDto timeSlotReqDto : timeSlots) {
+            String dateSlot = validateTimeSlot(timeSlotReqDto.time(), 1);
+            String timeSlot = validateTimeSlot(timeSlotReqDto.time(), 2);
+
+            InterviewTime interviewTime = interviewTimeRepository.findByInterviewDateAndInterviewTime(dateSlot, timeSlot)
+                    .orElseThrow(NotFoundInterviewTimeException::new);
+
+            ResumeTimeSlot resumeTimeSlot = ResumeTimeSlot.of(resume, interviewTime);
+
+            resume.addTimeSlot(resumeTimeSlot);
+            resumeTimeSlotRepository.save(resumeTimeSlot);
+        }
+
+    }
+
+    private String validateTimeSlot(LocalDateTime dateTime, int d) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        if(d == 1) {
+            return dateTime.format(dateFormatter);
+        }
+        else return dateTime.format(timeFormatter);
     }
 }

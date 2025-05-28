@@ -2,6 +2,8 @@ package com.tave.tavewebsite.domain.resume.repository;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +22,8 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     Optional<Resume> findByMemberId(Long memberId);
 
     int countByHasChecked(Boolean hasChecked);
+
+    Page<Resume> findAllResume(Pageable pageable);
+
+    int countAll();
 }
