@@ -18,8 +18,8 @@ public class FinalPassController {
         return new SuccessResponse<>(dto, FinalPassSuccessMessage.CREATE_FINAL_PASS.getMessage());
     }
 
-    @GetMapping("/v1/member/final-pass")
-    public SuccessResponse<FinalPassResponseDto> getFinalPassForMember() {
+    @GetMapping("/v1/normal/final-pass")
+    public SuccessResponse<FinalPassResponseDto> getFinalPass() {
         FinalPassResponseDto dto = finalPassService.getFinalPass();
         return new SuccessResponse<>(dto, FinalPassSuccessMessage.READ_FINAL_PASS.getMessage());
     }
