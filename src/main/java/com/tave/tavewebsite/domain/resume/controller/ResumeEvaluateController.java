@@ -15,7 +15,7 @@ import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSucces
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/admin/resume/evaluate")
+@RequestMapping("/v1/manager/resume/evaluate")
 public class ResumeEvaluateController {
 
     private final ResumeEvaluateService resumeEvaluateService;
