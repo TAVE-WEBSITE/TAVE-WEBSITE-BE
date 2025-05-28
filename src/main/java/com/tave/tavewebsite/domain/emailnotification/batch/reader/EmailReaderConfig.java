@@ -24,7 +24,7 @@ public class EmailReaderConfig {
         reader.setQueryString(
                 "SELECT e FROM EmailNotification e WHERE e.status = 'PENDING' AND e.id BETWEEN :startId AND :endId");
         reader.setParameterValues(Map.of("startId", startId, "endId", endId));
-        reader.setPageSize(50);
+        reader.setPageSize(1000);
         reader.setSaveState(false);
         reader.setName("emailReader");
         return reader;
