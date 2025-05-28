@@ -22,21 +22,29 @@ public class InterviewTime extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String interviewYear;
+
     private String interviewDate;
 
     private String interviewTime;
 
     @Builder
-    public InterviewTime(String interviewDate, String interviewTime) {
+    public InterviewTime(String interviewYear, String interviewDate, String interviewTime) {
+        this.interviewYear = interviewYear;
         this.interviewDate = interviewDate;
         this.interviewTime = interviewTime;
     }
 
     public static InterviewTime of(LocalDateTime localDateTime) {
         return InterviewTime.builder()
+                .interviewYear(convertYearToString(localDateTime))
                 .interviewDate(convertDateToString(localDateTime))
                 .interviewTime(convertTimeToString(localDateTime))
                 .build();
+    }
+
+    private static String convertYearToString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy"));
     }
 
     private static String convertDateToString(LocalDateTime localDateTime) {

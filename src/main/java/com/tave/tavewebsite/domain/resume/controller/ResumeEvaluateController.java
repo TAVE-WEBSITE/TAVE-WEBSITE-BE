@@ -1,7 +1,9 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.resume.dto.request.InterviewTimeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeEvaluateReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
+import com.tave.tavewebsite.domain.resume.service.InterviewTimeService;
 import com.tave.tavewebsite.domain.resume.service.ResumeEvaluateService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -10,8 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSuccessMessage.CREATE_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSuccessMessage.READ_SUCCESS;
+import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +20,15 @@ import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSucces
 public class ResumeEvaluateController {
 
     private final ResumeEvaluateService resumeEvaluateService;
+    private final InterviewTimeService interviewTimeService;
+
+    @PostMapping("/config")
+    public SuccessResponse createInterviewTimeConfig(@RequestBody @Valid InterviewTimeReqDto reqDto) {
+
+        interviewTimeService.createInterviewTime(reqDto);
+
+        return new SuccessResponse(CREATE_INTERVIEW_TIME_SUCCESS.getMessage());
+    }
 
     @PostMapping("/{resumeId}")
     public SuccessResponse createDocumentEvaluation(@PathVariable Long resumeId,
@@ -31,7 +41,6 @@ public class ResumeEvaluateController {
 
     @GetMapping
     public SuccessResponse<ResumeEvaluateResDto> getEvaluationList(
-            @RequestParam(name = "status") String status,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 

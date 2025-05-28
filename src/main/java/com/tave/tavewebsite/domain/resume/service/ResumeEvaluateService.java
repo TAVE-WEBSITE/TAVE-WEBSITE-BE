@@ -41,15 +41,16 @@ public class ResumeEvaluateService {
         resume.updateChecked(true);
     }
 
+    //본인 기반의 작성한 지원서에 대해 조회해야됨
     @Transactional(readOnly = true)
     public ResumeEvaluateResDto getResumes(Pageable pageable) {
-        Page<Resume> resumes = resumeRepository.findAllResume(pageable);
+        Page<Resume> resumes = resumeRepository.findAll(pageable);
 
         Page<ResumeResDto> resumeDtos = resumes.map(
                 ResumeResDto::from
         );
 
-        return ResumeEvaluateResDto.fromResume(resumeRepository.countAll(),
+        return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
                 resumeRepository.countByHasChecked(Boolean.FALSE),
                 resumeRepository.countByHasChecked(Boolean.TRUE),
                 resumeDtos);

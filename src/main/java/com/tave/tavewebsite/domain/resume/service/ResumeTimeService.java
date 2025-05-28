@@ -75,10 +75,11 @@ public class ResumeTimeService {
     private void saveTimeSlot(List<TimeSlotReqDto> timeSlots, Resume resume) {
 
         for(TimeSlotReqDto timeSlotReqDto : timeSlots) {
+            String yearSlot = validateTimeSlot(timeSlotReqDto.time(), 0);
             String dateSlot = validateTimeSlot(timeSlotReqDto.time(), 1);
             String timeSlot = validateTimeSlot(timeSlotReqDto.time(), 2);
 
-            InterviewTime interviewTime = interviewTimeRepository.findByInterviewDateAndInterviewTime(dateSlot, timeSlot)
+            InterviewTime interviewTime = interviewTimeRepository.findByInterviewYearAndInterviewDateAndInterviewTime(yearSlot, dateSlot, timeSlot)
                     .orElseThrow(NotFoundInterviewTimeException::new);
 
             ResumeTimeSlot resumeTimeSlot = ResumeTimeSlot.of(resume, interviewTime);
@@ -90,9 +91,13 @@ public class ResumeTimeService {
     }
 
     private String validateTimeSlot(LocalDateTime dateTime, int d) {
+        DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("yyyy");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        if(d == 1) {
+        if(d == 0){
+            return dateTime.format(yearFormatter);
+        }
+        else if(d == 1) {
             return dateTime.format(dateFormatter);
         }
         else return dateTime.format(timeFormatter);

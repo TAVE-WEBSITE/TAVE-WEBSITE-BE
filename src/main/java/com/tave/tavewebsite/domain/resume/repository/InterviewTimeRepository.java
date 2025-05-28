@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface InterviewTimeRepository extends JpaRepository<InterviewTime, Long> {
 
-    Optional<InterviewTime> findByInterviewDateAndInterviewTime(String interviewDate, String interviewTime);
+    Optional<InterviewTime> findByInterviewYearAndInterviewDateAndInterviewTime(
+            String interviewYear, String interviewDate, String interviewTime);
 
 }

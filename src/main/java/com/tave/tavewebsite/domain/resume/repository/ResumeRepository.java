@@ -23,7 +23,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
     int countByHasChecked(Boolean hasChecked);
 
-    Page<Resume> findAllResume(Pageable pageable);
+    Page<Resume> findAll(Pageable pageable);
 
-    int countAll();
+    long count();
 }

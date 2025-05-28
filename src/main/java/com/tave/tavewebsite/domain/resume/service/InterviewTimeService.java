@@ -34,7 +34,7 @@ public class InterviewTimeService {
             while (!cursor.isAfter(endTime)) {
                 LocalDateTime slot = LocalDateTime.of(currentDate, cursor);
 
-                // 엔티티 생성 (Entity.of 은 생성자 or 빌더에 따라 변경)
+                // 엔티티 생성
                 InterviewTime it = InterviewTime.of(slot);
                 interviewTimeRepository.save(it);
 
