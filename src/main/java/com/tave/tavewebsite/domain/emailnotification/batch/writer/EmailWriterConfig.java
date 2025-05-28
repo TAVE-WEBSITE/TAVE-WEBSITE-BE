@@ -4,6 +4,8 @@ import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
 import com.tave.tavewebsite.global.mail.service.SESMailService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,27 +41,40 @@ public class EmailWriterConfig {
         retryTemplate.setRetryPolicy(retryPolicy);
 
         return items -> {
+            List<Long> successIds = new ArrayList<>();
+            List<EmailNotification> failedItems = new ArrayList<>();
+
             for (EmailNotification item : items) {
                 try {
                     retryTemplate.execute(context -> {
-                        item.updateCounter();
                         sesMailService.sendApplyNotification(item.getEmail());
-                        item.changeStatus(EmailStatus.SUCCESS);
                         log.info("메일 전송 성공: {}", item.getEmail());
+                        successIds.add(item.getId());
                         return null;
                     }, context -> {
                         item.changeStatus(EmailStatus.FAILED);
-                        log.error("DLQ 처리 - {}: {}", item.getEmail(), Objects.requireNonNull(context.getLastThrowable())
-                                .getMessage());
+                        failedItems.add(item);
+                        log.error("DLQ 처리 - {}: {}", item.getEmail(),
+                                Objects.requireNonNull(context.getLastThrowable()).getMessage());
                         return null;
                     });
                 } catch (Exception e) {
                     item.changeStatus(EmailStatus.FAILED);
+                    failedItems.add(item);
                     log.error("Unexpected failure: {}", item.getEmail(), e);
                 }
-                emailNotificationRepository.save(item);
             }
-            emailNotificationRepository.flush();
+
+            // 1. 성공 건: 벌크 업데이트
+            if (!successIds.isEmpty()) {
+                emailNotificationRepository.bulkUpdateStatus(EmailStatus.SUCCESS, successIds);
+            }
+
+            // 2. 실패 건: 개별 필드 변경사항 포함하여 saveAll
+            if (!failedItems.isEmpty()) {
+                emailNotificationRepository.saveAll(failedItems);
+                emailNotificationRepository.flush();
+            }
         };
     }
 }
