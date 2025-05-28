@@ -8,6 +8,8 @@ import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +17,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -33,7 +32,7 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String from;
 
-    public MailResponseDto sendManagerRegisterMessage(String to){
+    public MailResponseDto sendManagerRegisterMessage(String to) {
 
         MimeMessage message;
         try {
@@ -79,7 +78,7 @@ public class MailService {
     }
 
 
-    public MailResponseDto sendAuthenticationCode(String to){
+    public MailResponseDto sendAuthenticationCode(String to) {
         String randomCode = generateCode();
 
         MimeMessage message;
@@ -108,7 +107,6 @@ public class MailService {
         MimeMessage message = emailSender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject(SEND_AUTHENTICATION_CODE);
-
 
         Context context = new Context();
         context.setVariable("randomCode", randomCode);
