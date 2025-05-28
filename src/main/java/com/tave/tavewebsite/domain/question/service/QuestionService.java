@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.question.service;
 
 import com.tave.tavewebsite.domain.question.dto.request.QuestionSaveRequest;
+import com.tave.tavewebsite.domain.question.dto.request.QuestionSwapRequest;
 import com.tave.tavewebsite.domain.question.dto.request.QuestionUpdateRequest;
 import com.tave.tavewebsite.domain.question.dto.response.QuestionDetailsResponse;
 import com.tave.tavewebsite.domain.question.entity.Question;
@@ -49,6 +50,16 @@ public class QuestionService {
     public void updateQuestion(QuestionUpdateRequest dto) {
         Question findQuestion = findQuestionById(dto.id());
         findQuestion.update(dto);
+    }
+
+    @Transactional
+    public void swapQuestionsOrdered(QuestionSwapRequest dto) {
+        Question q1 = findQuestionById(dto.id1());
+        Question q2 = findQuestionById(dto.id2());
+
+        Integer tmp = q2.getOrdered();
+        q2.updateOrdered(q1.getOrdered());
+        q1.updateOrdered(tmp);
     }
 
     @Transactional

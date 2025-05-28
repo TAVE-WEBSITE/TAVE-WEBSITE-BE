@@ -61,6 +61,9 @@ public class Question extends BaseEntity {
         this.fieldType = dto.fieldType();
         this.ordered = dto.ordered();
         this.textLength = dto.textLength();
-        this.answerType = dto.answerType();
+    }
+
+    public void updateOrdered(Integer ordered) {
+        this.ordered = ordered;
     }
 }
