@@ -3,7 +3,7 @@ package com.tave.tavewebsite.domain.emailnotification.batch.writer;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
-import com.tave.tavewebsite.global.mail.service.MailService;
+import com.tave.tavewebsite.global.mail.service.SESMailService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import org.springframework.retry.support.RetryTemplate;
 @Slf4j
 public class EmailWriterConfig {
 
-    private final MailService mailService;
+    private final SESMailService sesMailService;
     private final EmailNotificationRepository emailNotificationRepository;
 
     @Bean
@@ -42,7 +42,8 @@ public class EmailWriterConfig {
             for (EmailNotification item : items) {
                 try {
                     retryTemplate.execute(context -> {
-                        mailService.sendManagerRegisterMessage(item.getEmail());
+                        item.updateCounter();
+                        sesMailService.sendApplyNotification(item.getEmail());
                         item.changeStatus(EmailStatus.SUCCESS);
                         log.info("메일 전송 성공: {}", item.getEmail());
                         return null;
@@ -62,24 +63,5 @@ public class EmailWriterConfig {
         };
     }
 }
-
-//    @Bean
-//    public ItemWriter<EmailNotification> emailWriter() {
-//        return items -> {
-//            for (EmailNotification item : items) {
-//                try {
-//                    mailService.sendManagerRegisterMessage(item.getEmail());
-//                    item.changeStatus(EmailStatus.SUCCESS);
-//                } catch (Exception e) {
-//                    int retry = item.updateCounter();
-//                    if (retry >= 3) {
-//                        item.changeStatus(EmailStatus.FAILED);
-//                    }
-//                    log.error("이메일 전송 실패 - {}: {}", item.getEmail(), e.getMessage());
-//                }
-//            }
-//            emailNotificationRepository.flush();
-//        };
-//    }
 
 
