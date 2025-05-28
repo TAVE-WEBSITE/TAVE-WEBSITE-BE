@@ -59,7 +59,6 @@ public class Question extends BaseEntity {
     public void update(QuestionUpdateRequest dto) {
         this.content = dto.content();
         this.fieldType = dto.fieldType();
-        this.ordered = dto.ordered();
         this.textLength = dto.textLength();
     }
 
