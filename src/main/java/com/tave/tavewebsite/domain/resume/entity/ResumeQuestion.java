@@ -48,6 +48,7 @@ public class ResumeQuestion extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AnswerType answerType;
 
+    private Integer textLength;
 
     public static ResumeQuestion of(Resume resume, Question question) {
 
@@ -57,6 +58,7 @@ public class ResumeQuestion extends BaseEntity {
                 .fieldType(question.getFieldType())
                 .ordered(question.getOrdered()) // todo Question 순서 사용 or 자체 ResumeQuestion 순서 생성? 의논
                 .answerType(question.getAnswerType())
+                .textLength(question.getTextLength())
                 .build();
     }
 
