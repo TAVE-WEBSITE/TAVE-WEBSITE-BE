@@ -22,7 +22,10 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     public void saveQuestion(QuestionSaveRequest dto) {
-        Question newQuestion = Question.from(dto);
+
+        Integer orderedNum = findOrderedByFieldType(dto.fieldType());
+
+        Question newQuestion = Question.of(dto, orderedNum);
         questionRepository.save(newQuestion);
     }
 
@@ -64,5 +67,9 @@ public class QuestionService {
 
     public List<Question> findQuestionsByFieldType(FieldType fieldType) {
         return questionRepository.findQuestionByFieldTypeOrderByOrderedAscContentAsc(fieldType);
+    }
+
+    private Integer findOrderedByFieldType(FieldType fieldType) {
+        return questionRepository.findMaxOrderedByFieldType(fieldType).orElse(0) + 1;
     }
 }
