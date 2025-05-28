@@ -8,21 +8,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/admin/final-pass")
 @RequiredArgsConstructor
 public class FinalPassController {
     private final FinalPassService finalPassService;
 
-    @PostMapping
+    @PostMapping("/v1/admin/final-pass")
     public SuccessResponse<FinalPassResponseDto> createFinalPass(@RequestBody FinalPassRequestDto requestDto) {
         FinalPassResponseDto dto = finalPassService.createFinalPass(requestDto);
         return new SuccessResponse<>(dto, FinalPassSuccessMessage.CREATE_FINAL_PASS.getMessage());
     }
 
-    @GetMapping
+    @GetMapping("/v1/admin/final-pass")
     public SuccessResponse<FinalPassResponseDto> getFinalPass() {
         FinalPassResponseDto dto = finalPassService.getFinalPass();
         return new SuccessResponse<>(dto, FinalPassSuccessMessage.READ_FINAL_PASS.getMessage());
     }
 
+    @GetMapping("/v1/member/final-pass")
+    public SuccessResponse<FinalPassResponseDto> getFinalPassForMember() {
+        FinalPassResponseDto dto = finalPassService.getFinalPass();
+        return new SuccessResponse<>(dto, FinalPassSuccessMessage.READ_FINAL_PASS.getMessage());
+    }
 }
