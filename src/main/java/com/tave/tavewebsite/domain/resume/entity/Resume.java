@@ -29,9 +29,6 @@ public class Resume extends BaseEntity {
     @Column(name = "resume_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Boolean hasChecked;
-
     @Size(min = 1, max = 20)
     @Column(length = 20)
     private String school;
@@ -97,7 +94,6 @@ public class Resume extends BaseEntity {
         this.portfolioUrl = portfolioUrl;
         this.state = state;
         this.member = member;
-        this.hasChecked = Boolean.FALSE;
 
         member.addResume(this);
     }
@@ -133,8 +129,4 @@ public class Resume extends BaseEntity {
         this.state = ResumeState.SUBMITTED;
     }
 
-
-    public void updateChecked(boolean checked) {
-        this.hasChecked = checked;
-    }
 }
