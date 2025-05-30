@@ -33,7 +33,6 @@ public record TimeSlotResDto(
 
     private static LocalTime getLocalTime(String localTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime time = LocalTime.parse(localTime, formatter);
-        return time;
+        return LocalTime.parse(localTime, formatter);
     }
 }
