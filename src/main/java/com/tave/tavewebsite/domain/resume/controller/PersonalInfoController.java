@@ -96,6 +96,6 @@ public class PersonalInfoController {
 
     @GetMapping("/interview-time")
     public SuccessResponse<List<TimeSlotResDto>> getInterviewTime() {
-        return new SuccessResponse(personalInfoService.getInterviewTime());
+        return new SuccessResponse(personalInfoService.getInterviewTime(), READ_INTERVIEW_SUCCESS.getMessage());
     }
 }
