@@ -40,19 +40,4 @@ public class FinalPassMapper {
                 .otDeadline(entity.getOtDeadline())
                 .build();
     }
-
-    public static void updateEntity(FinalPass entity, FinalPassRequestDto dto) {
-        entity.setTotalFee(dto.getTotalFee());
-        entity.setClubFee(dto.getClubFee());
-        entity.setMtFee(dto.getMtFee());
-        entity.setFeeDeadline(dto.getFeeDeadline());
-        entity.setBankName(dto.getBankName());
-        entity.setAccountNumber(dto.getAccountNumber());
-        entity.setAccountHolder(dto.getAccountHolder());
-        entity.setSurveyLink(dto.getSurveyLink());
-        entity.setSurveyDeadline(dto.getSurveyDeadline());
-        entity.setOtLink(dto.getOtLink());
-        entity.setOtPassword(dto.getOtPassword());
-        entity.setOtDeadline(dto.getOtDeadline());
-    }
 }
