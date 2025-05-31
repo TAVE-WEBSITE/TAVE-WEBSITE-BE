@@ -13,26 +13,26 @@ public record TimeSlotResDto(
 ) {
     public static TimeSlotResDto from(ResumeTimeSlot resumeTimeSlot) {
 
-        LocalDate date = getLocalDate(resumeTimeSlot.getInterviewTime().getInterviewYear(), resumeTimeSlot.getInterviewTime().getInterviewDate());
-        LocalTime time = getLocalTime(resumeTimeSlot.getInterviewTime().getInterviewTime());
+        LocalDate date = getLocalDate(resumeTimeSlot.getInterviewTime().getInterviewDetailTime());
+        LocalTime time = getLocalTime(resumeTimeSlot.getInterviewTime().getInterviewDetailTime());
         LocalDateTime localDateTime = LocalDateTime.of(date, time);
         return new TimeSlotResDto(localDateTime);
     }
 
     public static TimeSlotResDto fromInterviewTime(InterviewTime interviewTime) {
-        LocalDate date = getLocalDate(interviewTime.getInterviewYear(), interviewTime.getInterviewDate());
-        LocalTime time = getLocalTime(interviewTime.getInterviewTime());
+        LocalDate date = getLocalDate(interviewTime.getInterviewDetailTime());
+        LocalTime time = getLocalTime(interviewTime.getInterviewDetailTime());
         LocalDateTime localDateTime = LocalDateTime.of(date, time);
         return new TimeSlotResDto(localDateTime);
     }
 
-    private static LocalDate getLocalDate(String currentYear, String currentDate) {
+    private static LocalDate getLocalDate(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        return LocalDate.parse(currentYear+"/"+currentDate, formatter);
+        return LocalDate.parse(localDateTime.format(formatter), formatter);
     }
 
-    private static LocalTime getLocalTime(String localTime) {
+    private static LocalTime getLocalTime(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(localTime, formatter);
+        return LocalTime.parse(localDateTime.format(formatter), formatter);
     }
 }

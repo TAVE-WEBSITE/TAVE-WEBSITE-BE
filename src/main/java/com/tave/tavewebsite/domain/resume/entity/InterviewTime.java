@@ -1,17 +1,13 @@
 package com.tave.tavewebsite.domain.resume.entity;
 
 import com.tave.tavewebsite.global.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -22,40 +18,18 @@ public class InterviewTime extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String interviewYear;
-
-    private String interviewDate;
-
-    private String interviewTime;
+    @Column(nullable = false)
+    private LocalDateTime interviewDetailTime;
 
     @Builder
-    public InterviewTime(String interviewYear, String interviewDate, String interviewTime) {
-        this.interviewYear = interviewYear;
-        this.interviewDate = interviewDate;
-        this.interviewTime = interviewTime;
+    public InterviewTime(LocalDateTime interviewTime) {
+        this.interviewDetailTime = interviewTime;
     }
 
     public static InterviewTime of(LocalDateTime localDateTime) {
         return InterviewTime.builder()
-                .interviewYear(convertYearToString(localDateTime))
-                .interviewDate(convertDateToString(localDateTime))
-                .interviewTime(convertTimeToString(localDateTime))
+                .interviewTime(localDateTime)
                 .build();
     }
-
-    private static String convertYearToString(LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy"));
-    }
-
-    private static String convertDateToString(LocalDateTime localDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
-        return localDateTime.format(formatter);
-    }
-
-    private static String convertTimeToString(LocalDateTime localDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return localDateTime.format(formatter);
-    }
-
 
 }
