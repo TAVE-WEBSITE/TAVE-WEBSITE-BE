@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.question.controller;
 
 import com.tave.tavewebsite.domain.question.dto.request.QuestionSaveRequest;
+import com.tave.tavewebsite.domain.question.dto.request.QuestionSwapRequest;
 import com.tave.tavewebsite.domain.question.dto.request.QuestionUpdateRequest;
 import com.tave.tavewebsite.domain.question.dto.response.QuestionDetailsResponse;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
@@ -56,6 +57,14 @@ public class QuestionController {
         questionService.updateQuestion(dto);
 
         return SuccessResponse.ok(QUESTION_UPDATED.getMessage());
+    }
+
+    @PatchMapping("/question/swap")
+    public SuccessResponse swapQuestionOrdered(@RequestBody QuestionSwapRequest dto) {
+
+        questionService.swapQuestionsOrdered(dto);
+
+        return SuccessResponse.ok(QUESTION_ORDERED_SWAP.getMessage());
     }
 
     @DeleteMapping("/question/{questionId}")

@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.question.service;
 
 import com.tave.tavewebsite.domain.question.dto.request.QuestionSaveRequest;
+import com.tave.tavewebsite.domain.question.dto.request.QuestionSwapRequest;
 import com.tave.tavewebsite.domain.question.dto.request.QuestionUpdateRequest;
 import com.tave.tavewebsite.domain.question.dto.response.QuestionDetailsResponse;
 import com.tave.tavewebsite.domain.question.entity.Question;
@@ -22,7 +23,10 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     public void saveQuestion(QuestionSaveRequest dto) {
-        Question newQuestion = Question.from(dto);
+
+        Integer orderedNum = findOrderedByFieldType(dto.fieldType());
+
+        Question newQuestion = Question.of(dto, orderedNum);
         questionRepository.save(newQuestion);
     }
 
@@ -49,6 +53,16 @@ public class QuestionService {
     }
 
     @Transactional
+    public void swapQuestionsOrdered(QuestionSwapRequest dto) {
+        Question q1 = findQuestionById(dto.id1());
+        Question q2 = findQuestionById(dto.id2());
+
+        Integer tmp = q2.getOrdered();
+        q2.updateOrdered(q1.getOrdered());
+        q1.updateOrdered(tmp);
+    }
+
+    @Transactional
     public void deleteQuestionById(Long id) {
         Question question = findQuestionById(id);
         questionRepository.delete(question);
@@ -64,5 +78,9 @@ public class QuestionService {
 
     public List<Question> findQuestionsByFieldType(FieldType fieldType) {
         return questionRepository.findQuestionByFieldTypeOrderByOrderedAscContentAsc(fieldType);
+    }
+
+    private Integer findOrderedByFieldType(FieldType fieldType) {
+        return questionRepository.findMaxOrderedByFieldType(fieldType).orElse(0) + 1;
     }
 }
