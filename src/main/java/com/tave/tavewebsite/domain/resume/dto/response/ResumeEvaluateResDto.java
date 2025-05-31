@@ -1,19 +1,17 @@
 package com.tave.tavewebsite.domain.resume.dto.response;
 
-import com.tave.tavewebsite.domain.resume.entity.Resume;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public record ResumeEvaluateResDto(
-        int totalRecruiter,
-        int notCompletedRecruiter,
-        int completedRecruiter,
-        List<ResumeResDto> resumeResDtos
+        long totalRecruiter,
+        long notCompletedRecruiter,
+        long completedRecruiter,
+        Page<ResumeResDto> resumeResDtos
 ) {
-    public static ResumeEvaluateResDto fromResume(int totalRecruiter,
-                                                  int notCompletedRecruiter,
-                                                  int completedRecruiter,
-                                                  List<ResumeResDto> resumeResDtos) {
+    public static ResumeEvaluateResDto fromResume(long totalRecruiter,
+                                                  long notCompletedRecruiter,
+                                                  long completedRecruiter,
+                                                  Page<ResumeResDto> resumeResDtos) {
         return new ResumeEvaluateResDto(
                 totalRecruiter,
                 notCompletedRecruiter,

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ResumeRepository extends JpaRepository<Resume, Long> {
+public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCustomRepository {
 
     Optional<Resume> findByMember(Member member);
 
@@ -19,5 +19,5 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
     Optional<Resume> findByMemberId(Long memberId);
 
-    int countByHasChecked(Boolean hasChecked);
+    long count();
 }

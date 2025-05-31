@@ -12,18 +12,20 @@ import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
+import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.exception.*;
 import com.tave.tavewebsite.domain.resume.mapper.ResumeMapper;
+import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class PersonalInfoService {
     private final ProgramingLanguageRepository programingLanguageRepository;
     private final LanguageLevelRepository languageLevelRepository;
     private final ResumeQuestionService resumeQuestionService;
+    private final InterviewTimeRepository interviewTimeRepository;
 
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
@@ -156,6 +159,14 @@ public class PersonalInfoService {
         Resume resume = getResumeEntityById(resumeId);
         resume.submit();
         resumeRepository.save(resume);
+    }
+
+    public List<TimeSlotResDto> getInterviewTime() {
+        List<InterviewTime> all = interviewTimeRepository.findAll();
+
+        return all.stream().map(
+                TimeSlotResDto::fromInterviewTime
+        ).toList();
     }
 
 }

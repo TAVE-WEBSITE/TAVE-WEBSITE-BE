@@ -5,7 +5,6 @@ import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.exception.CustomAuthenticationEntryPoint;
 import com.tave.tavewebsite.global.security.filter.JwtAuthenticationFilter;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -69,19 +70,19 @@ public class Config {
                         // 일반 회원 전용 api
                         .requestMatchers("/v1/member/**", "/v1/auth/signout", "/v1/auth/delete/**")
                         .hasAnyRole(RoleType.MEMBER.name(), RoleType.UNAUTHORIZED_MANAGER.name(),
-                                RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                                RoleType.MANAGER.name(), RoleType.VICE_PRESIDENT.name(), RoleType.ADMIN.name())
 
                         // 미허가 운영진 전용 api
                         .requestMatchers("/v1/xxxxxxxxx")
                         .hasAnyRole(RoleType.UNAUTHORIZED_MANAGER.name(), RoleType.MANAGER.name(),
-                                RoleType.ADMIN.name())
+                                RoleType.VICE_PRESIDENT.name(), RoleType.ADMIN.name())
 
                         // 운영진 전용 api
                         .requestMatchers("/v1/manager/**")
-                        .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                        .hasAnyRole(RoleType.MANAGER.name(), RoleType.VICE_PRESIDENT.name(), RoleType.ADMIN.name())
 
                         // 처장+회장 전용 api
-                        .requestMatchers("/v1/admin/resume/**")
+                        .requestMatchers("/v1/admin/config/**")
                         .hasAnyRole(RoleType.VICE_PRESIDENT.name(), RoleType.ADMIN.name())
 
                         // 회장 전용 api
