@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tave.tavewebsite.domain.member.entity.Member;
@@ -24,7 +25,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ResumeResDto> findAll(Member member, Pageable pageable) {
+    public Page<ResumeResDto> findAll(Member member, EvaluationStatus status, Pageable pageable) {
         List<ResumeResDto> resumeResDtos = queryFactory
                 .select(Projections.constructor(
                         ResumeResDto.class,
@@ -42,9 +43,51 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                 .leftJoin(resumeEvaluation)
                 .on(
                         resumeEvaluation.resume.id.eq(resume.id)
-                                .and(resumeEvaluation.member.id.eq(member.getId()))
-                ).fetch();
+                        .and(resumeEvaluation.member.id.eq(member.getId()))
+                )
+                .where(extractedStatus(status))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        return new PageImpl<>(resumeResDtos, pageable, resumeResDtos.size());
+        long total = queryFactory
+                .select(resume.count())
+                .from(resume)
+                .fetchOne();
+
+        return new PageImpl<>(resumeResDtos, pageable, total);
+    }
+
+    private BooleanExpression extractedStatus(EvaluationStatus status) {
+        BooleanExpression condition;
+        if (status == EvaluationStatus.NOTCHECKED) {
+            condition = resumeEvaluation.finalEvaluateDocument.isNull();
+        } else {
+            condition = resumeEvaluation.finalEvaluateDocument.eq(status);
+        }
+
+        return condition;
+    }
+
+    @Override
+    public long findNotEvaluatedResume(Member member) {
+        Long resumeCount = queryFactory.select(resume.count()).from(resume).fetchOne();
+
+        Long evaluatedCount = queryFactory
+                .select(resumeEvaluation.count())
+                .from(resumeEvaluation)
+                .where(resumeEvaluation.member.id.eq(member.getId()))
+                .fetchOne();
+
+        return resumeCount - evaluatedCount;
+    }
+
+    @Override
+    public long findEvaluatedResume(Member member) {
+        return queryFactory
+                .select(resumeEvaluation.count())
+                .from(resumeEvaluation)
+                .where(resumeEvaluation.member.id.eq(member.getId()))
+                .fetchOne();
     }
 }

@@ -1,7 +1,8 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
-import com.tave.tavewebsite.domain.resume.dto.request.ResumeEvaluateReqDto;
+import com.tave.tavewebsite.domain.resume.dto.request.DocumentEvaluationReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.service.ResumeEvaluateService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class ResumeEvaluateController {
 
     @PostMapping("/{resumeId}")
     public SuccessResponse createDocumentEvaluation(@PathVariable Long resumeId,
-                                                    @RequestBody @Valid ResumeEvaluateReqDto reqDto) {
+                                                    @RequestBody @Valid DocumentEvaluationReqDto reqDto) {
 
         resumeEvaluateService.createDocumentEvaluation(resumeId, reqDto);
 
@@ -31,11 +32,12 @@ public class ResumeEvaluateController {
 
     @GetMapping
     public SuccessResponse<ResumeEvaluateResDto> getEvaluationList(
+            @RequestParam EvaluationStatus status,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
         return new SuccessResponse<>(
-                resumeEvaluateService.getResumes(pageable),
+                resumeEvaluateService.getResumes(status, pageable),
                 READ_SUCCESS.getMessage());
     }
 }

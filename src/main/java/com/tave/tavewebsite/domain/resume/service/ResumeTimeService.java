@@ -75,11 +75,8 @@ public class ResumeTimeService {
     private void saveTimeSlot(List<TimeSlotReqDto> timeSlots, Resume resume) {
 
         for(TimeSlotReqDto timeSlotReqDto : timeSlots) {
-            String yearSlot = validateTimeSlot(timeSlotReqDto.time(), 0);
-            String dateSlot = validateTimeSlot(timeSlotReqDto.time(), 1);
-            String timeSlot = validateTimeSlot(timeSlotReqDto.time(), 2);
 
-            InterviewTime interviewTime = interviewTimeRepository.findByInterviewYearAndInterviewDateAndInterviewTime(yearSlot, dateSlot, timeSlot)
+            InterviewTime interviewTime = interviewTimeRepository.findByInterviewDetailTime(timeSlotReqDto.time())
                     .orElseThrow(NotFoundInterviewTimeException::new);
 
             ResumeTimeSlot resumeTimeSlot = ResumeTimeSlot.of(resume, interviewTime);

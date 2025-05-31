@@ -4,13 +4,13 @@ import org.springframework.data.domain.Page;
 
 public record ResumeEvaluateResDto(
         long totalRecruiter,
-        int notCompletedRecruiter,
-        int completedRecruiter,
+        long notCompletedRecruiter,
+        long completedRecruiter,
         Page<ResumeResDto> resumeResDtos
 ) {
     public static ResumeEvaluateResDto fromResume(long totalRecruiter,
-                                                  int notCompletedRecruiter,
-                                                  int completedRecruiter,
+                                                  long notCompletedRecruiter,
+                                                  long completedRecruiter,
                                                   Page<ResumeResDto> resumeResDtos) {
         return new ResumeEvaluateResDto(
                 totalRecruiter,

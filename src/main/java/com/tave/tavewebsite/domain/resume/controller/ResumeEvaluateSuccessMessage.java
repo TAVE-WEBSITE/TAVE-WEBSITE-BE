@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResumeEvaluateSuccessMessage {
 
-    CREATE_SUCCESS("평가 작성에 성공했습니다."),
+    CREATE_SUCCESS("평가 업데이트에 성공했습니다."),
     UPDATE_SUCCESS("평가 수정에 성공했습니다."),
     READ_SUCCESS("평가 조회에 성공했습니다."),
     DELETE_SUCCESS("평가 삭제에 성공했습니다.");

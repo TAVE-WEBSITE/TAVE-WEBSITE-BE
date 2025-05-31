@@ -19,7 +19,5 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
 
     Optional<Resume> findByMemberId(Long memberId);
 
-    int countByHasChecked(Boolean hasChecked);
-
     long count();
 }

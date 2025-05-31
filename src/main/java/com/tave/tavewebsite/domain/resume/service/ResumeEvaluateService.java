@@ -1,10 +1,10 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.member.exception.AlreadyExistsResumeException;
-import com.tave.tavewebsite.domain.resume.dto.request.ResumeEvaluateReqDto;
+import com.tave.tavewebsite.domain.resume.dto.request.DocumentEvaluationReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeEvaluation;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
@@ -29,28 +29,31 @@ public class ResumeEvaluateService {
     }
 
     @Transactional
-    public void createDocumentEvaluation(Long resumeId, ResumeEvaluateReqDto resumeEvaluateReqDto){
+    public void createDocumentEvaluation(Long resumeId, DocumentEvaluationReqDto documentEvaluationReqDto){
         Resume resume = findIfResumeExists(resumeId);
         Member currentMember = getCurrentMember();
 
         if(resumeEvaluationRepository.existsByMemberIdAndResumeId(currentMember.getId(), resumeId)){
-            throw new AlreadyExistsResumeException();
+            ResumeEvaluation evaluation = resumeEvaluationRepository.findByMemberIdAndResumeId(currentMember.getId(), resumeId);
+            evaluation.update(documentEvaluationReqDto);
         }
-        ResumeEvaluation resumeEvaluation = ResumeEvaluation.of(resumeEvaluateReqDto, currentMember, resume);
-        resumeEvaluationRepository.save(resumeEvaluation);
+        else {
+            ResumeEvaluation resumeEvaluation = ResumeEvaluation.of(documentEvaluationReqDto, currentMember, resume);
+            resumeEvaluationRepository.save(resumeEvaluation);
+        }
     }
 
     //본인 기반의 작성한 지원서에 대해 조회해야됨
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getResumes(Pageable pageable) {
+    public ResumeEvaluateResDto getResumes(EvaluationStatus status, Pageable pageable) {
         Member currentMember = getCurrentMember();
-        Page<ResumeResDto> resumeResDtos = resumeRepository.findAll(currentMember, pageable);
+        Page<ResumeResDto> resumeResDtos = resumeRepository.findAll(currentMember, status, pageable);
 
 
 
         return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
-                resumeRepository.countByHasChecked(Boolean.FALSE),
-                resumeRepository.countByHasChecked(Boolean.TRUE),
+                resumeRepository.findNotEvaluatedResume(currentMember),
+                resumeRepository.findEvaluatedResume(currentMember),
                 resumeResDtos);
     }
 
