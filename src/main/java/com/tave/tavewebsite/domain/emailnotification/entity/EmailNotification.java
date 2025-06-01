@@ -36,4 +36,12 @@ public class EmailNotification extends BaseEntity {
         this.status = EmailStatus.PENDING;
         this.retryCount = 0;
     }
+
+    public void changeStatus(EmailStatus status) {
+        this.status = status;
+    }
+
+    public Integer updateCounter() {
+        return this.retryCount++;
+    }
 }
