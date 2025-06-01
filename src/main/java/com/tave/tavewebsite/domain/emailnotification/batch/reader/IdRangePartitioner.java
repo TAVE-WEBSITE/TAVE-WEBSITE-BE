@@ -9,11 +9,9 @@ import org.springframework.batch.item.ExecutionContext;
 public class IdRangePartitioner implements Partitioner {
 
     private final EmailNotificationRepository repository;
-    private final int gridSize;
 
-    public IdRangePartitioner(EmailNotificationRepository repository, int gridSize) {
+    public IdRangePartitioner(EmailNotificationRepository repository) {
         this.repository = repository;
-        this.gridSize = gridSize;
     }
 
     @Override
@@ -27,11 +25,11 @@ public class IdRangePartitioner implements Partitioner {
             return result;
         }
 
-        long targetSize = (maxId - minId) / this.gridSize + 1;
+        long targetSize = (maxId - minId) / gridSize + 1;
         long start = minId;
         long end = start + targetSize - 1;
 
-        for (int i = 0; i < this.gridSize; i++) {
+        for (int i = 0; i < gridSize; i++) {
             ExecutionContext context = new ExecutionContext();
             context.putLong("startId", start);
             context.putLong("endId", Math.min(end, maxId));
