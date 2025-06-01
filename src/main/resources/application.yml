@@ -55,6 +55,8 @@ cloud:
     region:
       static: ${region}
 
+final_interview_form: ${FINAL_INTERVIEW_FORM}
+
 logging:
   level:
     org:

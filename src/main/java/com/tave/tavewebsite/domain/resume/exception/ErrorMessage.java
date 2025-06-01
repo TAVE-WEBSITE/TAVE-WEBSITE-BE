@@ -20,12 +20,16 @@ public enum ErrorMessage {
     FIELD_TYPE_INVALID(400, "유효하지 않은 필드 타입입니다."),
 
     INVALID_PAGE_NUMBER(400, "유효하지 않은 페이지 번호입니다."),
+    ALREADY_SUBMITTED(400, "이미 제출된 이력서입니다."),
 
     // Redis 임시 저장
     TEMP_NOT_FOUND(404, "임시 저장된 정보가 없습니다."),
     TEMP_PARSE_FAILED(500, "임시 정보를 파싱하는 데 실패했습니다."),
     TEMP_SERIALIZE_FAILED(500, "임시 저장 데이터를 JSON으로 변환하는 데 실패했습니다."),
-    TEMP_SAVE_FAILED(500, "임시 저장에 실패했습니다.");
+    TEMP_SAVE_FAILED(500, "임시 저장에 실패했습니다."),
+
+    // Resume Evaluation
+    ALREADY_EXISTS_EVALUATION(400, "이미 평가중인 이력서입니다.");
 
     private final int code;
     private final String message;

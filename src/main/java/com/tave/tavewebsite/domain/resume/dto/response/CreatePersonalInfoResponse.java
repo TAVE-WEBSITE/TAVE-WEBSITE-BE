@@ -8,8 +8,9 @@ import lombok.Getter;
 public class CreatePersonalInfoResponse {
     private String message;
     private ResumeQuestionResponse resumeQuestions;
+    private Long resumeId;
 
-    public static CreatePersonalInfoResponse of(String message, ResumeQuestionResponse resumeQuestions) {
-        return new CreatePersonalInfoResponse(message, resumeQuestions);
+    public static CreatePersonalInfoResponse of(String message, ResumeQuestionResponse resumeQuestions, Long resumeId) {
+        return new CreatePersonalInfoResponse(message, resumeQuestions, resumeId);
     }
 }

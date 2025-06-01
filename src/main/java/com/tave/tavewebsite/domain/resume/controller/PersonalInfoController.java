@@ -5,6 +5,7 @@ import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -26,22 +27,34 @@ public class PersonalInfoController {
     @PostMapping("/{memberId}")
     public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(@PathVariable("memberId") Long memberId,
                                                                                        @RequestBody @Valid PersonalInfoRequestDto requestDto) {
-        ResumeQuestionResponse questions = personalInfoService.createPersonalInfo(memberId, requestDto);
+        Resume resume = personalInfoService.createPersonalInfo(memberId, requestDto);
+        ResumeQuestionResponse questions = personalInfoService.createResumeQuestions(resume);
 
         CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
-                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(), questions);
+                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
+                questions,
+                resume.getId()
+        );
 
         return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
     }
 
-    // 개인정보 조회
-    @GetMapping("/{resumeId}")
-    public SuccessResponse<PersonalInfoResponseDto> getPersonalInfo(@PathVariable("resumeId") Long resumeId) {
-        return new SuccessResponse<>(personalInfoService.getPersonalInfo(resumeId),
-                READ_SUCCESS.getMessage());
+    // 전체 개인정보 조회
+    @GetMapping("/{memberId}")
+    public SuccessResponse<PersonalInfoResponseDto> getAllPersonalInfo(@PathVariable("memberId") Long memberId) {
+        PersonalInfoResponseDto response = personalInfoService.getAllPersonalInfo(memberId);
+        return new SuccessResponse<>(response, READ_SUCCESS.getMessage());
     }
 
-    // 개인정보 수정
+    // 이력서 정보 수정 (memberId)
+    @PatchMapping("/update/{memberId}")
+    public SuccessResponse updatePersonalResumeInfo(@PathVariable("memberId") Long memberId,
+                                                    @RequestBody @Valid PersonalInfoRequestDto requestDto) {
+        personalInfoService.updatePersonalInfoByMemberId(memberId, requestDto);
+        return SuccessResponse.ok(UPDATE_SUCCESS.getMessage());
+    }
+
+    // 개인정보 수정 (resumeId)
     @PatchMapping("/{resumeId}")
     public SuccessResponse updatePersonalInfo(@PathVariable("resumeId") Long resumeId,
                                               @RequestBody @Valid PersonalInfoRequestDto requestDto) {
@@ -69,6 +82,13 @@ public class PersonalInfoController {
     public SuccessResponse<TempPersonalInfoDto> getTempSavedPersonalInfo(@PathVariable("memberId") Long memberId) {
         TempPersonalInfoDto response = personalInfoService.getTempSavedPersonalInfo(memberId);
         return new SuccessResponse<>(response, TEMP_LOAD_SUCCESS.getMessage());
+    }
+
+    // 지원서 최종 제출
+    @PostMapping("/{resumeId}/submit")
+    public SuccessResponse<String> submitResume(@PathVariable("resumeId") Long resumeId) {
+        personalInfoService.submitResume(resumeId);
+        return SuccessResponse.ok(SUBMIT_SUCCESS.getMessage());
     }
 
 }

@@ -1,7 +1,9 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public enum PersonalInfoSuccessMessage {
     CREATE_SUCCESS("개인정보 작성에 성공했습니다."),
@@ -10,11 +12,9 @@ public enum PersonalInfoSuccessMessage {
     DELETE_SUCCESS("개인정보 삭제에 성공했습니다."),
     QUESTION_READ_SUCCESS("질문과 답변 조회에 성공했습니다."),
     TEMP_SAVE_SUCCESS("임시 저장에 성공했습니다."),
-    TEMP_LOAD_SUCCESS("임시 저장 조회에 성공했습니다.");
+    TEMP_LOAD_SUCCESS("임시 저장 조회에 성공했습니다."),
+    SUBMIT_SUCCESS("지원서가 최종 제출되었습니다.");
 
     private final String message;
 
-    public String getMessage() {
-        return message;
-    }
 }

@@ -38,7 +38,7 @@ public class PersonalInfoService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public ResumeQuestionResponse createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
+    public Resume createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -49,8 +49,13 @@ public class PersonalInfoService {
         List<LanguageLevel> languageLevels = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
         languageLevelRepository.saveAll(languageLevels);
 
-        return resumeQuestionService.createResumeQuestion(savedResume, fieldType);
+        return savedResume;
     }
+
+    public ResumeQuestionResponse createResumeQuestions(Resume resume) {
+        return resumeQuestionService.createResumeQuestion(resume, resume.getField());
+    }
+
 
     // 임시 저장 기능 (현재까지 입력한 정보 저장)
     @Transactional
@@ -86,13 +91,6 @@ public class PersonalInfoService {
         }
     }
 
-    public PersonalInfoResponseDto getPersonalInfo(Long resumeId) {
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(ResumeNotFoundException::new);
-
-        return ResumeMapper.toPersonalInfoResponseDto(resume);
-    }
-
     @Transactional
     public void updatePersonalInfo(Long resumeId, PersonalInfoRequestDto requestDto) {
         Resume resume = resumeRepository.findById(resumeId)
@@ -121,6 +119,43 @@ public class PersonalInfoService {
     public Resume getResumeEntityById(Long resumeId) {
         return resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
+    }
+
+    public PersonalInfoResponseDto getAllPersonalInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Resume resume = resumeRepository.findByMemberId(memberId)
+                .orElse(null); // 없을 수도 있음
+
+        return PersonalInfoResponseDto.builder()
+                .username(member.getUsername())
+                .sex(member.getSex().name())
+                .birthday(member.getBirthday().toString())
+                .phoneNumber(member.getPhoneNumber())
+                .email(member.getEmail())
+                .school(resume != null ? resume.getSchool() : null)
+                .major(resume != null ? resume.getMajor() : null)
+                .minor(resume != null ? resume.getMinor() : null)
+                .field(resume != null ? resume.getField().name() : null)
+                .build();
+    }
+
+    @Transactional
+    public void updatePersonalInfoByMemberId(Long memberId, PersonalInfoRequestDto requestDto) {
+        FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        resumeRepository.findByMemberId(memberId)
+                .ifPresent(resume -> resume.updatePersonalInfo(requestDto, fieldType));
+    }
+
+    public void submitResume(Long resumeId) {
+        Resume resume = getResumeEntityById(resumeId);
+        resume.submit();
+        resumeRepository.save(resume);
     }
 
 }
