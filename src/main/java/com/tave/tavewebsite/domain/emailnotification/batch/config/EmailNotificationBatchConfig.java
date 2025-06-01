@@ -2,7 +2,6 @@ package com.tave.tavewebsite.domain.emailnotification.batch.config;
 
 import com.tave.tavewebsite.domain.emailnotification.batch.reader.IdRangePartitioner;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
-import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,8 @@ public class EmailNotificationBatchConfig extends DefaultBatchConfiguration {
     private final EmailNotificationRepository emailNotificationRepository;
     private final JpaPagingItemReader<EmailNotification> emailReader;
 
+    private final int threadSize = 3;
+
     @Bean
     public Job emailNotificationJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new JobBuilder("emailNotificationJob", jobRepository)
@@ -38,13 +39,11 @@ public class EmailNotificationBatchConfig extends DefaultBatchConfiguration {
 
     @Bean
     public Step partitionedEmailStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        long total = emailNotificationRepository.countByStatus(EmailStatus.PENDING);
-        int chunkSize = 1000;
-        int gridSize = total <= chunkSize ? 1 : total <= chunkSize * 2 ? 2 : 3;
         return new StepBuilder("partitionedEmailStep", jobRepository)
-                .partitioner("emailNotificationStep", new IdRangePartitioner(emailNotificationRepository, gridSize))
+                .partitioner("emailNotificationStep", new IdRangePartitioner(emailNotificationRepository))
+                .gridSize(threadSize)
                 .step(emailNotificationStep(jobRepository, transactionManager))
-                .taskExecutor(taskExecutor(gridSize))
+                .taskExecutor(taskExecutor(threadSize))
                 .build();
     }
 
