@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.global.mail.util;
 
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.RawMessage;
 import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import jakarta.mail.Message;
@@ -15,18 +14,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Properties;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SESMailUtil {
 
-    private final AmazonSimpleEmailService amazonSimpleEmailService;
-
-    @Value("${spring.mail.username}")
+    @Value("${cloud.aws.ses.username}")
     private String mail;
 
     public SendRawEmailRequest getSendRawEmailRequest(String title, String content, String receiver, String html)
@@ -36,7 +31,6 @@ public class SESMailUtil {
         // content : 안에 내용
         // receiver : 받는 사람
         // html : 이메일 템플릿
-        // fileRoot : 파일 경로
 
         Session session = Session.getDefaultInstance(getProperties());
         MimeMessage message = new MimeMessage(session);
