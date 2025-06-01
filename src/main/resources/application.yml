@@ -13,8 +13,8 @@ spring:
         format_sql: true
   sql:
     init:
-      #      mode: never
-      mode: always
+      mode: never
+      # mode: always
       schema-locations: classpath:org/springframework/batch/core/schema-postgresql.sql
   data:
     redis:
