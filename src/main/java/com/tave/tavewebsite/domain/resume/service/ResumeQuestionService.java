@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionRespo
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
+import com.tave.tavewebsite.domain.resume.exception.AnswerTextLengthOverException;
 import com.tave.tavewebsite.domain.resume.exception.InvalidPageNumberException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepository;
@@ -60,6 +61,9 @@ public class ResumeQuestionService {
         for(int i = 0 ; i < resumeQuestionList.size() ; i++) {
             ResumeQuestion target = resumeQuestionList.get(i);
             String answer = updateRequestList.get(i).answer();
+            if(target.getTextLength() < answer.length()) {
+                throw new AnswerTextLengthOverException();
+            }
             target.updateAnswer(answer);
         }
     }
