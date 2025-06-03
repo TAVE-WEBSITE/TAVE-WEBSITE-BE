@@ -11,6 +11,11 @@ spring:
       hibernate:
         #      show_sql: true
         format_sql: true
+  sql:
+    init:
+      mode: never
+      # mode: always
+      schema-locations: classpath:org/springframework/batch/core/schema-postgresql.sql
   data:
     redis:
       port: ${REDIS_PORT}
@@ -40,6 +45,8 @@ spring:
 
 cloud:
   aws:
+    ses:
+      username: ${ses_mail}
     credentials:
       access-key: ${access_key}
       secret-key: ${secret_key}
