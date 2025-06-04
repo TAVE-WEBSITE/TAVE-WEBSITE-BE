@@ -1,9 +1,7 @@
 package com.tave.tavewebsite.domain.resume.dto.response;
 
-import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
-import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.global.common.FieldType;
 
 import java.time.LocalDateTime;
@@ -15,18 +13,7 @@ public record ResumeResDto(
         Sex sex,
         String school,
         LocalDateTime recruitTime,
-        Boolean checked
+        Long count,
+        EvaluationStatus status
 ) {
-    public static ResumeResDto from(Resume resume) {
-        Member member = resume.getMember();
-        return new ResumeResDto(
-                resume.getId(),
-                resume.getField(),
-                member.getNickname(),
-                member.getSex(),
-                resume.getSchool(),
-                resume.getUpdatedAt(),
-                resume.getHasChecked()
-        );
-    }
 }

@@ -4,23 +4,20 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
-import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.domain.resume.exception.AlreadySubmittedResumeException;
+import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static net.bytebuddy.matcher.ElementMatchers.fieldType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,8 +29,9 @@ public class Resume extends BaseEntity {
     @Column(name = "resume_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Boolean hasChecked;
+    private EvaluationStatus finalDocumentEvaluationStatus;
 
     @Size(min = 1, max = 20)
     @Column(length = 20)
@@ -76,7 +74,7 @@ public class Resume extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TimeSlot> timeSlots = new ArrayList<>();
+    private List<ResumeTimeSlot> resumeTimeSlots = new ArrayList<>();
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LanguageLevel> languageLevels = new ArrayList<>();
@@ -100,13 +98,13 @@ public class Resume extends BaseEntity {
         this.portfolioUrl = portfolioUrl;
         this.state = state;
         this.member = member;
-        this.hasChecked = Boolean.FALSE;
+        this.finalDocumentEvaluationStatus = EvaluationStatus.NOTCHECKED;
 
         member.addResume(this);
     }
 
-    public void addTimeSlot(TimeSlot timeSlot) {
-        this.timeSlots.add(timeSlot);
+    public void addTimeSlot(ResumeTimeSlot resumeTimeSlot) {
+        this.resumeTimeSlots.add(resumeTimeSlot);
     }
 
     public void addLanguageLevel(LanguageLevel languageLevel) {
@@ -136,8 +134,8 @@ public class Resume extends BaseEntity {
         this.state = ResumeState.SUBMITTED;
     }
 
-
-    public void updateChecked(boolean checked) {
-        this.hasChecked = checked;
+    public void updateFinalDocumentEvaluationStatus(EvaluationStatus finalDocumentEvaluationStatus) {
+        this.finalDocumentEvaluationStatus = finalDocumentEvaluationStatus;
     }
+
 }

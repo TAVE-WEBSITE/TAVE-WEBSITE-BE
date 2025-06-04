@@ -5,6 +5,7 @@ import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
@@ -12,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.*;
 
@@ -91,4 +94,9 @@ public class PersonalInfoController {
         return SuccessResponse.ok(SUBMIT_SUCCESS.getMessage());
     }
 
+    // 면접 설정 시간 조회
+    @GetMapping("/interview-time")
+    public SuccessResponse<List<TimeSlotResDto>> getInterviewTime() {
+        return new SuccessResponse(personalInfoService.getInterviewTime(), READ_INTERVIEW_SUCCESS.getMessage());
+    }
 }

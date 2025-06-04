@@ -3,10 +3,11 @@ package com.tave.tavewebsite.domain.resume.service;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
+import com.tave.tavewebsite.domain.resume.entity.ResumeTimeSlot;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
-import com.tave.tavewebsite.domain.resume.repository.TimeSlotRepository;
-import org.joda.time.LocalDate;
+import com.tave.tavewebsite.domain.resume.repository.ResumeTimeSlotRepository;
+import com.tave.tavewebsite.global.common.FieldType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,20 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TimeSlotServiceImplTest {
+class ResumeResumeTimeServiceImplTest {
 
     @Mock
     private ResumeRepository resumeRepository;
 
     @Mock
-    private TimeSlotRepository timeSlotRepository;
+    private ResumeTimeSlotRepository resumeTimeSlotRepository;
 
     @InjectMocks
-    private TimeSlotService timeSlotService;
+    private ResumeTimeService resumeTimeService;
 
     @DisplayName("체크한 면접 가능 시간을 DB에 저장합니다.")
     @Test
@@ -49,8 +49,8 @@ class TimeSlotServiceImplTest {
                 .resumeGeneration(15)
                 .blogUrl("www.blog.com")
                 .githubUrl("www.github.com")
-                .state("미정")
-                .field("BACKEND")
+                .state(ResumeState.TEMPORARY)
+                .field(FieldType.BACKEND)
                 .member(member)
                 .build();
 
@@ -64,10 +64,10 @@ class TimeSlotServiceImplTest {
         reqDtos.add(new TimeSlotReqDto(LocalDateTime.now()));
 
         // When
-        timeSlotService.createTimeSlot(1L, reqDtos);
+        resumeTimeService.createTimeSlot(1L, reqDtos);
 
         // Then
-        verify(timeSlotRepository, times(reqDtos.size())).save(any(TimeSlot.class));
+        verify(resumeTimeSlotRepository, times(reqDtos.size())).save(any(ResumeTimeSlot.class));
     }
 
 }
