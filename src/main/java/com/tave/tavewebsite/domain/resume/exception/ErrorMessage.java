@@ -7,6 +7,7 @@ import lombok.Getter;
 public enum ErrorMessage {
     // ResumeQuestion
     RESUME_QUESTION_NOT_MATCH_RESUME(400, "해당 Resume의 ResumeQuestion이 없습니다."),
+    RESUME_ANSWER_TEXT_LENGTH_OVER(400, "답변 길이를 초과했습니다."),
 
     // Resume
     RESUME_NOT_FOUND(404, "해당 이력서가 존재하지 않습니다."),

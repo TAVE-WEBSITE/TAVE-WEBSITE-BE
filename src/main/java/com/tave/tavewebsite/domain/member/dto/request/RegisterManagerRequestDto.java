@@ -24,7 +24,6 @@ public record RegisterManagerRequestDto(
         String generation,
         @NotNull(message = "부서를 선택해주세요")
         DepartmentType department,
-        @NotNull(message = "직책을 선택해주세요")
         JobType job
 
 ) {

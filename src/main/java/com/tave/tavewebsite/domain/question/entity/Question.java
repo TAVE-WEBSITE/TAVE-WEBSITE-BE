@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import static com.tave.tavewebsite.domain.resume.entity.AnswerType.TEXTAREA;
+
 @Entity
 @Getter
 @SuperBuilder
@@ -42,24 +44,25 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private AnswerType answerType;
 
-
     private Integer textLength;
 
-    public static Question from(QuestionSaveRequest dto) {
+    public static Question of(QuestionSaveRequest dto, Integer ordered) {
         return Question.builder()
                 .content(dto.content())
                 .fieldType(dto.fieldType())
-                .ordered(dto.ordered())
+                .ordered(ordered)
                 .textLength(dto.textLength())
-                .answerType(dto.answerType())
+                .answerType(TEXTAREA)
                 .build();
     }
 
     public void update(QuestionUpdateRequest dto) {
         this.content = dto.content();
         this.fieldType = dto.fieldType();
-        this.ordered = dto.ordered();
         this.textLength = dto.textLength();
-        this.answerType = dto.answerType();
+    }
+
+    public void updateOrdered(Integer ordered) {
+        this.ordered = ordered;
     }
 }

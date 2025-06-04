@@ -12,7 +12,8 @@ public record DetailResumeQuestionResponse(
         String answer,
         FieldType fieldType,
         Integer ordered,
-        AnswerType answerType
+        AnswerType answerType,
+        Integer textLength
 
 ) {
     public static DetailResumeQuestionResponse from(ResumeQuestion resumeQuestion) {
@@ -23,6 +24,7 @@ public record DetailResumeQuestionResponse(
                 .fieldType(resumeQuestion.getFieldType())
                 .ordered(resumeQuestion.getOrdered())
                 .answerType(resumeQuestion.getAnswerType())
+                .textLength(resumeQuestion.getTextLength())
                 .build();
     }
 

@@ -95,6 +95,11 @@ public class Member extends BaseEntity {
     // 패스워드 인코딩 필요
     public static Member toMember(RegisterManagerRequestDto registerManagerRequestDto,
                                   PasswordEncoder passwordEncoder) {
+        JobType job = registerManagerRequestDto.job();
+        if (job == null) {
+            job = JobType.PRINCIPAL;
+        }
+
         return Member.builder()
                 .email(registerManagerRequestDto.email())
                 .password(passwordEncoder.encode(registerManagerRequestDto.password()))
@@ -103,7 +108,7 @@ public class Member extends BaseEntity {
                 .username(registerManagerRequestDto.username())
                 .generation(registerManagerRequestDto.generation())
                 .role(UNAUTHORIZED_MANAGER)
-                .job(registerManagerRequestDto.job())
+                .job(job)
                 .department(registerManagerRequestDto.department())
                 .build();
     }
