@@ -2,6 +2,8 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.request.DocumentEvaluationReqDto;
+import com.tave.tavewebsite.domain.resume.dto.request.FinalDocumentEvaluationReqDto;
+import com.tave.tavewebsite.domain.resume.dto.response.DocumentEvaluationResDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +71,23 @@ public class ResumeEvaluateService {
                 resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.NOTCHECKED),
                 resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.PASS),
                 resumeResDtos);
+    }
+
+    @Transactional
+    public void createFinalDocumentEvaluation(Long resumeId, FinalDocumentEvaluationReqDto reqDto){
+        Resume resume = findIfResumeExists(resumeId);
+        resume.updateFinalDocumentEvaluationStatus(reqDto.status());
+    }
+
+    @Transactional(readOnly = true)
+    public List<DocumentEvaluationResDto> getDocumentEvaluations(Long resumeId) {
+        Resume resume = findIfResumeExists(resumeId);
+        List<ResumeEvaluation> resumeEvaluations =
+                resumeEvaluationRepository.findByResumeIdAndFinalEvaluateDocument(resumeId, EvaluationStatus.COMPLETE);
+
+        return resumeEvaluations.stream().map(
+                DocumentEvaluationResDto::from
+        ).toList();
     }
 
     private Resume findIfResumeExists(Long resumeId) {

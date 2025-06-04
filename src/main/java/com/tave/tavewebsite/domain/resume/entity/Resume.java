@@ -134,4 +134,8 @@ public class Resume extends BaseEntity {
         this.state = ResumeState.SUBMITTED;
     }
 
+    public void updateFinalDocumentEvaluationStatus(EvaluationStatus finalDocumentEvaluationStatus) {
+        this.finalDocumentEvaluationStatus = finalDocumentEvaluationStatus;
+    }
+
 }
