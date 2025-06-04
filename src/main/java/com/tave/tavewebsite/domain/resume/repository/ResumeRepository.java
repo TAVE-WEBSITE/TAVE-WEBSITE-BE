@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.repository;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ResumeRepository extends JpaRepository<Resume, Long> {
+public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCustomRepository {
 
     Optional<Resume> findByMember(Member member);
 
@@ -19,5 +20,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
     Optional<Resume> findByMemberId(Long memberId);
 
-    int countByHasChecked(Boolean hasChecked);
+    long count();
+
+    long countByFinalDocumentEvaluationStatus(EvaluationStatus status);
 }

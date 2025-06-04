@@ -1,13 +1,38 @@
 package com.tave.tavewebsite.domain.resume.dto.timeslot;
 
-import com.tave.tavewebsite.domain.resume.entity.TimeSlot;
+import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
+import com.tave.tavewebsite.domain.resume.entity.ResumeTimeSlot;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public record TimeSlotResDto(
         LocalDateTime time
 ) {
-    public static TimeSlotResDto from(TimeSlot timeSlot) {
-        return new TimeSlotResDto(timeSlot.getTime());
+    public static TimeSlotResDto from(ResumeTimeSlot resumeTimeSlot) {
+
+        LocalDate date = getLocalDate(resumeTimeSlot.getInterviewTime().getInterviewDetailTime());
+        LocalTime time = getLocalTime(resumeTimeSlot.getInterviewTime().getInterviewDetailTime());
+        LocalDateTime localDateTime = LocalDateTime.of(date, time);
+        return new TimeSlotResDto(localDateTime);
+    }
+
+    public static TimeSlotResDto fromInterviewTime(InterviewTime interviewTime) {
+        LocalDate date = getLocalDate(interviewTime.getInterviewDetailTime());
+        LocalTime time = getLocalTime(interviewTime.getInterviewDetailTime());
+        LocalDateTime localDateTime = LocalDateTime.of(date, time);
+        return new TimeSlotResDto(localDateTime);
+    }
+
+    private static LocalDate getLocalDate(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        return LocalDate.parse(localDateTime.format(formatter), formatter);
+    }
+
+    private static LocalTime getLocalTime(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(localDateTime.format(formatter), formatter);
     }
 }

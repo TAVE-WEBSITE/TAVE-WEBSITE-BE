@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.resume.entity;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.resume.dto.request.ResumeEvaluateReqDto;
+import com.tave.tavewebsite.domain.resume.dto.request.DocumentEvaluationReqDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,16 +41,21 @@ public class ResumeEvaluation {
     private Resume resume;
 
     @Builder
-    public ResumeEvaluation(ResumeEvaluateReqDto resumeEvaluateReqDto, Member member, Resume resume) {
-        this.evaluationScore = resumeEvaluateReqDto.score();
-        this.evaluationOpinion = resumeEvaluateReqDto.opinion();
+    public ResumeEvaluation(DocumentEvaluationReqDto documentEvaluationReqDto, Member member, Resume resume) {
+        this.evaluationScore = documentEvaluationReqDto.score();
+        this.evaluationOpinion = documentEvaluationReqDto.opinion();
         this.member = member;
         this.resume = resume;
         this.finalEvaluateDocument = EvaluationStatus.COMPLETE;
         this.finalEvaluateInterview = EvaluationStatus.NOTCHECKED;
     }
 
-    public static ResumeEvaluation of(ResumeEvaluateReqDto resumeEvaluateReqDto, Member member, Resume resume) {
-        return new ResumeEvaluation(resumeEvaluateReqDto, member, resume);
+    public static ResumeEvaluation of(DocumentEvaluationReqDto documentEvaluationReqDto, Member member, Resume resume) {
+        return new ResumeEvaluation(documentEvaluationReqDto, member, resume);
+    }
+
+    public void update(DocumentEvaluationReqDto documentEvaluationReqDto) {
+        this.evaluationScore = documentEvaluationReqDto.score();
+        this.evaluationOpinion = documentEvaluationReqDto.opinion();
     }
 }
