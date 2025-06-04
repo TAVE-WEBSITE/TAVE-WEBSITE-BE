@@ -11,35 +11,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/admin/apply/setting")
 @RequiredArgsConstructor
 public class ApplyInitialSetupController {
 
     private final ApplyInitialSetupService applyInitialSetupService;
 
-    @GetMapping
+    @GetMapping("/v1/normal/apply/setting")
     public SuccessResponse<ApplyInitialSetupReadResponseDto> readApplyInitialSetup() {
         return new SuccessResponse<>(applyInitialSetupService.getInitialSetup(),
                 ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_READ_SUCCESS.getMessage());
     }
 
-    @PostMapping
+    @PostMapping("/v1/admin/apply/setting")
     public SuccessResponse saveApplyInitialSetup(@RequestBody @Valid ApplyInitialSetupRequestDto dto) {
         applyInitialSetupService.saveInitialSetup(dto);
         return SuccessResponse.ok(ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_SAVE_SUCCESS.getMessage());
     }
 
-    @PatchMapping
+    @PatchMapping("/v1/admin/apply/setting")
     public SuccessResponse updateApplyInitialSetup(@RequestBody @Valid ApplyInitialSetupRequestDto dto) {
         applyInitialSetupService.updateInitialSetup(dto);
         return SuccessResponse.ok(ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_UPDATE_SUCCESS.getMessage());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/v1/admin/apply/setting")
     public SuccessResponse deleteApplyInitialSetup() {
         applyInitialSetupService.deleteInitialSetup();
         return SuccessResponse.ok(ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_DELETE_SUCCESS.getMessage());
