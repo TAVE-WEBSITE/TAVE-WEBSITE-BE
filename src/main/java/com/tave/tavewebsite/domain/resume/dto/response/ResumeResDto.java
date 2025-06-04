@@ -13,6 +13,7 @@ public record ResumeResDto(
         Sex sex,
         String school,
         LocalDateTime recruitTime,
+        Long count,
         EvaluationStatus status
 ) {
 }

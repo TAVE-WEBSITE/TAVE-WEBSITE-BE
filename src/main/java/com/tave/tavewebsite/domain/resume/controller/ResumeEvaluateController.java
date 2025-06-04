@@ -31,13 +31,24 @@ public class ResumeEvaluateController {
     }
 
     @GetMapping
-    public SuccessResponse<ResumeEvaluateResDto> getEvaluationList(
+    public SuccessResponse<ResumeEvaluateResDto> getDocumentEvaluationList(
             @RequestParam EvaluationStatus status,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
         return new SuccessResponse<>(
-                resumeEvaluateService.getResumes(status, pageable),
+                resumeEvaluateService.getDocumentResumes(status, pageable),
+                READ_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/final")
+    public SuccessResponse<ResumeEvaluateResDto> getFinalDocumentEvaluationList(
+            @RequestParam(required = false) EvaluationStatus status,
+            @PageableDefault(size = 7) Pageable pageable
+    ) {
+
+        return new SuccessResponse<>(
+                resumeEvaluateService.getFinalDocumentResumes(status, pageable),
                 READ_SUCCESS.getMessage());
     }
 }

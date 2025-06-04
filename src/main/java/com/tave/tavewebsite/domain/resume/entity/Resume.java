@@ -29,6 +29,10 @@ public class Resume extends BaseEntity {
     @Column(name = "resume_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EvaluationStatus finalDocumentEvaluationStatus;
+
     @Size(min = 1, max = 20)
     @Column(length = 20)
     private String school;
@@ -94,6 +98,7 @@ public class Resume extends BaseEntity {
         this.portfolioUrl = portfolioUrl;
         this.state = state;
         this.member = member;
+        this.finalDocumentEvaluationStatus = EvaluationStatus.NOTCHECKED;
 
         member.addResume(this);
     }

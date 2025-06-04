@@ -94,6 +94,7 @@ public class PersonalInfoController {
         return SuccessResponse.ok(SUBMIT_SUCCESS.getMessage());
     }
 
+    // 면접 설정 시간 조회
     @GetMapping("/interview-time")
     public SuccessResponse<List<TimeSlotResDto>> getInterviewTime() {
         return new SuccessResponse(personalInfoService.getInterviewTime(), READ_INTERVIEW_SUCCESS.getMessage());

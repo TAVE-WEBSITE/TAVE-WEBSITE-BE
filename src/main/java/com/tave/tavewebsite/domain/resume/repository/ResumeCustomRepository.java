@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface ResumeCustomRepository {
 
-    Page<ResumeResDto> findAll(Member member, EvaluationStatus status, Pageable pageable);
+    Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, Pageable pageable);
+
+    Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, Pageable pageable);
 
     long findNotEvaluatedResume(Member member);
 

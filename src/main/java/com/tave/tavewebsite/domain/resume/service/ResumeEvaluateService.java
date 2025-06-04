@@ -45,15 +45,27 @@ public class ResumeEvaluateService {
 
     //본인 기반의 작성한 지원서에 대해 조회해야됨
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getResumes(EvaluationStatus status, Pageable pageable) {
+    public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, Pageable pageable) {
         Member currentMember = getCurrentMember();
-        Page<ResumeResDto> resumeResDtos = resumeRepository.findAll(currentMember, status, pageable);
+        Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, pageable);
 
 
 
         return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
                 resumeRepository.findNotEvaluatedResume(currentMember),
                 resumeRepository.findEvaluatedResume(currentMember),
+                resumeResDtos);
+    }
+
+    @Transactional(readOnly = true)
+    public ResumeEvaluateResDto getFinalDocumentResumes(EvaluationStatus status, Pageable pageable) {
+        Member currentMember = getCurrentMember();
+        Page<ResumeResDto> resumeResDtos =
+                resumeRepository.findFinalEvaluation(currentMember, status, pageable);
+
+        return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
+                resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.NOTCHECKED),
+                resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.PASS),
                 resumeResDtos);
     }
 

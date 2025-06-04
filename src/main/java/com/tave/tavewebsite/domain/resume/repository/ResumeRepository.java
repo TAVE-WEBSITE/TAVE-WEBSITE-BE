@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.repository;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,6 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     Optional<Resume> findByMemberId(Long memberId);
 
     long count();
+
+    long countByFinalDocumentEvaluationStatus(EvaluationStatus status);
 }
