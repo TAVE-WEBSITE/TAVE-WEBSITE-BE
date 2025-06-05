@@ -1,13 +1,11 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
-import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempWrapper;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeTempDto;
 import com.tave.tavewebsite.domain.resume.service.ResumeAnswerTempService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.TEMP_LOAD_SUCCESS;
 import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.TEMP_SAVE_SUCCESS;
@@ -23,15 +21,16 @@ public class ResumeAnswerTempController {
     @PostMapping("/{resumeId}")
     public SuccessResponse saveTempAnswers(@PathVariable Long resumeId,
                                            @RequestParam int page,
-                                           @RequestBody List<ResumeAnswerTempDto> answers) {
-        tempService.tempSaveAnswers(resumeId, page, answers);
+                                           @RequestBody ResumeTempDto tempDto) {
+        tempService.tempSaveAnswers(resumeId, page, tempDto);
         return SuccessResponse.ok(TEMP_SAVE_SUCCESS.getMessage());
     }
 
     // 임시 저장 불러오기
     @GetMapping("/{resumeId}")
-    public SuccessResponse<ResumeAnswerTempWrapper> getTempAnswers(@PathVariable Long resumeId) {
-        ResumeAnswerTempWrapper response = tempService.getTempSavedAnswers(resumeId);
+    public SuccessResponse<ResumeAnswerTempWrapper> getTempAnswers(@PathVariable Long resumeId,
+                                                                   @RequestParam int page) {
+        ResumeAnswerTempWrapper response = tempService.getTempSavedAnswers(page, resumeId);
         return new SuccessResponse<>(response, TEMP_LOAD_SUCCESS.getMessage());
     }
 
