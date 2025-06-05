@@ -2,7 +2,7 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempWrapper;
-import com.tave.tavewebsite.domain.resume.dto.request.ResumeTempDto;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.exception.TempNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.TempParseFailedException;
 import com.tave.tavewebsite.domain.resume.exception.TempSaveFailedException;
@@ -18,7 +18,7 @@ public class ResumeAnswerTempService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public void tempSaveAnswers(Long resumeId, int page, ResumeTempDto tempDto) {
+    public void tempSaveAnswers(Long resumeId, int page, ResumeReqDto tempDto) {
         try {
             ResumeAnswerTempWrapper wrapper = new ResumeAnswerTempWrapper(page, tempDto.answers(), tempDto.timeSlots());
             String json = objectMapper.writeValueAsString(wrapper);

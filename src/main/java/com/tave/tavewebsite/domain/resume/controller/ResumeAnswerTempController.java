@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempWrapper;
-import com.tave.tavewebsite.domain.resume.dto.request.ResumeTempDto;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.service.ResumeAnswerTempService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ResumeAnswerTempController {
     @PostMapping("/{resumeId}")
     public SuccessResponse saveTempAnswers(@PathVariable Long resumeId,
                                            @RequestParam int page,
-                                           @RequestBody ResumeTempDto tempDto) {
+                                           @RequestBody ResumeReqDto tempDto) {
         tempService.tempSaveAnswers(resumeId, page, tempDto);
         return SuccessResponse.ok(TEMP_SAVE_SUCCESS.getMessage());
     }

@@ -4,7 +4,7 @@ import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 
 import java.util.List;
 
-public record ResumeTempDto(
+public record ResumeReqDto(
         List<ResumeAnswerTempDto> answers,
         List<TimeSlotReqDto> timeSlots
 ) {

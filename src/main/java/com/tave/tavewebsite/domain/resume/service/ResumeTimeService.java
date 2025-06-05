@@ -35,13 +35,6 @@ public class ResumeTimeService {
 
     @Transactional
     public void createTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
-        Resume resume = findIfResumeExists(resumeId);
-
-        saveTimeSlot(timeSlots, resume);
-    }
-
-    @Transactional
-    public void updateTimeSlot(Long resumeId, List<TimeSlotReqDto> timeSlots) {
         Member currentMember = getCurrentMember();
         Resume resume = findIfResumeExists(resumeId);
         findIfResumeMine(currentMember, resume);
