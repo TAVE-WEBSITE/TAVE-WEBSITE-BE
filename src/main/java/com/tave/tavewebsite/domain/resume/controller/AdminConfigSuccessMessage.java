@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AdminConfigSuccessMessage {
 
+    GET_DISTINCT_INTERVIEW_TIME_DAY("고유한 면접 날짜를 조회합니다."),
     CREATE_INTERVIEW_TIME_SUCCESS("면접 시간 설정에 성공했습니다.");
 
     private final String message;
