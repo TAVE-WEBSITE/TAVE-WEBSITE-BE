@@ -32,6 +32,7 @@ public class InterviewPlace extends BaseEntity {
 
     private String code;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     public static InterviewPlace of(InterviewPlaceSaveDto dto) {
@@ -43,6 +44,10 @@ public class InterviewPlace extends BaseEntity {
                 .code(dto.code())
                 .status(Status.ACTIVE)
                 .build();
+    }
+
+    public void updateStatus(){
+        this.status = Status.INACTIVE;
     }
 
 }
