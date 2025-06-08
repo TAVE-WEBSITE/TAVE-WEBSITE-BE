@@ -2,63 +2,46 @@ package com.tave.tavewebsite.domain.interviewplace.entity;
 
 import com.tave.tavewebsite.domain.interviewplace.dto.request.InterviewPlaceSaveDto;
 import com.tave.tavewebsite.global.common.BaseEntity;
+import com.tave.tavewebsite.global.common.Status;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @SuperBuilder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class InterviewPlace extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
-    public String generalAddress;
+    private LocalDate interviewDay;
 
-    public String detailAddress;
 
-    // HACK 면접 기간을 나흘로 하드 코딩
-    @Column(columnDefinition = "TEXT")
-    public String firstOpenChatLink;
+    private String generalAddress;
 
-    @Column(columnDefinition = "TEXT")
-    public String secondOpenChatLink;
+    private String detailAddress;
 
     @Column(columnDefinition = "TEXT")
-    public String thirdOpenChatLink;
+    private String openChatLink;
 
-    @Column(columnDefinition = "TEXT")
-    public String fourthOpenChatLink;
+    private String code;
 
-    @Column(columnDefinition = "TEXT")
-    public String firstDocumentLink;
-
-    @Column(columnDefinition = "TEXT")
-    public String secondDocumentLink;
-
-    @Column(columnDefinition = "TEXT")
-    public String thirdDocumentLink;
-
-    @Column(columnDefinition = "TEXT")
-    public String fourthDocumentLink;
+    private Status status;
 
     public static InterviewPlace of(InterviewPlaceSaveDto dto) {
         return InterviewPlace.builder()
+                .interviewDay(dto.interviewDay())
                 .generalAddress(dto.generalAddress())
                 .detailAddress(dto.detailAddress())
-                .firstOpenChatLink(dto.firstOpenChatLink())
-                .secondOpenChatLink(dto.secondOpenChatLink())
-                .thirdOpenChatLink(dto.thirdOpenChatLink())
-                .fourthOpenChatLink(dto.fourthOpenChatLink())
-                .firstDocumentLink(dto.firstDocumentLink())
-                .secondDocumentLink(dto.secondDocumentLink())
-                .thirdDocumentLink(dto.thirdDocumentLink())
-                .fourthDocumentLink(dto.fourthDocumentLink())
+                .openChatLink(dto.openChatLink())
+                .code(dto.code())
+                .status(Status.ACTIVE)
                 .build();
     }
 
