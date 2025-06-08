@@ -19,7 +19,7 @@ public class InterviewTimeController {
 
     private final InterviewTimeService interviewTimeService;
 
-    @PostMapping("/admin/config/interview")
+    @PostMapping("/admin/config/interview-time")
     public SuccessResponse createInterviewTimeConfig(@RequestBody @Valid InterviewTimeReqDto reqDto) {
 
         interviewTimeService.createInterviewTime(reqDto);
@@ -27,7 +27,7 @@ public class InterviewTimeController {
         return new SuccessResponse(CREATE_INTERVIEW_TIME_SUCCESS.getMessage());
     }
 
-    @GetMapping("/manager/config/interview-time-day")
+    @GetMapping("/manager/config/interview-time")
     public SuccessResponse<List<InterviewTimeResponseDto>> getInterviewTimeDay() {
 
         List<InterviewTimeResponseDto> response = interviewTimeService.distinctInterviewDay();
