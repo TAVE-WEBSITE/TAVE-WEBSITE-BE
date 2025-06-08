@@ -62,12 +62,12 @@ public class EmailWriterConfig {
                             log.error("DLQ 처리 - {}: {}", item.getEmail(), lastError.getMessage());
                         }
 
-                        failedItems.add(EmailNotificationDLQ.from(item, lastError));
+                        failedItems.add(EmailNotificationDLQ.of(item, lastError));
                         failedIds.add(item.getId());
                         return null;
                     });
                 } catch (Exception e) {
-                    failedItems.add(EmailNotificationDLQ.from(item, e));
+                    failedItems.add(EmailNotificationDLQ.of(item, e));
                     failedIds.add(item.getId());
                     log.error("Unexpected failure: {}", item.getEmail(), e);
                 }

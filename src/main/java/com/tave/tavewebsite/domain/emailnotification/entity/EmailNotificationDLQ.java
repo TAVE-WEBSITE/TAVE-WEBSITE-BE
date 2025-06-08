@@ -30,7 +30,7 @@ public class EmailNotificationDLQ {
 
     private LocalDateTime failedAt;
 
-    public static EmailNotificationDLQ from(EmailNotification source, Throwable e) {
+    public static EmailNotificationDLQ of(EmailNotification source, Throwable e) {
         EmailNotificationDLQ dlq = new EmailNotificationDLQ();
         dlq.email = source.getEmail();
         dlq.errorMessage = stackTraceToString(e);
