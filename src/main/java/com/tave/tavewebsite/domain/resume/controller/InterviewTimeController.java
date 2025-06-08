@@ -28,7 +28,7 @@ public class InterviewTimeController {
     }
 
     @GetMapping("/manager/config/interview-time-day")
-    public SuccessResponse getInterviewTimeDay() {
+    public SuccessResponse<List<InterviewTimeResponseDto>> getInterviewTimeDay() {
 
         List<InterviewTimeResponseDto> response = interviewTimeService.distinctInterviewDay();
 

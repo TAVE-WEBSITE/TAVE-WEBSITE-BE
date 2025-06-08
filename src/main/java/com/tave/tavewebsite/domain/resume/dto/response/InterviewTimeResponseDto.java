@@ -7,12 +7,12 @@ import java.time.LocalDate;
 
 @Builder
 public record InterviewTimeResponseDto(
-        String formattedDay,
+        String formattedDate,
         LocalDate originalDate
 ) {
-    public static InterviewTimeResponseDto of(String formattedDay, LocalDate originalDate) {
+    public static InterviewTimeResponseDto of(String formattedDate, LocalDate originalDate) {
         return InterviewTimeResponseDto.builder()
-                .formattedDay(formattedDay)
+                .formattedDate(formattedDate)
                 .originalDate(originalDate)
                 .build();
     }
