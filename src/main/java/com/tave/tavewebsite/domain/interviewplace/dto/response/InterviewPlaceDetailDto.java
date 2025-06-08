@@ -16,7 +16,7 @@ public record InterviewPlaceDetailDto(
     public static InterviewPlaceDetailDto of(InterviewPlace interviewPlace) {
         return InterviewPlaceDetailDto.builder()
                 .id(interviewPlace.getId())
-                .interviewDay(interviewPlace.getInterviewDay().toString())
+                .interviewDay(interviewPlace.getInterviewDate().toString())
                 .generalAddress(interviewPlace.getGeneralAddress())
                 .detailAddress(interviewPlace.getDetailAddress())
                 .openChatLink(interviewPlace.getOpenChatLink())
