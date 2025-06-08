@@ -10,9 +10,6 @@ import java.util.Optional;
 
 public interface InterviewPlaceRepository extends JpaRepository<InterviewPlace, Integer> {
 
-    // FIXME 아직 조회 기준을 몰라서 일단 createdAt으로 조회함.
-    Optional<InterviewPlace> findFirstByOrderByCreatedAtDesc();
-
     List<InterviewPlace> findByStatus(Status status);
 
     Optional<InterviewPlace> findByInterviewDayAndStatus(LocalDate interviewDay, Status status);
