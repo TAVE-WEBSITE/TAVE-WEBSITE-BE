@@ -8,24 +8,19 @@ import com.tave.tavewebsite.domain.interviewplace.repository.InterviewPlaceRepos
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class InterviewPlaceService {
 
     private final InterviewPlaceRepository interviewPlaceRepository;
 
-    public InterviewPlaceResponse saveInterviewPlace(InterviewPlaceSaveDto dto) {
+    public void saveInterviewPlace(List<InterviewPlaceSaveDto> dtoList) {
 
-        InterviewPlace interviewPlace = InterviewPlace.of(dto);
+        List<InterviewPlace> saveList = dtoList.stream().map(InterviewPlace::of).toList();
 
-        return InterviewPlaceResponse.of(interviewPlaceRepository.save(interviewPlace));
-    }
-
-    public InterviewPlaceResponse getInterviewPlace() {
-        InterviewPlace findEntity = interviewPlaceRepository.findFirstByOrderByCreatedAtDesc()
-                .orElseThrow(NotFoundInterviewPlaceException::new);
-
-        return InterviewPlaceResponse.of(findEntity);
+        interviewPlaceRepository.saveAll(saveList);
     }
 
 }

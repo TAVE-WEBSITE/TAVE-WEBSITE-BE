@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static com.tave.tavewebsite.domain.interviewplace.controller.SuccessMessage.*;
 
 @RestController
@@ -20,19 +22,11 @@ public class InterviewPlaceController {
     private final InterviewPlaceService interviewPlaceService;
 
     @PostMapping("/v1/manager/interview-place")
-    public SuccessResponse<InterviewPlaceResponse> saveInterviewPlace(@RequestBody @Valid InterviewPlaceSaveDto dto) {
+    public SuccessResponse saveInterviewPlaceList(@RequestBody @Valid List<InterviewPlaceSaveDto> dtoList) {
 
-        InterviewPlaceResponse response = interviewPlaceService.saveInterviewPlace(dto);
+        interviewPlaceService.saveInterviewPlace(dtoList);
 
-        return new SuccessResponse<>(response, INTERVIEW_PLACE_CREATED.getMessage());
-    }
-
-    @GetMapping("/v1/manager/interview-place")
-    public SuccessResponse<InterviewPlaceResponse> getInterviewPlace() {
-
-        InterviewPlaceResponse response = interviewPlaceService.getInterviewPlace();
-
-        return new SuccessResponse<>(response, INTERVIEW_PLACE_GET.getMessage());
+        return new SuccessResponse<>(INTERVIEW_PLACE_CREATED.getMessage());
     }
 
 }
