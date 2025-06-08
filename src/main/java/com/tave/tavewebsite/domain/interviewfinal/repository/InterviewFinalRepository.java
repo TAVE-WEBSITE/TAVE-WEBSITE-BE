@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface InterviewFinalRepository extends JpaRepository<InterviewFinal, Integer> {
 
-    Page<InterviewFinal> findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc(Pageable pageable);
+    Page<InterviewFinal> findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc(Pageable pageable);
 
-    List<InterviewFinal> findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc();
+    List<InterviewFinal> findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc();
 
 }

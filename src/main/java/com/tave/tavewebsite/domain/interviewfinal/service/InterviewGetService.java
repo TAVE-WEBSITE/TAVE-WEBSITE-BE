@@ -16,11 +16,11 @@ public class InterviewGetService {
     private final InterviewFinalRepository interviewFinalRepository;
 
     public Page<InterviewFinal> getInterviewFinalPageableList(Pageable pageable) {
-        return interviewFinalRepository.findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc(pageable);
+        return interviewFinalRepository.findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc(pageable);
     }
 
     public List<InterviewFinal> getInterviewFinalList() {
-        return interviewFinalRepository.findAllByOrderByInterviewDayAscInterviewTimeAscUsernameAsc();
+        return interviewFinalRepository.findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc();
     }
 
 }

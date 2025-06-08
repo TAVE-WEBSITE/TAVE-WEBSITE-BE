@@ -4,6 +4,9 @@ import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.Builder;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 
 @Builder
 public record InterviewFinalConvertDto(
@@ -13,11 +16,11 @@ public record InterviewFinalConvertDto(
         Sex sex,
         FieldType fieldType,
         String university,
-        String interviewDay,
-        String interviewTime
+        LocalDate interviewDate,
+        LocalTime interviewTime
 ) {
 
-    public static InterviewFinalConvertDto from(String username, String email, Integer generation, Sex sex, FieldType fieldType, String university, String interviewDay, String interviewTime) {
+    public static InterviewFinalConvertDto from(String username, String email, Integer generation, Sex sex, FieldType fieldType, String university, LocalDate interviewDate, LocalTime interviewTime) {
         return InterviewFinalConvertDto.builder()
                 .username(username)
                 .email(email)
@@ -25,7 +28,7 @@ public record InterviewFinalConvertDto(
                 .sex(sex)
                 .fieldType(fieldType)
                 .university(university)
-                .interviewDay(interviewDay)
+                .interviewDate(interviewDate)
                 .interviewTime(interviewTime)
                 .build();
     }

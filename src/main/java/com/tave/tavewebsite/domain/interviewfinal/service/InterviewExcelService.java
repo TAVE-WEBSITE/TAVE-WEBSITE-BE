@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,12 +63,12 @@ public class InterviewExcelService {
         String email = excelUtils.getStringToCell(row.getCell(2));
         FieldType field = excelUtils.StringConvertToField(excelUtils.getStringToCell(row.getCell(3)));
         String university = excelUtils.getStringToCell(row.getCell(4));
-        String interviewDay = excelUtils.getDayToCell(row.getCell(5));
-        String interviewTime = excelUtils.getTimeToCell(row.getCell(6));
+        LocalDate interviewDate = excelUtils.getDateToCell(row.getCell(5));
+        LocalTime interviewTime = excelUtils.getTimeToCell(row.getCell(6));
         Integer generation = excelUtils.getIntegerToCell(row.getCell(7));
 
         return InterviewFinalConvertDto
-                .from(username, email, generation, sex, field, university, interviewDay, interviewTime);
+                .from(username, email, generation, sex, field, university, interviewDate, interviewTime);
     }
 
     private void logExcelLastRowNum(Sheet sheet) {

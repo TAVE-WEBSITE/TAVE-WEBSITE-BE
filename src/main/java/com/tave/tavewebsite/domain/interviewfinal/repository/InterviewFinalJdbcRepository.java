@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -21,15 +23,19 @@ public class InterviewFinalJdbcRepository {
 
         // INSERT 쿼리
         String sql = """
-            INSERT INTO interview_final (username, email, generation, sex, university, field_type, member_id, resume_id, interview_day, interview_time , created_at, updated_at)
+            INSERT INTO interview_final (username, email, generation, sex, university, field_type, member_id, resume_id, interview_date, interview_time , created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
         """;
 
         return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
+
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 InterviewFinalSaveDto dto = dtoList.get(i);
+                Date date = Date.valueOf(dto.interviewDate());
+                Time time = Time.valueOf(dto.interviewTime());
+
                 ps.setString(1, dto.username());
                 ps.setString(2, dto.email());
                 ps.setInt(3, dto.generation());
@@ -38,8 +44,8 @@ public class InterviewFinalJdbcRepository {
                 ps.setString(6, dto.fieldType().name());
                 ps.setInt(7, dto.memberId().intValue());
                 ps.setInt(8, dto.resumeId().intValue());
-                ps.setString(9, dto.interviewDay());
-                ps.setString(10, dto.interviewTime());
+                ps.setDate(9, date);
+                ps.setTime(10, time);
             }
 
             @Override
