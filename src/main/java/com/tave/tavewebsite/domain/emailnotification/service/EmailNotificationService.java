@@ -12,7 +12,6 @@ import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,20 +47,18 @@ public class EmailNotificationService {
     }
 
     public void cancelTodayAndTomorrowApplyNotificationSchedule() {
-        List<LocalDate> targetDates = List.of(
-                LocalDate.now(),
-                LocalDate.now().plusDays(1)
-        );
+        cancelNotificationSchedule(LocalDate.now());
+        cancelNotificationSchedule(LocalDate.now().plusDays(1));
+    }
 
-        for (LocalDate date : targetDates) {
-            String key = "email_batch_" + date.format(DateTimeFormatter.ISO_DATE);
-            if (redisUtil.hasKey(key)) {
-                redisUtil.delete(key);
-                log.info("예약 취소 완료: {}", key);
-            } else {
-                log.warn("예약 키가 존재하지 않음: {}", key);
-            }
+    private void cancelNotificationSchedule(LocalDate date) {
+        String key = "email_batch_" + date.format(DateTimeFormatter.ISO_DATE);
+        if (redisUtil.hasKey(key)) {
+            redisUtil.delete(key);
+            log.info("예약 취소 완료: {}", key);
+            return;
         }
+        log.warn("예약 키가 존재하지 않음: {}", key);
     }
 
 
