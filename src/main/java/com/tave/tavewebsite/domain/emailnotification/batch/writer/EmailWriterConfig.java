@@ -1,12 +1,12 @@
 package com.tave.tavewebsite.domain.emailnotification.batch.writer;
 
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
-import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
+import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotificationDLQ;
+import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationDLQRepository;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
 import com.tave.tavewebsite.global.mail.service.SESMailService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
@@ -23,6 +23,7 @@ public class EmailWriterConfig {
 
     private final SESMailService sesMailService;
     private final EmailNotificationRepository emailNotificationRepository;
+    private final EmailNotificationDLQRepository emailNotificationDLQRepository;
 
     @Bean
     public ItemWriter<EmailNotification> emailWriter() {
@@ -42,7 +43,8 @@ public class EmailWriterConfig {
 
         return items -> {
             List<Long> successIds = new ArrayList<>();
-            List<EmailNotification> failedItems = new ArrayList<>();
+            List<Long> failedIds = new ArrayList<>();
+            List<EmailNotificationDLQ> failedItems = new ArrayList<>();
 
             for (EmailNotification item : items) {
                 try {
@@ -52,28 +54,36 @@ public class EmailWriterConfig {
                         successIds.add(item.getId());
                         return null;
                     }, context -> {
-                        item.changeStatus(EmailStatus.FAILED);
-                        failedItems.add(item);
-                        log.error("DLQ 처리 - {}: {}", item.getEmail(),
-                                Objects.requireNonNull(context.getLastThrowable()).getMessage());
+                        Throwable lastError = context.getLastThrowable();
+
+                        if (lastError == null) {
+                            log.error("DLQ 처리 - {}: 원인 불명 오류", item.getEmail());
+                        } else {
+                            log.error("DLQ 처리 - {}: {}", item.getEmail(), lastError.getMessage());
+                        }
+
+                        failedItems.add(EmailNotificationDLQ.from(item, lastError));
+                        failedIds.add(item.getId());
                         return null;
                     });
                 } catch (Exception e) {
-                    item.changeStatus(EmailStatus.FAILED);
-                    failedItems.add(item);
+                    failedItems.add(EmailNotificationDLQ.from(item, e));
+                    failedIds.add(item.getId());
                     log.error("Unexpected failure: {}", item.getEmail(), e);
                 }
             }
 
-            // 1. 성공 건: 벌크 업데이트
+            // 1. 성공 건: 전체 벌크 삭제
             if (!successIds.isEmpty()) {
-                emailNotificationRepository.bulkUpdateStatus(EmailStatus.SUCCESS, successIds);
+                emailNotificationRepository.deleteAllByIdInBatch(successIds);
             }
 
-            // 2. 실패 건: 개별 필드 변경사항 포함하여 saveAll
+            // 2. 실패 건: 기존 데이터베이스에서 삭제 및
+            // 개별 필드 변경사항 포함하여 DLQ로 saveAll
             if (!failedItems.isEmpty()) {
-                emailNotificationRepository.saveAll(failedItems);
-                emailNotificationRepository.flush();
+                emailNotificationRepository.deleteAllByIdInBatch(failedIds);
+                emailNotificationDLQRepository.saveAll(failedItems);
+                emailNotificationDLQRepository.flush();
             }
         };
     }
