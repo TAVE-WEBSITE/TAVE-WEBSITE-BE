@@ -33,4 +33,12 @@ public class InterviewPlaceService {
         return interviewPlaceRepository.findByStatus(Status.ACTIVE);
     }
 
+    public InterviewPlaceDetailDto getInterviewPlaceByDay(LocalDate localDate) {
+        InterviewPlace interviewPlace = interviewPlaceRepository
+                .findByInterviewDayAndStatus(localDate, Status.ACTIVE)
+                .orElseThrow(NotFoundInterviewPlaceException::new);
+
+        return InterviewPlaceDetailDto.of(interviewPlace);
+    }
+
 }
