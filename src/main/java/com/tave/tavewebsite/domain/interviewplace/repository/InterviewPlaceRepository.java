@@ -12,6 +12,6 @@ public interface InterviewPlaceRepository extends JpaRepository<InterviewPlace, 
 
     List<InterviewPlace> findByStatus(Status status);
 
-    Optional<InterviewPlace> findByInterviewDayAndStatus(LocalDate interviewDay, Status status);
+    Optional<InterviewPlace> findByInterviewDateAndStatus(LocalDate interviewDate, Status status);
 
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public record InterviewPlaceSaveDto(
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        LocalDate interviewDay,
+        LocalDate interviewDate,
         @NotBlank String generalAddress,
         @NotBlank String detailAddress,
         @NotBlank String openChatLink,

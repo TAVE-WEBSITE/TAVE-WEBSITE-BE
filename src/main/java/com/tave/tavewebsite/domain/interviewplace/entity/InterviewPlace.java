@@ -20,8 +20,7 @@ public class InterviewPlace extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate interviewDay;
-
+    private LocalDate interviewDate;
 
     private String generalAddress;
 
@@ -37,7 +36,7 @@ public class InterviewPlace extends BaseEntity {
 
     public static InterviewPlace of(InterviewPlaceSaveDto dto) {
         return InterviewPlace.builder()
-                .interviewDay(dto.interviewDay())
+                .interviewDate(dto.interviewDate())
                 .generalAddress(dto.generalAddress())
                 .detailAddress(dto.detailAddress())
                 .openChatLink(dto.openChatLink())

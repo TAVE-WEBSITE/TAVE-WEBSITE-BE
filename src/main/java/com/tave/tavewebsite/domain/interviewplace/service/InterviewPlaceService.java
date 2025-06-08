@@ -33,9 +33,9 @@ public class InterviewPlaceService {
         return interviewPlaceRepository.findByStatus(Status.ACTIVE);
     }
 
-    public InterviewPlaceDetailDto getInterviewPlaceByDay(LocalDate localDate) {
+    public InterviewPlaceDetailDto getInterviewPlaceByDate(LocalDate interviewDate) {
         InterviewPlace interviewPlace = interviewPlaceRepository
-                .findByInterviewDayAndStatus(localDate, Status.ACTIVE)
+                .findByInterviewDateAndStatus(interviewDate, Status.ACTIVE)
                 .orElseThrow(NotFoundInterviewPlaceException::new);
 
         return InterviewPlaceDetailDto.of(interviewPlace);
