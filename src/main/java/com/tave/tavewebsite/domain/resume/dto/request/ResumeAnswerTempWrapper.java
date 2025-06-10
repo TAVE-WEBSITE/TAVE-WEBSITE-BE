@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.dto.request;
 
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,5 @@ import java.util.List;
 public class ResumeAnswerTempWrapper {
     private int page;  // 마지막에 저장한 페이지 번호
     private List<ResumeAnswerTempDto> answers;  // 해당 페이지의 답변 리스트
+    private List<TimeSlotReqDto> timeslots;
 }
