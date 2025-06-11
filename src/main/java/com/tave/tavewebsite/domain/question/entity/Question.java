@@ -46,12 +46,18 @@ public class Question extends BaseEntity {
     private Integer textLength;
 
     public static Question of(QuestionSaveRequest dto, Integer ordered) {
+
+        AnswerType type = dto.answerType();
+        if(type == null) {
+            type = AnswerType.TEXTAREA;
+        }
+
         return Question.builder()
                 .content(dto.content())
                 .fieldType(dto.fieldType())
                 .ordered(ordered)
                 .textLength(dto.textLength())
-                .answerType(dto.answerType())
+                .answerType(type)
                 .build();
     }
 
