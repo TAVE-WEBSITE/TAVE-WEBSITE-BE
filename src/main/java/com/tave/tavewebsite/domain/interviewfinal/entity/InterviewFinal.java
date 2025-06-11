@@ -28,7 +28,7 @@ public class InterviewFinal extends BaseEntity {
 
     private String email;
 
-    private Integer generation;
+    private String generation;
 
     @Enumerated(EnumType.STRING)
     private Sex sex;

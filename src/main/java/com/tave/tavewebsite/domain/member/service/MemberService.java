@@ -143,7 +143,7 @@ public class MemberService {
         member.update(req.validatedPassword(), passwordEncoder);
     }
 
-    public List<MemberResumeDto> findMemberResumeDto(Integer generation, List<String> email){
+    public List<MemberResumeDto> findMemberResumeDto(String generation, List<String> email){
         return memberRepository.findMemberIdAndResumeIdByGenAndEmails(generation, email);
     }
 

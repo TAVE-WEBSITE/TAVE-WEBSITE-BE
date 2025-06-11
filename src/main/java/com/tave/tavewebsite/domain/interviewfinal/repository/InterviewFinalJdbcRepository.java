@@ -38,7 +38,7 @@ public class InterviewFinalJdbcRepository {
 
                 ps.setString(1, dto.username());
                 ps.setString(2, dto.email());
-                ps.setInt(3, dto.generation());
+                ps.setString(3, dto.generation());
                 ps.setString(4, dto.sex().name());
                 ps.setString(5, dto.university());
                 ps.setString(6, dto.fieldType().name());

@@ -68,7 +68,7 @@ public class InterviewExcelService {
         Integer generation = excelUtils.getIntegerToCell(row.getCell(7));
 
         return InterviewFinalConvertDto
-                .from(username, email, generation, sex, field, university, interviewDate, interviewTime);
+                .from(username, email, String.valueOf(generation), sex, field, university, interviewDate, interviewTime);
     }
 
     private void logExcelLastRowNum(Sheet sheet) {

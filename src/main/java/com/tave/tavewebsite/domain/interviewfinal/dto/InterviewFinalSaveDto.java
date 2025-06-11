@@ -12,7 +12,7 @@ import java.time.LocalTime;
 public record InterviewFinalSaveDto(
         String username,
         String email,
-        Integer generation,
+        String generation,
         Sex sex,
         FieldType fieldType,
         String university,

@@ -14,6 +14,6 @@ public interface InterviewFinalRepository extends JpaRepository<InterviewFinal, 
 
     List<InterviewFinal> findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc();
 
-    Optional<InterviewFinal> findByMemberIdAndGeneration(Long memberId, Integer generation);
+    Optional<InterviewFinal> findByMemberIdAndGeneration(Long memberId, String generation);
 
 }

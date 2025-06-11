@@ -12,7 +12,7 @@ import java.time.LocalTime;
 public record InterviewFinalConvertDto(
         String username,
         String email,
-        Integer generation,
+        String generation,
         Sex sex,
         FieldType fieldType,
         String university,
@@ -20,7 +20,7 @@ public record InterviewFinalConvertDto(
         LocalTime interviewTime
 ) {
 
-    public static InterviewFinalConvertDto from(String username, String email, Integer generation, Sex sex, FieldType fieldType, String university, LocalDate interviewDate, LocalTime interviewTime) {
+    public static InterviewFinalConvertDto from(String username, String email, String generation, Sex sex, FieldType fieldType, String university, LocalDate interviewDate, LocalTime interviewTime) {
         return InterviewFinalConvertDto.builder()
                 .username(username)
                 .email(email)
