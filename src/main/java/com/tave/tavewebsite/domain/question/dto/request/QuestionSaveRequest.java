@@ -10,6 +10,10 @@ import lombok.Builder;
 public record QuestionSaveRequest(
         @NotBlank(message = "질문 내용을 입력해주세요.") String content,
         @NotNull FieldType fieldType,
-        @NotNull Integer textLength
+        @NotNull Integer textLength,
+        @NotNull AnswerType answerType
+
+        // todo AnswerType 에 대해서 DTO 로 받아 처리해야할 듯.
+
         ) {
 }
