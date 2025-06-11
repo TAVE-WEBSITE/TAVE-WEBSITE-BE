@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import static com.tave.tavewebsite.domain.resume.entity.AnswerType.TEXTAREA;
 
 @Entity
 @Getter
@@ -52,7 +51,7 @@ public class Question extends BaseEntity {
                 .fieldType(dto.fieldType())
                 .ordered(ordered)
                 .textLength(dto.textLength())
-                .answerType(TEXTAREA)
+                .answerType(dto.answerType())
                 .build();
     }
 
