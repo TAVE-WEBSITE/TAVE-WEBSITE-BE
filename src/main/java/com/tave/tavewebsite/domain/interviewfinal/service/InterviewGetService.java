@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.interviewfinal.service;
 
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
+import com.tave.tavewebsite.domain.interviewfinal.exception.NotFoundInterviewFinalByMemberIdException;
 import com.tave.tavewebsite.domain.interviewfinal.repository.InterviewFinalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,11 @@ public class InterviewGetService {
 
     public List<InterviewFinal> getInterviewFinalList() {
         return interviewFinalRepository.findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc();
+    }
+
+    public InterviewFinal getInterviewFinalByMemberId(Long memberId, String generation) {
+        return interviewFinalRepository.findByMemberIdAndGeneration(memberId, generation)
+                .orElseThrow(NotFoundInterviewFinalByMemberIdException::new);
     }
 
 }
