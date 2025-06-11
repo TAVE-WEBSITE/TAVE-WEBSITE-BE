@@ -39,7 +39,6 @@ public class InterviewFinalUseCase {
     private final InterviewGetService interviewGetService;
     private final S3DownloadSerivce s3DownloadSerivce;
     private final InterviewPlaceService interviewPlaceService;
-    private final HistoryService historyService;
     private final InterviewFinalMapper mapper;
     private final MemberService memberService;
 
