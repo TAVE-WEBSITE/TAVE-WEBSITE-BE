@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDet
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.global.security.CurrentMember;
 import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,9 @@ public class InterviewFinalController {
     }
 
     @GetMapping("/v1/member/interview-final")
-    public SuccessResponse<InterviewFinalForMemberDto> getMemberInterviewInfo(){
-
-        Member currentMember = SecurityUtils.getCurrentMember();
+    public SuccessResponse<InterviewFinalForMemberDto> getMemberInterviewInfo(
+            @CurrentMember Member currentMember
+    ){
 
         InterviewFinalForMemberDto response = interviewFinalUseCase.getMemberInterviewFinalDetail(currentMember);
 
