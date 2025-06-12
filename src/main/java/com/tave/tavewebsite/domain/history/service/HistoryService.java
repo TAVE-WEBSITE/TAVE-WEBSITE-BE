@@ -95,13 +95,13 @@ public class HistoryService {
         return "th";
     }
 
-    public static int calculateGeneration() {
+    private static int calculateGeneration() {
         int year = (LocalDate.now().getYear() - 2018) * 2;
         if (LocalDate.now().getMonthValue() < 2) {
             year--;
         } else if (LocalDate.now().getMonthValue() > 7) {
             year++;
         }
-        return year+1;
+        return year;
     }
 }
