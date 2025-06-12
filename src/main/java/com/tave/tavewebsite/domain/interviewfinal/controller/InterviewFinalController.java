@@ -37,12 +37,13 @@ public class InterviewFinalController {
                 .body(dto.inputStreamResource());
     }
 
-    @GetMapping("/v1/member/interview-final")
+    @GetMapping("/v1/member/interview-final/{generation}")
     public SuccessResponse<InterviewFinalForMemberDto> getMemberInterviewInfo(
-            @CurrentMember Member currentMember
+            @CurrentMember Member currentMember,
+            @PathVariable String generation
     ){
 
-        InterviewFinalForMemberDto response = interviewFinalUseCase.getMemberInterviewFinalDetail(currentMember);
+        InterviewFinalForMemberDto response = interviewFinalUseCase.getMemberInterviewFinalDetail(currentMember, generation);
 
         return new SuccessResponse<>(response,INTERVIEW_FINAL_MEMBER_INFO.getMessage());
     }

@@ -77,9 +77,7 @@ public class InterviewFinalUseCase {
                 .toList();
     }
 
-    public InterviewFinalForMemberDto getMemberInterviewFinalDetail(Member currentMember) {
-        // 현재 기수 가져오기
-        int generation = HistoryService.calculateGeneration();
+    public InterviewFinalForMemberDto getMemberInterviewFinalDetail(Member currentMember, String generation) {
 
         InterviewFinal interviewFinal = interviewGetService.getInterviewFinalByMemberId(currentMember.getId(), String.valueOf(generation));
         InterviewPlaceDetailDto interviewDateInfo = interviewPlaceService.getInterviewPlaceByDate(interviewFinal.getInterviewDate());
