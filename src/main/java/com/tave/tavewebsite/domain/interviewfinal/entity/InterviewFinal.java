@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.interviewfinal.entity;
 
-import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
@@ -9,6 +8,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 @Entity
@@ -26,7 +28,7 @@ public class InterviewFinal extends BaseEntity {
 
     private String email;
 
-    private Integer generation;
+    private String generation;
 
     @Enumerated(EnumType.STRING)
     private Sex sex;
@@ -36,9 +38,9 @@ public class InterviewFinal extends BaseEntity {
 
     private String university;
 
-    private String interviewDay;
+    private LocalDate interviewDate;
 
-    private String interviewTime;
+    private LocalTime interviewTime;
 
     private Long memberId;
 

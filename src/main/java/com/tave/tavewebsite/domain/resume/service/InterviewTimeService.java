@@ -1,14 +1,18 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.resume.dto.request.InterviewTimeReqDto;
+import com.tave.tavewebsite.domain.resume.dto.response.InterviewTimeResponseDto;
 import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +45,19 @@ public class InterviewTimeService {
                 cursor = cursor.plusMinutes(intervalMin);
             }
         }
+    }
+
+    public List<InterviewTimeResponseDto> distinctInterviewDay() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d");
+
+        return getDistinctInterviewDates().stream()
+                .map(day -> {
+                    return InterviewTimeResponseDto.of(day.format(formatter), day);
+                })
+                .toList();
+    }
+
+    public List<LocalDate> getDistinctInterviewDates() {
+        return interviewTimeRepository.findDistinctInterviewDates();
     }
 }

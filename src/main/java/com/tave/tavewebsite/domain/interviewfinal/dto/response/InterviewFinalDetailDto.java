@@ -20,7 +20,7 @@ public record InterviewFinalDetailDto(
 
 
         StringBuilder sb = new StringBuilder();
-        sb.append(interviewFinal.getInterviewDay()).append(" ").append(interviewFinal.getInterviewTime());
+        sb.append(interviewFinal.getInterviewDate()).append(" ").append(interviewFinal.getInterviewTime());
 
         return InterviewFinalDetailDto.builder()
                 .id(interviewFinal.getId())
