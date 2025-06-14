@@ -1,6 +1,9 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
+import com.tave.tavewebsite.domain.applicant.history.entity.ApplicationStatus;
+import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
@@ -8,6 +11,7 @@ import com.tave.tavewebsite.domain.programinglaunguage.entity.ProgramingLanguage
 import com.tave.tavewebsite.domain.programinglaunguage.repository.LanguageLevelRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLanguageRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
+import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
@@ -15,17 +19,21 @@ import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.domain.resume.exception.*;
+import com.tave.tavewebsite.domain.resume.exception.FieldTypeInvalidException;
+import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
+import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
+import com.tave.tavewebsite.domain.resume.exception.TempNotFoundException;
+import com.tave.tavewebsite.domain.resume.exception.TempParseFailedException;
+import com.tave.tavewebsite.domain.resume.exception.TempSerializeFailedException;
 import com.tave.tavewebsite.domain.resume.mapper.ResumeMapper;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,18 +44,20 @@ public class PersonalInfoService {
     private final LanguageLevelRepository languageLevelRepository;
     private final ResumeQuestionService resumeQuestionService;
     private final InterviewTimeRepository interviewTimeRepository;
+    private final ApplicantHistoryRepository applicantHistoryRepository;
 
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public Resume createPersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
+    public Resume createPersonalInfo(Long memberId, PersonalInfoCreateRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
         Resume savedResume = resumeRepository.save(ResumeMapper.toResume(requestDto, member, fieldType));
 
+        createApplicantHistory(fieldType, member, requestDto.getGeneration());
         List<ProgramingLanguage> byField = programingLanguageRepository.findByField(savedResume.getField());
         List<LanguageLevel> languageLevels = LanguageLevelMapper.toLanguageLevel(byField, savedResume);
         languageLevelRepository.saveAll(languageLevels);
@@ -167,6 +177,12 @@ public class PersonalInfoService {
         return all.stream().map(
                 TimeSlotResDto::fromInterviewTime
         ).toList();
+    }
+
+    private void createApplicantHistory(FieldType fieldType, Member member, String generation) {
+        ApplicantHistory applicantHistory = new ApplicantHistory(generation, fieldType, ApplicationStatus.DRAFT,
+                member);
+        applicantHistoryRepository.save(applicantHistory);
     }
 
 }
