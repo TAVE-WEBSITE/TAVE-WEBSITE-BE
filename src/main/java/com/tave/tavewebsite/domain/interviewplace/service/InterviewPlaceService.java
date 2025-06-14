@@ -29,7 +29,7 @@ public class InterviewPlaceService {
         interviewPlaceRepository.saveAll(saveList);
     }
 
-    public List<InterviewPlace> getInterviewPlaceActiveList() {
+    private List<InterviewPlace> getInterviewPlaceActiveList() {
         return interviewPlaceRepository.findByStatus(Status.ACTIVE);
     }
 
