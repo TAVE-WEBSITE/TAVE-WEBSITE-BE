@@ -8,8 +8,6 @@ public record TimeTableMemberDetailDto(
         Long interviewFinalId,
         String field,
         String username,
-        String interviewDate,
-        String interviewTime,
         Long memberId,
         Long resumeId
 ) {
@@ -18,8 +16,6 @@ public record TimeTableMemberDetailDto(
                 .interviewFinalId(interviewFinal.getId())
                 .field(interviewFinal.getFieldType().getDisplayName())
                 .username(interviewFinal.getUsername())
-                .interviewDate(interviewFinal.getInterviewDate().toString())
-                .interviewTime(interviewFinal.getInterviewTime().toString())
                 .memberId(interviewFinal.getMemberId())
                 .resumeId(interviewFinal.getResumeId())
                 .build();
