@@ -60,6 +60,17 @@ public class InterviewGroupUtil {
         return groupByDayList;
     }
 
+    // NOTE 이 정보를 InterviewTime 에서 가져와야할 지 고민
+    public TotalDateTimeDto getTotalDateTimeDto(
+            Map<LocalDate, Map<LocalTime, List<InterviewFinal>>> group
+    ) {
+        List<LocalDate> dateList = group.keySet().stream().toList();
+        List<LocalTime> timeList = group.get(dateList.get(0)).keySet().stream().toList();
+
+        return TotalDateTimeDto.of(dateList, timeList);
+    }
+
+
     private List<LocalDate> getGroupKeyByDate(Map<LocalDate, Map<LocalTime, List<InterviewFinal>>> group) {
         return group.keySet().stream()
                 .sorted()
