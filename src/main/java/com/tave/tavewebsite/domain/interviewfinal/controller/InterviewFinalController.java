@@ -1,13 +1,12 @@
 package com.tave.tavewebsite.domain.interviewfinal.controller;
 
-import com.tave.tavewebsite.domain.history.service.HistoryService;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.global.security.CurrentMember;
-import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -65,7 +64,17 @@ public class InterviewFinalController {
     ) {
         List<InterviewFinalDetailDto> response = interviewFinalUseCase.getInterviewFinalList(pageNum, pageSize);
 
-        return new SuccessResponse(response, INTERVIEW_FINAL_LIST_GET.getMessage());
+        return new SuccessResponse<>(response, INTERVIEW_FINAL_LIST_GET.getMessage());
+    }
+
+    @GetMapping("/v1/manager/interview-final/time-table/{generation}")
+    public SuccessResponse<InterviewTimeTableDto> getinterviewFinalTimeTableList(
+            @PathVariable String generation
+    ){
+
+        InterviewTimeTableDto response = interviewFinalUseCase.getTimeTableList(generation);
+
+        return new SuccessResponse<>(response,INTERVIEW_FINAL_TIME_TABLE_LIST.getMessage());
     }
 
 }

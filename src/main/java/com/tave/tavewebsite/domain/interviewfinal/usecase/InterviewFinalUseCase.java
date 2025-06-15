@@ -1,16 +1,19 @@
 package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
-import com.tave.tavewebsite.domain.history.service.HistoryService;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
 import com.tave.tavewebsite.domain.interviewfinal.mapper.InterviewFinalMapper;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewSaveService;
+import com.tave.tavewebsite.domain.interviewfinal.utils.InterviewGroupUtil;
 import com.tave.tavewebsite.domain.interviewplace.dto.response.InterviewPlaceDetailDto;
 import com.tave.tavewebsite.domain.interviewplace.service.InterviewPlaceService;
 import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
@@ -24,9 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,7 @@ public class InterviewFinalUseCase {
     private final S3DownloadSerivce s3DownloadSerivce;
     private final InterviewPlaceService interviewPlaceService;
     private final InterviewFinalMapper mapper;
+    private final InterviewGroupUtil groupUtil;
     private final MemberService memberService;
 
     public InterviewFormInputStreamDto downloadInterviewFinal() throws IOException {
@@ -85,6 +89,19 @@ public class InterviewFinalUseCase {
         return mapper.mapInterviewFinalForMember(interviewFinal, interviewDateInfo);
     }
 
+    public InterviewTimeTableDto getTimeTableList(String generation){
+        List<InterviewFinal> interviewFinalList = interviewGetService.getInterviewFinalListByGeneration(generation);
+
+        // 그룹화
+        Map<LocalDate, Map<LocalTime, List<InterviewFinal>>> group =
+                groupUtil.groupByDateAndTime(interviewFinalList);
+
+        // 그룹화 -> Dto 변환, 면접 전체 날짜와 시간 -> Dto변환
+        List<InterviewTimeTableGroupByDayDto> timeTableList = groupUtil.createTimeTableDtoList(group);
+        TotalDateTimeDto totalDateTimeList = groupUtil.getTotalDateTimeDto(group);
+
+        return InterviewTimeTableDto.of(totalDateTimeList, timeTableList);
+    }
 
     /*
     * refactor
