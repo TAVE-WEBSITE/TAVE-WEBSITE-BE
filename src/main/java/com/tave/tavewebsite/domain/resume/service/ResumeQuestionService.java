@@ -2,15 +2,18 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.question.service.QuestionService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.AnswerTextLengthOverException;
 import com.tave.tavewebsite.domain.resume.exception.InvalidPageNumberException;
+import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeQuestionNotMatchResumeException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
+import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +28,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ResumeQuestionService {
 
+    private final ResumeRepository resumeRepository;
     private final ResumeQuestionRepository resumeQuestionRepository;
     private final ResumeQuestionJdbcRepository resumeQuestionJdbcRepository;
     private final QuestionService questionService;
+    private final ResumeTimeService resumeTimeService;
 
     public ResumeQuestionResponse createResumeQuestion(Resume resume, FieldType fieldType) {
         // 공통 + 전공별 질문 생성
@@ -90,15 +95,19 @@ public class ResumeQuestionService {
                 .toList();
     }
 
-    private List<ResumeQuestion> createResumeQuestions(Resume resume, FieldType fieldType) {
-        return questionService.findQuestionsByFieldType(fieldType).stream()
-                .map(q -> ResumeQuestion.of(resume, q))
-                .toList();
-    }
+    @Transactional
+    public void createResumeAnswer(Long resumeId, ResumeReqDto reqDto){
+        Resume resume = findIfResumeExists(resumeId);
 
-    private List<ResumeQuestion> concatResumeQuestion(List<ResumeQuestion> commonQuestionList, List<ResumeQuestion> specificQuestionList) {
-        return Stream.concat(commonQuestionList.stream(), specificQuestionList.stream())
-                .toList();
+        // resume와 resumeQuestion이 매핑되어 있는지 유효성 검증을 해야하는가?
+        reqDto.answers().forEach(answer -> {
+            ResumeQuestion resumeQuestion = findIfResumeQuestionExists(answer.getResumeQuestionId());
+            resumeQuestion.updateAnswer(answer.getAnswer());
+        });
+
+        if(!reqDto.timeSlots().isEmpty()) {
+            resumeTimeService.createTimeSlot(resumeId, reqDto.timeSlots());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -116,4 +125,22 @@ public class ResumeQuestionService {
         return getResumeQuestionList(resume, targetFieldType);
     }
 
+    private List<ResumeQuestion> createResumeQuestions(Resume resume, FieldType fieldType) {
+        return questionService.findQuestionsByFieldType(fieldType).stream()
+                .map(q -> ResumeQuestion.of(resume, q))
+                .toList();
+    }
+
+    private List<ResumeQuestion> concatResumeQuestion(List<ResumeQuestion> commonQuestionList, List<ResumeQuestion> specificQuestionList) {
+        return Stream.concat(commonQuestionList.stream(), specificQuestionList.stream())
+                .toList();
+    }
+
+    private Resume findIfResumeExists(Long resumeId) {
+        return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
+    }
+
+    private ResumeQuestion findIfResumeQuestionExists(Long resumeQuestionId) {
+        return resumeQuestionRepository.findById(resumeQuestionId).orElseThrow(ResumeQuestionNotMatchResumeException::new);
+    }
 }
