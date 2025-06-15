@@ -134,12 +134,4 @@ public class InterviewFinalUseCase {
                 .toList();
     }
 
-    private Map<LocalDate, Map<LocalTime, List<InterviewFinal>>> groupByDateAndTime(List<InterviewFinal> interviewFinalList) {
-        return interviewFinalList.stream()
-                .collect(Collectors.groupingBy(
-                        InterviewFinal::getInterviewDate,
-                        Collectors.groupingBy(InterviewFinal::getInterviewTime)
-                ));
-    }
-
 }
