@@ -32,7 +32,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
           AND m.email IN :emails
         \s""")
     List<MemberResumeDto> findMemberIdAndResumeIdByGenAndEmails(
-            @Param("generation") Integer generation,
+            @Param("generation") String generation,
             @Param("emails")     List<String> emails
     );
 }

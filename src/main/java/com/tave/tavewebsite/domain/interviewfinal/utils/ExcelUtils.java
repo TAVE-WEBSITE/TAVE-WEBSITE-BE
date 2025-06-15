@@ -8,6 +8,10 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 
@@ -26,16 +30,14 @@ public class ExcelUtils {
     public static final String MALE = "남자";
     public static final String FEMALE = "여자";
 
+    public LocalDate getDateToCell(Cell cell) {
+        if (cell == null) return null;
 
-    public String getDayToCell(Cell cell) {
-        if (cell == null) return "";
-
-        Date day = cell.getDateCellValue();
-        return DATE_FORMAT.format(day);
+        return cell.getLocalDateTimeCellValue().toLocalDate();
     }
 
-    public String getTimeToCell(Cell cell) {
-        return new DataFormatter().formatCellValue(cell);
+    public LocalTime getTimeToCell(Cell cell) {
+        return cell.getLocalDateTimeCellValue().toLocalTime();
     }
 
     public String getStringToCell(Cell cell) {
@@ -44,8 +46,7 @@ public class ExcelUtils {
     }
 
     public Integer getIntegerToCell(Cell cell) {
-        Integer num = (int) cell.getNumericCellValue();
-        return num;
+        return (Integer) (int) cell.getNumericCellValue();
     }
 
     public Sex StringConvertToSex(String sex) {
