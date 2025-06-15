@@ -1,8 +1,13 @@
 package com.tave.tavewebsite.domain.interviewfinal.controller;
 
+import com.tave.tavewebsite.domain.history.service.HistoryService;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
+import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.global.security.CurrentMember;
+import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -13,8 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.INTERVIEW_FINAL_CREATED;
-import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.INTERVIEW_FINAL_LIST_GET;
+import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +35,17 @@ public class InterviewFinalController {
                 .headers(dto.headers())
                 .contentLength(dto.contentLength())
                 .body(dto.inputStreamResource());
+    }
+
+    @GetMapping("/v1/member/interview-final/{generation}")
+    public SuccessResponse<InterviewFinalForMemberDto> getMemberInterviewInfo(
+            @CurrentMember Member currentMember,
+            @PathVariable String generation
+    ){
+
+        InterviewFinalForMemberDto response = interviewFinalUseCase.getMemberInterviewFinalDetail(currentMember, generation);
+
+        return new SuccessResponse<>(response,INTERVIEW_FINAL_MEMBER_INFO.getMessage());
     }
 
     @PostMapping("/v1/manager/interview-final")
