@@ -7,17 +7,24 @@ import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
 import com.tave.tavewebsite.domain.resume.exception.AlreadySubmittedResumeException;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -49,9 +56,8 @@ public class Resume extends BaseEntity {
     @Column(length = 20)
     private FieldType field;
 
-    @Min(1)
-    @Max(5)
-    private Integer resumeGeneration;
+    @Size(max = 5)
+    private String resumeGeneration;
 
     @Size(max = 255)
     @Column(length = 50)
@@ -86,7 +92,7 @@ public class Resume extends BaseEntity {
     private List<ResumeEvaluation> resumeEvaluations = new ArrayList<>();
 
     @Builder
-    public Resume(String school, String major, String minor, Integer resumeGeneration, String blogUrl, String githubUrl,
+    public Resume(String school, String major, String minor, String resumeGeneration, String blogUrl, String githubUrl,
                   String portfolioUrl, ResumeState state, FieldType field, Member member) {
         this.school = school;
         this.major = major;

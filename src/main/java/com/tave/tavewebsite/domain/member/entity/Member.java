@@ -1,6 +1,11 @@
 package com.tave.tavewebsite.domain.member.entity;
 
+import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
+import static com.tave.tavewebsite.domain.member.entity.RoleType.MEMBER;
+import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
@@ -21,13 +26,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import static com.tave.tavewebsite.domain.member.entity.RoleType.*;
 
 @Entity
 @Getter
@@ -92,6 +94,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resume> resumes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ApplicantHistory> applicantHistories = new ArrayList<>();
+
     // 패스워드 인코딩 필요
     public static Member toMember(RegisterManagerRequestDto registerManagerRequestDto,
                                   PasswordEncoder passwordEncoder) {
@@ -135,4 +140,9 @@ public class Member extends BaseEntity {
     public void addResume(Resume resume) {
         this.resumes.add(resume);
     }
+
+    public void addApplicantHistory(ApplicantHistory applicantHistory) {
+        this.applicantHistories.add(applicantHistory);
+    }
+
 }
