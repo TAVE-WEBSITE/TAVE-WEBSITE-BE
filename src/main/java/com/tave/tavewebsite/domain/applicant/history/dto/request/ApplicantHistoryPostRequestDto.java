@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Size;
 
 public record ApplicantHistoryPostRequestDto(
 
-        @NotNull(message = "generation 필수로 입력해주시기 바랍니다.") @Size(min = 1, max = 5, message = "1~5 글자 사이로 입력해주세요.")
+        @NotNull(message = "generation 필수로 입력해주시기 바랍니다.")
+        @Size(min = 1, max = 5, message = "1~5 글자 사이로 입력해주세요.")
         String generation,
         @NotNull(message = "fieldType 필수로 입력해주시기 바랍니다.")
         FieldType fieldType,

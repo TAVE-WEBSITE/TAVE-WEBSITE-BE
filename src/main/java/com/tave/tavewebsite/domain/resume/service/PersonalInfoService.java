@@ -180,8 +180,8 @@ public class PersonalInfoService {
     }
 
     private void createApplicantHistory(FieldType fieldType, Member member, String generation) {
-        ApplicantHistory applicantHistory = new ApplicantHistory(generation, fieldType, ApplicationStatus.DRAFT,
-                member);
+        ApplicantHistory applicantHistory =
+                new ApplicantHistory(generation, fieldType, ApplicationStatus.DRAFT, member);
         applicantHistoryRepository.save(applicantHistory);
     }
 
