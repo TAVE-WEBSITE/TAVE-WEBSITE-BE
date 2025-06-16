@@ -40,8 +40,8 @@ public class InterviewGroupUtil {
             List<InterviewTimeTableGroupByTimeDto> groupByTimeList = new ArrayList<>();
 
             // GroupByDate In GroupByTime 으로 순회
-            for (LocalTime time : getGroupKeyByTime(timeMap)) {
-                List<InterviewFinal> interviewListAtTime = timeMap.get(time);
+            for (LocalTime groupTime : getGroupKeyByTime(timeMap)) {
+                List<InterviewFinal> interviewListAtTime = timeMap.get(groupTime);
                 List<TimeTableMemberDetailDto> memberDtoList = new ArrayList<>();
 
                 // M/d, HH:MM에 면접 예정인 면접 정보(InterviewFinal)을 Dto 변환
@@ -49,7 +49,7 @@ public class InterviewGroupUtil {
                     memberDtoList.add(TimeTableMemberDetailDto.from(interviewFinal));
                 }
 
-                groupByTimeList.add(InterviewTimeTableGroupByTimeDto.from(memberDtoList));
+                groupByTimeList.add(InterviewTimeTableGroupByTimeDto.from(memberDtoList, groupTime));
             }
 
             // 하루 단위 DTO 생성
