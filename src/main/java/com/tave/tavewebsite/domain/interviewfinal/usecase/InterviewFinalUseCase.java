@@ -4,10 +4,20 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
+import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
+import com.tave.tavewebsite.domain.interviewfinal.mapper.InterviewFinalMapper;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewSaveService;
+import com.tave.tavewebsite.domain.interviewfinal.utils.InterviewGroupUtil;
+import com.tave.tavewebsite.domain.interviewplace.dto.response.InterviewPlaceDetailDto;
+import com.tave.tavewebsite.domain.interviewplace.service.InterviewPlaceService;
 import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
+import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.s3.service.S3DownloadSerivce;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,12 +41,14 @@ public class InterviewFinalUseCase {
     private final InterviewSaveService interviewSaveService;
     private final InterviewGetService interviewGetService;
     private final S3DownloadSerivce s3DownloadSerivce;
+    private final InterviewPlaceService interviewPlaceService;
+    private final InterviewFinalMapper mapper;
+    private final InterviewGroupUtil groupUtil;
     private final MemberService memberService;
 
     public InterviewFormInputStreamDto downloadInterviewFinal() throws IOException {
         return s3DownloadSerivce.downloadInterviewFinalSetUpForm();
     }
-
 
     public void insertInterviewEntityFromExcel(MultipartFile file) {
         // Excel에서 최종 면접 데이터 추출
@@ -49,7 +61,7 @@ public class InterviewFinalUseCase {
         // SQL IN 조회를 위해 List<String> email 추출
         List<String> emailList = mappingEmailInterviewFinal.keySet().stream().toList();
 
-        Integer generation = dtoList.get(0).generation();
+        String generation = dtoList.get(0).generation();
         List<MemberResumeDto> memberResumeDtoList = memberService.findMemberResumeDto(generation, emailList);
 
         List<InterviewFinalSaveDto> pairedList = combineMemberResumeInterview(dtoList, memberResumeDtoList);
@@ -69,6 +81,27 @@ public class InterviewFinalUseCase {
                 .toList();
     }
 
+    public InterviewFinalForMemberDto getMemberInterviewFinalDetail(Member currentMember, String generation) {
+
+        InterviewFinal interviewFinal = interviewGetService.getInterviewFinalByMemberId(currentMember.getId(), String.valueOf(generation));
+        InterviewPlaceDetailDto interviewDateInfo = interviewPlaceService.getInterviewPlaceByDate(interviewFinal.getInterviewDate());
+
+        return mapper.mapInterviewFinalForMember(interviewFinal, interviewDateInfo);
+    }
+
+    public InterviewTimeTableDto getTimeTableList(String generation){
+        List<InterviewFinal> interviewFinalList = interviewGetService.getInterviewFinalListByGeneration(generation);
+
+        // 그룹화
+        Map<LocalDate, Map<LocalTime, List<InterviewFinal>>> group =
+                groupUtil.groupByDateAndTime(interviewFinalList);
+
+        // 그룹화 -> Dto 변환, 면접 전체 날짜와 시간 -> Dto변환
+        List<InterviewTimeTableGroupByDayDto> timeTableList = groupUtil.createTimeTableDtoList(group);
+        TotalDateTimeDto totalDateTimeList = groupUtil.getTotalDateTimeDto(group);
+
+        return InterviewTimeTableDto.of(totalDateTimeList, timeTableList);
+    }
 
     /*
     * refactor

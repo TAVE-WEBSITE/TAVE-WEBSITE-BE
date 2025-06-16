@@ -22,8 +22,8 @@ public class ResumeQuestionJdbcRepository {
 
         // INSERT 쿼리
         String sql = """
-            INSERT INTO resume_question (question, answer, ordered, resume_id, field_type, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+            INSERT INTO resume_question (question, answer, ordered, resume_id, field_type, answer_type, text_length ,created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
         """;
 
         return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
@@ -39,6 +39,8 @@ public class ResumeQuestionJdbcRepository {
                 }
                 ps.setLong(4, resume.getId());
                 ps.setString(5, resumeQuestion.getFieldType().name());
+                ps.setString(6, resumeQuestion.getAnswerType().name());
+                ps.setInt(7, resumeQuestion.getTextLength());
             }
 
             @Override

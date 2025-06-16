@@ -5,16 +5,19 @@ import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.Builder;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Builder
 public record InterviewFinalSaveDto(
         String username,
         String email,
-        Integer generation,
+        String generation,
         Sex sex,
         FieldType fieldType,
         String university,
-        String interviewDay,
-        String interviewTime,
+        LocalDate interviewDate,
+        LocalTime interviewTime,
         Long memberId,
         Long resumeId
 ) {
@@ -26,7 +29,7 @@ public record InterviewFinalSaveDto(
                 .sex(interviewDto.sex())
                 .fieldType(interviewDto.fieldType())
                 .university(interviewDto.university())
-                .interviewDay(interviewDto.interviewDay())
+                .interviewDate(interviewDto.interviewDate())
                 .interviewTime(interviewDto.interviewTime())
                 .memberId(memberResumeDto.memberId())
                 .resumeId(memberResumeDto.resumeId())
@@ -51,7 +54,7 @@ public record InterviewFinalSaveDto(
                 .sex(dto.sex())
                 .fieldType(dto.fieldType())
                 .university(dto.university())
-                .interviewDay(dto.interviewDay())
+                .interviewDate(dto.interviewDate())
                 .interviewTime(dto.interviewTime())
                 .memberId(null)
                 .resumeId(null)
