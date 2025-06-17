@@ -1,7 +1,6 @@
 package com.tave.tavewebsite.domain.resume.batch.controller;
 
 import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
-import com.tave.tavewebsite.domain.resume.batch.service.RecruitmentEmailBatchService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/admin/config/recruitment")
 public class RecruitmentEmailBatchController {
 
-    private final RecruitmentEmailBatchService recruitmentEmailBatchService;
     private final ApplyInitialSetupService applyInitialSetupService;
 
     @GetMapping("/document/email")
