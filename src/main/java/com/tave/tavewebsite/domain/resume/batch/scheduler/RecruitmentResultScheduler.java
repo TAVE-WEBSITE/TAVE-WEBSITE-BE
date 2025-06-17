@@ -21,7 +21,7 @@ public class RecruitmentResultScheduler {
 
     @Scheduled(fixedRate = 300_000) // 5분마다 실행
     @SchedulerLock(name = "documentResultEmailJobLock", lockAtMostFor = "PT10M") // 락 10분간 유지
-    public void executeIfScheduled() {
+    public void executeDocumentResultIfScheduled() {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(DocumentResultBatchJobFailException::new);
 
@@ -34,6 +34,25 @@ public class RecruitmentResultScheduler {
         if (LocalDateTime.now().isAfter(applyInitialSetup.getDocumentAnnouncementDate())) {
             recruitmentEmailBatchService.runDocumentResultJobAsync();
             applyInitialSetup.changeDocumentAnnouncementFlag(false);
+            applyInitialSetupRepository.save(applyInitialSetup);
+        }
+    }
+
+    @Scheduled(fixedRate = 300_000) // 5분마다 실행
+    @SchedulerLock(name = "lastResultEmailJobLock", lockAtMostFor = "PT10M") // 락 10분간 유지
+    public void executeLastResultIfScheduled() {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(DocumentResultBatchJobFailException::new);
+
+        if (applyInitialSetup.getLastAnnouncementFlag() == null
+                || !applyInitialSetup.getLastAnnouncementFlag()) {
+            return;
+        }
+
+        // 아직 실행되지 않았고, 실행 시점이 지났으면
+        if (LocalDateTime.now().isAfter(applyInitialSetup.getLastAnnouncementDate())) {
+            recruitmentEmailBatchService.runLastResultJobAsync();
+            applyInitialSetup.changeLastAnnouncementFlag(false);
             applyInitialSetupRepository.save(applyInitialSetup);
         }
     }
