@@ -38,6 +38,9 @@ public class ApplyInitialSetup extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime documentAnnouncementDate;
 
+    @Column(nullable = false)
+    private Boolean documentAnnouncementFlag = Boolean.FALSE;
+
     @NotNull
     @Column(nullable = false)
     private LocalDateTime interviewStartDate;
@@ -49,6 +52,9 @@ public class ApplyInitialSetup extends BaseEntity {
     @NotNull
     @Column(nullable = false)
     private LocalDateTime lastAnnouncementDate;
+
+    @Column(nullable = false)
+    private Boolean lastAnnouncementFlag = Boolean.FALSE;
 
     @NotNull
     @Column(nullable = false)
@@ -85,6 +91,14 @@ public class ApplyInitialSetup extends BaseEntity {
         this.lastAnnouncementDate = dto.lastAnnouncementDate();
         this.accessStartDate = dto.accessStartDate();
         this.accessEndDate = dto.accessEndDate();
+    }
+
+    public void changeDocumentAnnouncementFlag(Boolean documentAnnouncementFlag) {
+        this.documentAnnouncementFlag = documentAnnouncementFlag;
+    }
+
+    public void changeLastAnnouncementFlag(Boolean changeLastAnnouncementFlag) {
+        this.documentAnnouncementFlag = changeLastAnnouncementFlag;
     }
 
 }
