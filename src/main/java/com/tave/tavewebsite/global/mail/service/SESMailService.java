@@ -26,38 +26,43 @@ public class SESMailService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AmazonSimpleEmailService emailService;
 
+    // 서류 평가 완료 메일
+    public void sendDocumentResultMail(String recipient, String memberName, String generation) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("generation", generation);
+            templateData.put("memberName", memberName);
+
+            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+                    recipient, "DocumentResultTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("서류 결과 메일 전송 실패", e);
+        }
+    }
+
     // 신규 회원 모집 오픈 이메일 전송
     public void sendApplyNotification(String recipient, ApplyInitialSetup applyInitialSetup) {
         try {
-
-            String documentRecruitDate = formatRecruitPeriod(applyInitialSetup.getDocumentRecruitStartDate()
-                    , applyInitialSetup.getDocumentRecruitEndDate());
-
-            String documentAnnouncementDate = formatKoreanDateTime(applyInitialSetup.getDocumentAnnouncementDate());
-
-            String interviewDate = formatRecruitPeriod(applyInitialSetup.getInterviewStartDate()
-                    , applyInitialSetup.getInterviewEndDate());
-
-            String lastAnnouncementDate = formatKoreanDateTime(applyInitialSetup.getLastAnnouncementDate());
-
-            // 템플릿 변수 매핑
             Map<String, String> templateData = new HashMap<>();
             templateData.put("generation", String.valueOf(applyInitialSetup.getGeneration()));
-            templateData.put("documentRecruitDate", documentRecruitDate);
-            templateData.put("documentAnnouncementDate", documentAnnouncementDate);
-            templateData.put("interviewDate", interviewDate);
-            templateData.put("lastAnnouncementDate", lastAnnouncementDate);
+            templateData.put("documentRecruitDate", formatRecruitPeriod(
+                    applyInitialSetup.getDocumentRecruitStartDate(),
+                    applyInitialSetup.getDocumentRecruitEndDate()
+            ));
+            templateData.put("documentAnnouncementDate",
+                    formatKoreanDateTime(applyInitialSetup.getDocumentAnnouncementDate()));
+            templateData.put("interviewDate", formatRecruitPeriod(
+                    applyInitialSetup.getInterviewStartDate(),
+                    applyInitialSetup.getInterviewEndDate()
+            ));
+            templateData.put("lastAnnouncementDate", formatKoreanDateTime(applyInitialSetup.getLastAnnouncementDate()));
 
-            // JSON 문자열로 변환
-            String jsonData = objectMapper.writeValueAsString(templateData);
-
-            // 이메일 요청 생성
-            SendTemplatedEmailRequest request = new SendTemplatedEmailRequest()
-                    .withSource(mail)
-                    .withDestination(new Destination().withToAddresses(recipient))
-                    .withTemplate("ApplyRecruitTemplate")
-                    .withTemplateData(jsonData);
-
+            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+                    recipient, "ApplyRecruitTemplate", templateData
+            );
             emailService.sendTemplatedEmail(request);
 
         } catch (Exception e) {
@@ -65,11 +70,21 @@ public class SESMailService {
         }
     }
 
-    private String formatRecruitPeriod(LocalDateTime start, LocalDateTime end) {
-        String startFormatted = formatKoreanDateTime(start);
-        String endFormatted = formatKoreanDateTime(end);
+    private SendTemplatedEmailRequest createTemplatedEmailRequest(String recipient, String templateName,
+                                                                  Map<String, String> templateData)
+            throws Exception {
 
-        return startFormatted + " ~ " + endFormatted;
+        String jsonData = objectMapper.writeValueAsString(templateData);
+
+        return new SendTemplatedEmailRequest()
+                .withSource(mail)
+                .withDestination(new Destination().withToAddresses(recipient))
+                .withTemplate(templateName)
+                .withTemplateData(jsonData);
+    }
+
+    private String formatRecruitPeriod(LocalDateTime start, LocalDateTime end) {
+        return formatKoreanDateTime(start) + " ~ " + formatKoreanDateTime(end);
     }
 
     private String formatKoreanDateTime(LocalDateTime dateTime) {
@@ -77,5 +92,4 @@ public class SESMailService {
                 .withLocale(Locale.KOREAN);
         return dateTime.format(formatter);
     }
-
 }
