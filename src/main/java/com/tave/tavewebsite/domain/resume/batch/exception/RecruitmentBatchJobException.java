@@ -11,4 +11,11 @@ public abstract class RecruitmentBatchJobException {
         }
     }
 
+    public static class LastResultBatchJobFailException extends BaseErrorException {
+        public LastResultBatchJobFailException() {
+            super(RecruitmentBatchErrorMessage.LAST_EMAIL_BATCH_JOB_FAIL.getCode(),
+                    RecruitmentBatchErrorMessage.LAST_EMAIL_BATCH_JOB_FAIL.getMessage());
+        }
+    }
+
 }
