@@ -97,8 +97,8 @@ public class ApplyInitialSetup extends BaseEntity {
         this.documentAnnouncementFlag = documentAnnouncementFlag;
     }
 
-    public void changeLastAnnouncementFlag(Boolean changeLastAnnouncementFlag) {
-        this.documentAnnouncementFlag = changeLastAnnouncementFlag;
+    public void changeLastAnnouncementFlag(Boolean LastAnnouncementFlag) {
+        this.lastAnnouncementFlag = LastAnnouncementFlag;
     }
 
 }
