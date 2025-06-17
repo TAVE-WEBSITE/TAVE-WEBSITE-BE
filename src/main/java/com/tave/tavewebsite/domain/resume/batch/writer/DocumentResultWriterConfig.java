@@ -23,7 +23,7 @@ public class DocumentResultWriterConfig {
     private final SESMailService sesMailService;
     private final DocumentResultDLQRepository documentResultDLQRepository;
 
-    @Bean
+    @Bean(name = "documentResultWriter")
     public ItemWriter<Resume> documentResultWriter() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
