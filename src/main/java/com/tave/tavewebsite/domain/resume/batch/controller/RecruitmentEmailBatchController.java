@@ -15,8 +15,14 @@ public class RecruitmentEmailBatchController {
     private final ApplyInitialSetupService applyInitialSetupService;
 
     @GetMapping("/document/email")
-    public SuccessResponse runRecruitmentEmailBatch() {
+    public SuccessResponse runDocumentEmailBatch() {
         applyInitialSetupService.changeDocumentAnnouncementFlag(true);
         return SuccessResponse.ok(RecruitmentBatchSuccessMessage.DOCUMENT_RESULT_BATCH_JOB_EXECUTE.getMessage());
+    }
+
+    @GetMapping("/last/email")
+    public SuccessResponse runLastEmailBatch() {
+        applyInitialSetupService.changeLastAnnouncementFlag(true);
+        return SuccessResponse.ok(RecruitmentBatchSuccessMessage.LAST_RESULT_BATCH_JOB_EXECUTE.getMessage());
     }
 }
