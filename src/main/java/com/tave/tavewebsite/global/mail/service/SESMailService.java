@@ -25,6 +25,23 @@ public class SESMailService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AmazonSimpleEmailService emailService;
+    
+    // 최종 결과 발표 이메일 전송
+    public void sendFinalResultMail(String recipient, String memberName, String generation) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("generation", generation);
+            templateData.put("memberName", memberName);
+
+            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+                    recipient, "LastResultTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("최종 결과 메일 전송 실패", e);
+        }
+    }
 
     // 서류 평가 완료 메일
     public void sendDocumentResultMail(String recipient, String memberName, String generation) {
