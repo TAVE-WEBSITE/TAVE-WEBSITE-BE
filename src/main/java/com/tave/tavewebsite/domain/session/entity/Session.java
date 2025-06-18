@@ -40,6 +40,9 @@ public class Session extends BaseEntity {
     @JsonFormat(pattern = "yyyy.MM.dd")
     private LocalDate eventDay;
 
+    @Enumerated(EnumType.STRING)
+    private Period period;
+
     @NotNull
     @URL
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
@@ -51,6 +54,7 @@ public class Session extends BaseEntity {
                 .description(sessionRequestDto.description())
                 .eventDay(LocalDate.parse(sessionRequestDto.eventDay(), timeUtil.getFormatter()))
                 .imgUrl(imgUrl.toString())
+                .period(sessionRequestDto.period())
                 .build();
     }
 
@@ -58,6 +62,7 @@ public class Session extends BaseEntity {
         this.title = sessionRequestDto.title();
         this.description = sessionRequestDto.description();
         this.eventDay = LocalDate.parse(sessionRequestDto.eventDay(), timeUtil.getFormatter());
+        this.period = sessionRequestDto.period();
     }
 
     public void updateImgUrl( java.net.URL imgUrl) {
