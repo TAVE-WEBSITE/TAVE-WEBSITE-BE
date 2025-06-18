@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.session.dto.response;
 
+import com.tave.tavewebsite.domain.session.entity.Period;
 import com.tave.tavewebsite.domain.session.entity.Session;
 import lombok.Builder;
 
@@ -11,7 +12,8 @@ public record SessionResponseDto(
         String title,
         String description,
         LocalDate eventDay,
-        String imgUrl
+        String imgUrl,
+        String period
 ) {
     public static SessionResponseDto from(Session session) {
         return SessionResponseDto.builder()
@@ -20,6 +22,7 @@ public record SessionResponseDto(
                 .description(session.getDescription())
                 .eventDay(session.getEventDay())
                 .imgUrl(session.getImgUrl())
+                .period(session.getPeriod().toString())
                 .build();
     }
 }
