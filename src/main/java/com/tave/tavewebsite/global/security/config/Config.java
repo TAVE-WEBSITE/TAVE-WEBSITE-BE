@@ -37,7 +37,9 @@ public class Config {
 
         corsConfiguration.setAllowedOriginPatterns(
                 List.of("http://localhost:3000", "https://localhost:3000", "http://localhost:8080",
-                        "https://www.tave-wave.com", "https://tave-admin.info", "https://www.tave-admin.info"));
+                        "https://www.tave-wave.com", "https://tave-admin.info", "https://www.tave-admin.info",
+                        "https://recruit.tave-wave.com"
+                ));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         corsConfiguration.setExposedHeaders(List.of("Set-Cookie"));
