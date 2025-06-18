@@ -5,6 +5,7 @@ import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
+import com.tave.tavewebsite.global.common.FieldType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -25,7 +26,28 @@ public class SESMailService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AmazonSimpleEmailService emailService;
-    
+
+    // 지원 완료 이메일 전송
+    public void sendApplySubmitMail(String recipient, String memberName, String generation, FieldType fieldType,
+                                    LocalDateTime nowDateTime, LocalDateTime documentAnnouncementDate) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("generation", generation);
+            templateData.put("memberName", memberName);
+            templateData.put("fieldType", fieldType.getDisplayName());
+            templateData.put("nowDateTime", formatKoreanDateTime(nowDateTime));
+            templateData.put("documentAnnouncementDate", formatKoreanDateTime(documentAnnouncementDate));
+
+            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+                    recipient, "ApplySubmitTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("지원 완료 메일 전송 실패", e);
+        }
+    }
+
     // 최종 결과 발표 이메일 전송
     public void sendFinalResultMail(String recipient, String memberName, String generation) {
         try {
