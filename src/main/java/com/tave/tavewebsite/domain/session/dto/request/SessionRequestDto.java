@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.session.dto.request;
 
+import com.tave.tavewebsite.domain.session.entity.Period;
 import jakarta.validation.constraints.NotNull;
 
 public record SessionRequestDto(
@@ -9,7 +10,10 @@ public record SessionRequestDto(
         @NotNull
         String description,
 
-        String eventDay
+        String eventDay,
+
+        @NotNull
+        Period period
 
 ) {
 }
