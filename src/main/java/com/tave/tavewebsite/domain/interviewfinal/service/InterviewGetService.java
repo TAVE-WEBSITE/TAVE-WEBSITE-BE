@@ -29,4 +29,9 @@ public class InterviewGetService {
                 .orElseThrow(NotFoundInterviewFinalByMemberIdException::new);
     }
 
+    public List<InterviewFinal> getInterviewFinalListByGeneration(String generation) {
+        return interviewFinalRepository
+                .findAllByGenerationOrderByInterviewDateTimeUsername(generation);
+    }
+
 }
