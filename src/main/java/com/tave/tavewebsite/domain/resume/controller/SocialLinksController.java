@@ -52,31 +52,4 @@ public class SocialLinksController {
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
-
-    @PostMapping("/temp")
-    public SuccessResponse saveSocialLinksTemporarily(@PathVariable("resumeId") Long resumeId,
-                                                      @RequestBody SocialLinksRequestDto dto) {
-        socialLinksService.saveSocialLinksToRedis(resumeId, dto);
-        return SuccessResponse.ok(SocialLinksSuccessMessage.TEMP_SAVE_SUCCESS.getMessage());
-    }
-
-    @GetMapping("/temp")
-    public SuccessResponse<SocialLinksRequestDto> getSocialLinksTemp(@PathVariable("resumeId") Long resumeId) {
-        SocialLinksRequestDto dto = socialLinksService.getSocialLinksFromRedis(resumeId);
-        return new SuccessResponse<>(dto, SocialLinksSuccessMessage.TEMP_READ_SUCCESS.getMessage());
-    }
-
-    @PostMapping("/portfolio/temp")
-    public SuccessResponse savePortfolioTemp(@PathVariable("resumeId") Long resumeId,
-                                             @RequestParam("file") MultipartFile file) {
-        URL portfolioUrl = s3Service.uploadFile(file);
-        socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString());
-        return SuccessResponse.ok(SocialLinksSuccessMessage.PORTFOLIO_TEMP_SAVE_SUCCESS.getMessage());
-    }
-
-    @GetMapping("/portfolio/temp")
-    public SuccessResponse<String> getPortfolioTemp(@PathVariable("resumeId") Long resumeId) {
-        String portfolioUrl = socialLinksService.getPortfolioFromRedis(resumeId);
-        return new SuccessResponse<>(portfolioUrl, SocialLinksSuccessMessage.PORTFOLIO_TEMP_READ_SUCCESS.getMessage());
-    }
 }
