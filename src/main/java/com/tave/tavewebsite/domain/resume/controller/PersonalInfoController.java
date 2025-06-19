@@ -87,19 +87,19 @@ public class PersonalInfoController {
     }
 
     // 개인정보 임시 저장
-    @PostMapping("/temp-save/{memberId}")
-    public SuccessResponse tempSavePersonalInfo(@PathVariable("memberId") Long memberId,
-                                                @RequestBody @Valid PersonalInfoRequestDto requestDto) {
-        personalInfoService.tempSavePersonalInfo(memberId, requestDto);
-        return SuccessResponse.ok(TEMP_SAVE_SUCCESS.getMessage());
-    }
+//    @PostMapping("/temp-save/{memberId}")
+//    public SuccessResponse tempSavePersonalInfo(@PathVariable("memberId") Long memberId,
+//                                                @RequestBody @Valid PersonalInfoRequestDto requestDto) {
+//        personalInfoService.tempSavePersonalInfo(memberId, requestDto);
+//        return SuccessResponse.ok(TEMP_SAVE_SUCCESS.getMessage());
+//    }
 
     // 임시 저장 개인정보 불러오기
-    @GetMapping("/temp-save/{memberId}")
-    public SuccessResponse<TempPersonalInfoDto> getTempSavedPersonalInfo(@PathVariable("memberId") Long memberId) {
-        TempPersonalInfoDto response = personalInfoService.getTempSavedPersonalInfo(memberId);
-        return new SuccessResponse<>(response, TEMP_LOAD_SUCCESS.getMessage());
-    }
+//    @GetMapping("/temp-save/{memberId}")
+//    public SuccessResponse<TempPersonalInfoDto> getTempSavedPersonalInfo(@PathVariable("memberId") Long memberId) {
+//        TempPersonalInfoDto response = personalInfoService.getTempSavedPersonalInfo(memberId);
+//        return new SuccessResponse<>(response, TEMP_LOAD_SUCCESS.getMessage());
+//    }
 
     // 지원서 최종 제출
     @PostMapping("/{resumeId}/submit")
