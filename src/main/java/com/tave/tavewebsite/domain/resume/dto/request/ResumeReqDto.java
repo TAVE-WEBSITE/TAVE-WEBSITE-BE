@@ -6,6 +6,9 @@ import java.util.List;
 
 public record ResumeReqDto(
         List<ResumeAnswerTempDto> answers,
-        List<TimeSlotReqDto> timeSlots
+        List<TimeSlotReqDto> timeSlots,
+        String githubUrl,
+        String blogUrl,
+        String portfolioUrl
 ) {
 }
