@@ -13,7 +13,6 @@ import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLang
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
-import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
@@ -22,20 +21,16 @@ import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.exception.FieldTypeInvalidException;
 import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
-import com.tave.tavewebsite.domain.resume.exception.TempNotFoundException;
-import com.tave.tavewebsite.domain.resume.exception.TempParseFailedException;
-import com.tave.tavewebsite.domain.resume.exception.TempSerializeFailedException;
 import com.tave.tavewebsite.domain.resume.mapper.ResumeMapper;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -79,41 +74,6 @@ public class PersonalInfoService {
 
     public ResumeQuestionResponse createResumeQuestions(Resume resume) {
         return resumeQuestionService.createResumeQuestion(resume, resume.getField());
-    }
-
-
-    // 임시 저장 기능 (현재까지 입력한 정보 저장)
-    @Transactional
-    public void tempSavePersonalInfo(Long memberId, PersonalInfoRequestDto requestDto) {
-        TempPersonalInfoDto tempDto = new TempPersonalInfoDto(
-                requestDto.getSchool(),
-                requestDto.getMajor(),
-                requestDto.getMinor(),
-                requestDto.getField()
-        );
-
-        try {
-            String json = objectMapper.writeValueAsString(tempDto);
-            String key = "temp-resume:" + memberId;
-            redisUtil.set(key, json, 60 * 24 * 30);
-        } catch (Exception e) {
-            throw new TempSerializeFailedException();
-        }
-    }
-
-    // Redis에서 임시저장 불러오기
-    public TempPersonalInfoDto getTempSavedPersonalInfo(Long memberId) {
-        String key = "temp-resume:" + memberId;
-        Object data = redisUtil.get(key);
-        if (data == null) {
-            throw new TempNotFoundException();
-        }
-
-        try {
-            return objectMapper.readValue(data.toString(), TempPersonalInfoDto.class);
-        } catch (Exception e) {
-            throw new TempParseFailedException();
-        }
     }
 
     @Transactional
