@@ -31,7 +31,9 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +57,16 @@ public class PersonalInfoService {
                 .orElseThrow(MemberNotFoundException::new);
 
         FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
+
+        // 1. 기존 이력서 조회
+        Resume existingResume = resumeRepository.findByMemberId(memberId).orElse(null);
+
+        if (existingResume != null) {
+            // 2. 이미 있으면 기존 이력서 반환
+            return existingResume;
+        }
+
+        // 3. 없으면 새로 생성
         Resume savedResume = resumeRepository.save(ResumeMapper.toResume(requestDto, member, fieldType));
 
         createApplicantHistory(fieldType, member, requestDto.getGeneration());
