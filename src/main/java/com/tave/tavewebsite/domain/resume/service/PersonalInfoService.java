@@ -58,7 +58,9 @@ public class PersonalInfoService {
 
         if (existingResume != null) {
             // 2. 이미 있으면 기존 이력서 반환
-            return existingResume;
+            PersonalInfoRequestDto requestAsUpdateDto = PersonalInfoRequestDto.fromCreateRequest(requestDto);
+            existingResume.updatePersonalInfo(requestAsUpdateDto, fieldType);
+            return resumeRepository.save(existingResume);
         }
 
         // 3. 없으면 새로 생성
