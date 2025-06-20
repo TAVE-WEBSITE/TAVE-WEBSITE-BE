@@ -1,19 +1,16 @@
 package com.tave.tavewebsite.global.mail.service;
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
 import com.tave.tavewebsite.global.common.FieldType;
+import com.tave.tavewebsite.global.mail.util.SESMailFormatUtil;
+import com.tave.tavewebsite.global.mail.util.SESTemplateUtil;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,10 +18,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SESMailService {
 
-    @Value("${cloud.aws.ses.username}")
-    private String mail;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final SESTemplateUtil templateUtil;
+    private final SESMailFormatUtil mailFormatUtil;
     private final AmazonSimpleEmailService emailService;
 
     // 지원 완료 이메일 전송
@@ -35,10 +30,10 @@ public class SESMailService {
             templateData.put("generation", generation);
             templateData.put("memberName", memberName);
             templateData.put("fieldType", fieldType.getDisplayName());
-            templateData.put("nowDateTime", formatKoreanDateTime(nowDateTime));
-            templateData.put("documentAnnouncementDate", formatKoreanDateTime(documentAnnouncementDate));
+            templateData.put("nowDateTime", mailFormatUtil.formatKoreanDateTime(nowDateTime));
+            templateData.put("documentAnnouncementDate", mailFormatUtil.formatKoreanDateTime(documentAnnouncementDate));
 
-            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
                     recipient, "ApplySubmitTemplate", templateData
             );
             emailService.sendTemplatedEmail(request);
@@ -55,7 +50,7 @@ public class SESMailService {
             templateData.put("generation", generation);
             templateData.put("memberName", memberName);
 
-            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
                     recipient, "LastResultTemplate", templateData
             );
             emailService.sendTemplatedEmail(request);
@@ -72,7 +67,7 @@ public class SESMailService {
             templateData.put("generation", generation);
             templateData.put("memberName", memberName);
 
-            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
                     recipient, "DocumentResultTemplate", templateData
             );
             emailService.sendTemplatedEmail(request);
@@ -87,19 +82,20 @@ public class SESMailService {
         try {
             Map<String, String> templateData = new HashMap<>();
             templateData.put("generation", String.valueOf(applyInitialSetup.getGeneration()));
-            templateData.put("documentRecruitDate", formatRecruitPeriod(
+            templateData.put("documentRecruitDate", mailFormatUtil.formatRecruitPeriod(
                     applyInitialSetup.getDocumentRecruitStartDate(),
                     applyInitialSetup.getDocumentRecruitEndDate()
             ));
             templateData.put("documentAnnouncementDate",
-                    formatKoreanDateTime(applyInitialSetup.getDocumentAnnouncementDate()));
-            templateData.put("interviewDate", formatRecruitPeriod(
+                    mailFormatUtil.formatKoreanDateTime(applyInitialSetup.getDocumentAnnouncementDate()));
+            templateData.put("interviewDate", mailFormatUtil.formatRecruitPeriod(
                     applyInitialSetup.getInterviewStartDate(),
                     applyInitialSetup.getInterviewEndDate()
             ));
-            templateData.put("lastAnnouncementDate", formatKoreanDateTime(applyInitialSetup.getLastAnnouncementDate()));
+            templateData.put("lastAnnouncementDate",
+                    mailFormatUtil.formatKoreanDateTime(applyInitialSetup.getLastAnnouncementDate()));
 
-            SendTemplatedEmailRequest request = createTemplatedEmailRequest(
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
                     recipient, "ApplyRecruitTemplate", templateData
             );
             emailService.sendTemplatedEmail(request);
@@ -107,28 +103,5 @@ public class SESMailService {
         } catch (Exception e) {
             throw new RuntimeException("이메일 전송 실패", e);
         }
-    }
-
-    private SendTemplatedEmailRequest createTemplatedEmailRequest(String recipient, String templateName,
-                                                                  Map<String, String> templateData)
-            throws Exception {
-
-        String jsonData = objectMapper.writeValueAsString(templateData);
-
-        return new SendTemplatedEmailRequest()
-                .withSource(mail)
-                .withDestination(new Destination().withToAddresses(recipient))
-                .withTemplate(templateName)
-                .withTemplateData(jsonData);
-    }
-
-    private String formatRecruitPeriod(LocalDateTime start, LocalDateTime end) {
-        return formatKoreanDateTime(start) + " ~ " + formatKoreanDateTime(end);
-    }
-
-    private String formatKoreanDateTime(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 (E) HH:mm")
-                .withLocale(Locale.KOREAN);
-        return dateTime.format(formatter);
     }
 }
