@@ -9,6 +9,8 @@ import org.springframework.batch.item.ExecutionContext;
 public class ResumeIdRangePartitioner implements Partitioner {
 
     private final ResumeRepository repository;
+    public static final String THREAD_PARTITION_START_ID = "startId";
+    public static final String THREAD_PARTITION_END_ID = "endId";
 
     public ResumeIdRangePartitioner(ResumeRepository repository) {
         this.repository = repository;
@@ -31,8 +33,8 @@ public class ResumeIdRangePartitioner implements Partitioner {
 
         for (int i = 0; i < gridSize; i++) {
             ExecutionContext context = new ExecutionContext();
-            context.putLong("startId", start);
-            context.putLong("endId", Math.min(end, maxId));
+            context.putLong(THREAD_PARTITION_START_ID, start);
+            context.putLong(THREAD_PARTITION_END_ID, Math.min(end, maxId));
             result.put("partition" + i, context);
             start += targetSize;
             end += targetSize;
