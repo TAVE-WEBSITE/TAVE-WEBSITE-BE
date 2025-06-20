@@ -6,12 +6,13 @@ import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.mail.util.SESMailFormatUtil;
 import com.tave.tavewebsite.global.mail.util.SESTemplateUtil;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -104,4 +105,63 @@ public class SESMailService {
             throw new RuntimeException("이메일 전송 실패", e);
         }
     }
+
+    // 가입 완료 메일 템플릿
+    public void sendJoinSuccessNotification(String recipient, String memberName, String memberEmail) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("memberName", memberName);
+            templateData.put("memberEmail", memberEmail);
+
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "JoinSuccessTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e) {
+            throw new RuntimeException("회원가입 완료 이메일 전송 실패", e);
+        }
+    }
+
+    // 관리자 가입 신청 완료 메일
+    public void sendAdminApplySuccessNotification(String recipient, String memberName) {
+        try{
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("memberName", memberName);
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "AdminApplySuccessTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e) {
+            throw new RuntimeException("관리자 가입 신청 실패", e);
+        }
+    }
+
+    // 관리자 가입 거절 메일
+    public void sendAdminApplyDeniedNotification(String recipient, String memberName) {
+        try{
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("memberName", memberName);
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "AdminApplyDeniedTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e){
+            throw new RuntimeException("관리자 가입 신청 거절 메일 전송 실패", e);
+        }
+    }
+
+    // 관리자 가입 승인 메일
+    public void sendAdminApplyAdmittedNotification(String recipient, String memberName) {
+        try{
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("memberName", memberName);
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "AdminApplyAdmittedTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e){
+            throw new RuntimeException("관리자 가입 신청 승인 메일 전송 실패", e);
+        }
+    }
+
 }
