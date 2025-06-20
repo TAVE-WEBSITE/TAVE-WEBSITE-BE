@@ -15,7 +15,8 @@ public enum PersonalInfoSuccessMessage {
     TEMP_SAVE_SUCCESS("임시 저장에 성공했습니다."),
     TEMP_LOAD_SUCCESS("임시 저장 조회에 성공했습니다."),
     ANSWER_CREATE_SUCCESS("지원서에 대한 답변이 저장되었습니다."),
-    SUBMIT_SUCCESS("지원서가 최종 제출되었습니다.");
+    SUBMIT_SUCCESS("지원서가 최종 제출되었습니다."),
+    RESUME_EMAIL_SEND_SUCCESS("지원서 제출 완료 메일 전송에 성공하였습니다.");
 
     private final String message;
 

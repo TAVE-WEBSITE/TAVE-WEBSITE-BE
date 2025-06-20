@@ -1,5 +1,8 @@
 package com.tave.tavewebsite.domain.emailnotification.batch.writer;
 
+import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
+import com.tave.tavewebsite.domain.apply.initial.setup.exception.ApplyInitialSetupException.ApplyInitialSetupNotFoundException;
+import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSetupRepository;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotificationDLQ;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationDLQRepository;
@@ -9,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +30,13 @@ public class EmailWriterConfig {
     private final EmailNotificationDLQRepository emailNotificationDLQRepository;
 
     @Bean
-    public ItemWriter<EmailNotification> emailWriter() {
+    @StepScope
+    public ItemWriter<EmailNotification> emailWriter(
+            ApplyInitialSetupRepository applyInitialSetupRepository
+    ) {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+
         RetryTemplate retryTemplate = new RetryTemplate();
 
         ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
@@ -49,7 +59,7 @@ public class EmailWriterConfig {
             for (EmailNotification item : items) {
                 try {
                     retryTemplate.execute(context -> {
-                        sesMailService.sendApplyNotification(item.getEmail());
+                        sesMailService.sendApplyNotification(item.getEmail(), applyInitialSetup);
                         log.info("메일 전송 성공: {}", item.getEmail());
                         successIds.add(item.getId());
                         return null;

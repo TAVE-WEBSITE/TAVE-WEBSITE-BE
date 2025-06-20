@@ -4,24 +4,33 @@ import com.tave.tavewebsite.domain.emailnotification.batch.exception.EmailNotifi
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class EmailBatchScheduler {
 
     private final JobLauncher jobLauncher;
     private final Job emailNotificationJob;
     private final RedisUtil redisUtil;
+
+    public EmailBatchScheduler(
+            JobLauncher jobLauncher,
+            @Qualifier("emailNotificationJob") Job emailNotificationJob,
+            RedisUtil redisUtil) {
+        this.jobLauncher = jobLauncher;
+        this.emailNotificationJob = emailNotificationJob;
+        this.redisUtil = redisUtil;
+    }
+
 
     @Scheduled(cron = "0 0 3 * * *") // 매일 새벽 3시
     @SchedulerLock(name = "emailNotificationJobLock", lockAtMostFor = "PT10M") // 락 10분간 유지

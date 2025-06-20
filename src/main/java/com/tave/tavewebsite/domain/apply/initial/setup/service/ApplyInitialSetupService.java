@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
 import com.tave.tavewebsite.domain.apply.initial.setup.exception.ApplyInitialSetupException.ApplyInitialSetupNotFoundException;
 import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSetupRepository;
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
+import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,17 @@ public class ApplyInitialSetupService {
         }
 
         applyInitialSetupRepository.deleteById(1L);
+    }
+
+    public void changeDocumentAnnouncementFlag(Boolean flag) {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(DocumentResultBatchJobFailException::new);
+        applyInitialSetup.changeDocumentAnnouncementFlag(flag);
+    }
+
+    public void changeLastAnnouncementFlag(Boolean flag) {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(DocumentResultBatchJobFailException::new);
+        applyInitialSetup.changeLastAnnouncementFlag(flag);
     }
 }

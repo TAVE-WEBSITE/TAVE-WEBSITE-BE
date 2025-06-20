@@ -1,5 +1,8 @@
 package com.tave.tavewebsite.domain.emailnotification.service;
 
+import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
+import com.tave.tavewebsite.domain.apply.initial.setup.exception.ApplyInitialSetupException.ApplyInitialSetupNotFoundException;
+import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSetupRepository;
 import com.tave.tavewebsite.domain.emailnotification.batch.exception.EmailNotificationBatchException.ApplyEmailFindException;
 import com.tave.tavewebsite.domain.emailnotification.dto.request.EmailNotificationRequeestDto;
 import com.tave.tavewebsite.domain.emailnotification.dto.response.EmailNotificationApplyResponseDto;
@@ -26,6 +29,7 @@ public class EmailNotificationService {
     private final EmailNotificationRepository emailNotificationRepository;
     private final RedisUtil redisUtil;
     private final SESMailService sesMailService;
+    private final ApplyInitialSetupRepository applyInitialSetupRepository;
 
     public void save(EmailNotificationRequeestDto dto) {
         emailNotificationRepository.save(EmailNotificationMapper.map(dto));
@@ -65,7 +69,11 @@ public class EmailNotificationService {
     public void sendApplyEmailIndividual(Long id) {
         EmailNotification emailNotification = emailNotificationRepository.findById(id)
                 .orElseThrow(ApplyEmailFindException::new);
-        sesMailService.sendApplyNotification(emailNotification.getEmail());
+
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+
+        sesMailService.sendApplyNotification(emailNotification.getEmail(), applyInitialSetup);
         emailNotification.changeStatus(EmailStatus.SUCCESS);
     }
 

@@ -3,12 +3,11 @@ package com.tave.tavewebsite.domain.resume.repository;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCustomRepository {
@@ -23,4 +22,10 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     long count();
 
     long countByFinalDocumentEvaluationStatus(EvaluationStatus status);
+
+    @Query("SELECT MIN(r.id) FROM Resume r")
+    Long findMinId();
+
+    @Query("SELECT MAX(r.id) FROM Resume r")
+    Long findMaxId();
 }
