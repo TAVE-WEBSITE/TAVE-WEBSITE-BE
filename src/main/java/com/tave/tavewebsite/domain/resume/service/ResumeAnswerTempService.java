@@ -123,11 +123,11 @@ public class ResumeAnswerTempService {
                 .toList();
 
         if (!page2Answers.isEmpty()) {
-            wrapper.setPage2(new ResumeReqDto(page2Answers, null, null, null, null));
+            wrapper.setPage2(new ResumeReqDto(page2Answers, null, null, null, null, null));
         }
 
         if (!page3Answers.isEmpty()) {
-            wrapper.setPage3(new ResumeReqDto(page3Answers, null, null, null, null));
+            wrapper.setPage3(new ResumeReqDto(page3Answers, null, null, null, null, null));
         }
 
         int lastPage = 1;
