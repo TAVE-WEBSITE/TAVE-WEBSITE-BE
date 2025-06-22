@@ -1,23 +1,40 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.wrapper.ResumeTempWrapper;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.InvalidPageNumberException;
 import com.tave.tavewebsite.domain.resume.exception.TempReadFailedException;
 import com.tave.tavewebsite.domain.resume.exception.TempSaveFailedException;
+import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
+import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ResumeAnswerTempService {
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
+    private final ResumeQuestionRepository resumeQuestionRepository;
+    private final ResumeRepository resumeRepository;
 
     private final String REDIS_KEY_PREFIX = "resume:temp:";
+
+    private ResumeAnswerTempDto toDto(ResumeQuestion question) {
+        return new ResumeAnswerTempDto(
+                question.getId(),
+                question.getAnswer()
+        );
+    }
 
     @Transactional
     public void tempSaveAnswers(Long resumeId, int page, ResumeReqDto dto) {
@@ -83,8 +100,42 @@ public class ResumeAnswerTempService {
     }
 
     private ResumeTempWrapper loadFromDatabase(Long resumeId) {
-        // 임시 저장 데이터가 DB에 없으므로 항상 null 반환
-        return null;
+        Resume resume = resumeRepository.findById(resumeId).orElse(null);
+        if (resume == null) {
+            return null;
+        }
+
+        ResumeTempWrapper wrapper = new ResumeTempWrapper();
+
+        // resumeId에 해당하는 모든 질문+답변 조회
+        List<ResumeQuestion> allQuestions = resumeQuestionRepository.findByResumeId(resumeId);
+
+        // page 2: 분야별 질문 (fieldType != COMMON)
+        List<ResumeAnswerTempDto> page2Answers = allQuestions.stream()
+                .filter(q -> q.getFieldType() != FieldType.COMMON)
+                .map(this::toDto)
+                .toList();
+
+        // page 3: 공통 질문 (fieldType == COMMON)
+        List<ResumeAnswerTempDto> page3Answers = allQuestions.stream()
+                .filter(q -> q.getFieldType() == FieldType.COMMON)
+                .map(this::toDto)
+                .toList();
+
+        if (!page2Answers.isEmpty()) {
+            wrapper.setPage2(new ResumeReqDto(page2Answers, null, null, null, null));
+        }
+
+        if (!page3Answers.isEmpty()) {
+            wrapper.setPage3(new ResumeReqDto(page3Answers, null, null, null, null));
+        }
+
+        int lastPage = 1;
+        if (!page2Answers.isEmpty()) lastPage = 2;
+        if (!page3Answers.isEmpty()) lastPage = Math.max(lastPage, 3);
+        wrapper.setLastPage(lastPage);
+
+        return wrapper;
     }
 
     public int getLastPage(Long resumeId) {
