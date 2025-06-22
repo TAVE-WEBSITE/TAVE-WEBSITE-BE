@@ -113,32 +113,63 @@ public class ResumeAnswerTempService {
 
         ResumeTempWrapper wrapper = new ResumeTempWrapper();
 
-        // 이력서 질문 전체를 조회해서 답변 DTO 리스트로 변환
+        // 모든 질문+답변 조회
         List<ResumeQuestion> allQuestions = resumeQuestionRepository.findByResumeId(resumeId);
-        List<ResumeAnswerTempDto> allAnswers = allQuestions.stream()
+
+        // page 2: 분야별 질문 (fieldType != COMMON)
+        List<ResumeAnswerTempDto> page2Answers = allQuestions.stream()
+                .filter(q -> q.getFieldType() != FieldType.COMMON)
                 .map(this::toDto)
                 .toList();
+
+        // page 3: 공통 질문 (fieldType == COMMON)
+        List<ResumeAnswerTempDto> page3Answers = allQuestions.stream()
+                .filter(q -> q.getFieldType() == FieldType.COMMON)
+                .map(this::toDto)
+                .toList();
+
+        // 전체 질문 합치기
+        List<ResumeAnswerTempDto> mergedAnswers = new java.util.ArrayList<>();
+        mergedAnswers.addAll(page2Answers);
+        mergedAnswers.addAll(page3Answers);
 
         String githubUrl = resume.getGithubUrl();
         String blogUrl = resume.getBlogUrl();
         String portfolioUrl = resume.getPortfolioUrl();
 
-        // 인터뷰 시간과 프로그래밍 언어 레벨 데이터를 각각 DTO 리스트로 변환
-        List<TimeSlotReqDto> timeSlots = interviewTimeService.convertToDtoListFromTimeSlots(resume.getResumeTimeSlots());
-        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.convertToDtoList(resume.getLanguageLevels());
+        List<TimeSlotReqDto> timeSlots = interviewTimeService.getTimeSlotsByResumeId(resumeId);
+        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.getLanguageLevel(resumeId);
 
-        // 모든 데이터 통합
-        ResumeReqDto resumeReqDto = new ResumeReqDto(
-                allAnswers,
-                timeSlots,
-                languageLevels,
-                githubUrl,
-                blogUrl,
-                portfolioUrl
-        );
+        // 분야별 질문 → page2 세팅
+        if (!page2Answers.isEmpty() || languageLevels != null) {
+            ResumeReqDto page2Dto = new ResumeReqDto(
+                    page2Answers,
+                    null,
+                    languageLevels,
+                    null, null, null
+            );
+            wrapper.setPage2(page2Dto);
+        }
 
-        wrapper.setPage2(resumeReqDto);
-        wrapper.setLastPage(3);
+        // 공통 질문 → page3 세팅
+        if (!page3Answers.isEmpty() || timeSlots != null || githubUrl != null || blogUrl != null || portfolioUrl != null) {
+            ResumeReqDto page3Dto = new ResumeReqDto(
+                    page3Answers,
+                    timeSlots,
+                    null,
+                    githubUrl,
+                    blogUrl,
+                    portfolioUrl
+            );
+            wrapper.setPage3(page3Dto);
+        }
+
+        // 마지막 저장 페이지 계산
+        int lastPage = 1;
+        if (wrapper.getPage2() != null) lastPage = 2;
+        if (wrapper.getPage3() != null) lastPage = Math.max(lastPage, 3);
+        wrapper.setLastPage(lastPage);
+
         return wrapper;
     }
 
