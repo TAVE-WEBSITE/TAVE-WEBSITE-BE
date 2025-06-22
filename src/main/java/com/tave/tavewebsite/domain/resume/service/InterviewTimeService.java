@@ -2,10 +2,10 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.resume.dto.request.InterviewTimeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.InterviewTimeResponseDto;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +24,8 @@ public class InterviewTimeService {
 
         interviewTimeRepository.deleteAll();
 
+        Long resumeId = reqDto.resumeId();
+
         LocalDate startDate = reqDto.startDate();
         LocalDate endDate   = reqDto.endDate();
         LocalTime startTime = LocalTime.parse(reqDto.startTime());
@@ -39,7 +41,7 @@ public class InterviewTimeService {
                 LocalDateTime slot = LocalDateTime.of(currentDate, cursor);
 
                 // 엔티티 생성
-                InterviewTime it = InterviewTime.of(slot);
+                InterviewTime it = InterviewTime.of(slot, resumeId);
                 interviewTimeRepository.save(it);
 
                 cursor = cursor.plusMinutes(intervalMin);
@@ -60,4 +62,12 @@ public class InterviewTimeService {
     public List<LocalDate> getDistinctInterviewDates() {
         return interviewTimeRepository.findDistinctInterviewDates();
     }
+
+    public List<TimeSlotReqDto> getTimeSlotsByResumeId(Long resumeId) {
+        List<InterviewTime> interviewTimes = interviewTimeRepository.findByResumeId(resumeId);
+        return interviewTimes.stream()
+                .map(interviewTime -> new TimeSlotReqDto(interviewTime.getInterviewDetailTime()))
+                .toList();
+    }
+
 }

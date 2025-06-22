@@ -1,8 +1,11 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tave.tavewebsite.domain.programinglaunguage.dto.response.LanguageLevelResponseDto;
+import com.tave.tavewebsite.domain.programinglaunguage.service.ProgramingLanguageService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.dto.wrapper.ResumeTempWrapper;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
@@ -26,6 +29,9 @@ public class ResumeAnswerTempService {
     private final ObjectMapper objectMapper;
     private final ResumeQuestionRepository resumeQuestionRepository;
     private final ResumeRepository resumeRepository;
+    private final InterviewTimeService interviewTimeService;
+    private final ProgramingLanguageService programingLanguageService;
+
 
     private final String REDIS_KEY_PREFIX = "resume:temp:";
 
@@ -107,7 +113,7 @@ public class ResumeAnswerTempService {
 
         ResumeTempWrapper wrapper = new ResumeTempWrapper();
 
-        // resumeId에 해당하는 모든 질문+답변 조회
+// 모든 질문+답변 조회
         List<ResumeQuestion> allQuestions = resumeQuestionRepository.findByResumeId(resumeId);
 
         // page 2: 분야별 질문 (fieldType != COMMON)
@@ -122,12 +128,24 @@ public class ResumeAnswerTempService {
                 .map(this::toDto)
                 .toList();
 
-        if (!page2Answers.isEmpty()) {
-            wrapper.setPage2(new ResumeReqDto(page2Answers, null, null, null, null, null));
+        // 소셜 URL
+        String githubUrl = resume.getGithubUrl();
+        String blogUrl = resume.getBlogUrl();
+        String portfolioUrl = resume.getPortfolioUrl();
+
+        // 타임슬롯 (InterviewTimeService에서 가져오기)
+        List<TimeSlotReqDto> timeSlots = interviewTimeService.getTimeSlotsByResumeId(resumeId);
+
+        // 프로그래밍 언어 레벨 (ProgramingLanguageService에서 가져오기)
+        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.getLanguageLevel(resumeId);
+
+        if (!page2Answers.isEmpty() || timeSlots != null || languageLevels != null || githubUrl != null || blogUrl != null || portfolioUrl != null) {
+            wrapper.setPage2(new ResumeReqDto(page2Answers, timeSlots, languageLevels, githubUrl, blogUrl, portfolioUrl));
         }
 
         if (!page3Answers.isEmpty()) {
-            wrapper.setPage3(new ResumeReqDto(page3Answers, null, null, null, null, null));
+            // 공통 질문에 소셜 주소 등이 포함되어야 한다면 여기서도 넣으면 됨
+            wrapper.setPage3(new ResumeReqDto(page3Answers, null, null, githubUrl, blogUrl, portfolioUrl));
         }
 
         int lastPage = 1;
