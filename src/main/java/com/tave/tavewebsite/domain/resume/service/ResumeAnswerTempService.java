@@ -132,9 +132,8 @@ public class ResumeAnswerTempService {
         String blogUrl = resume.getBlogUrl();
         String portfolioUrl = resume.getPortfolioUrl();
 
-        List<TimeSlotReqDto> timeSlots = interviewTimeService.getTimeSlotsByResumeId(resumeId);
-
-        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.getLanguageLevel(resumeId);
+        List<TimeSlotReqDto> timeSlots = interviewTimeService.convertToDtoList(resume.getInterviewTimes());
+        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.convertToDtoList(resume.getProgramingLanguages());
 
         if (!page2Answers.isEmpty() || timeSlots != null || languageLevels != null || githubUrl != null || blogUrl != null || portfolioUrl != null) {
             wrapper.setPage2(new ResumeReqDto(page2Answers, null, languageLevels, null, null, null));

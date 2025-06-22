@@ -70,4 +70,11 @@ public class InterviewTimeService {
                 .toList();
     }
 
+    public List<TimeSlotReqDto> convertToDtoList(List<InterviewTime> interviewTimes) {
+        if (interviewTimes == null) return null;
+        return interviewTimes.stream()
+                .map(it -> new TimeSlotReqDto(it.getInterviewDetailTime()))
+                .toList();
+    }
+
 }
