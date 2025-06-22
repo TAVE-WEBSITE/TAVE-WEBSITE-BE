@@ -113,18 +113,9 @@ public class ResumeAnswerTempService {
 
         ResumeTempWrapper wrapper = new ResumeTempWrapper();
 
-        // 모든 질문+답변 조회
+        // 이력서 질문 전체를 조회해서 답변 DTO 리스트로 변환
         List<ResumeQuestion> allQuestions = resumeQuestionRepository.findByResumeId(resumeId);
-
-        // page 2: 분야별 질문 (fieldType != COMMON)
-        List<ResumeAnswerTempDto> page2Answers = allQuestions.stream()
-                .filter(q -> q.getFieldType() != FieldType.COMMON)
-                .map(this::toDto)
-                .toList();
-
-        // page 3: 공통 질문 (fieldType == COMMON)
-        List<ResumeAnswerTempDto> page3Answers = allQuestions.stream()
-                .filter(q -> q.getFieldType() == FieldType.COMMON)
+        List<ResumeAnswerTempDto> allAnswers = allQuestions.stream()
                 .map(this::toDto)
                 .toList();
 
@@ -132,22 +123,22 @@ public class ResumeAnswerTempService {
         String blogUrl = resume.getBlogUrl();
         String portfolioUrl = resume.getPortfolioUrl();
 
-        List<TimeSlotReqDto> timeSlots = interviewTimeService.convertToDtoList(resume.getInterviewTimes());
-        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.convertToDtoList(resume.getProgramingLanguages());
+        // 인터뷰 시간과 프로그래밍 언어 레벨 데이터를 각각 DTO 리스트로 변환
+        List<TimeSlotReqDto> timeSlots = interviewTimeService.convertToDtoListFromTimeSlots(resume.getResumeTimeSlots());
+        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.convertToDtoList(resume.getLanguageLevels());
 
-        if (!page2Answers.isEmpty() || timeSlots != null || languageLevels != null || githubUrl != null || blogUrl != null || portfolioUrl != null) {
-            wrapper.setPage2(new ResumeReqDto(page2Answers, null, languageLevels, null, null, null));
-        }
+        // 모든 데이터 통합
+        ResumeReqDto resumeReqDto = new ResumeReqDto(
+                allAnswers,
+                timeSlots,
+                languageLevels,
+                githubUrl,
+                blogUrl,
+                portfolioUrl
+        );
 
-        if (!page3Answers.isEmpty()) {
-            wrapper.setPage3(new ResumeReqDto(page3Answers, timeSlots, null, githubUrl, blogUrl, portfolioUrl));
-        }
-
-        int lastPage = 1;
-        if (!page2Answers.isEmpty()) lastPage = 2;
-        if (!page3Answers.isEmpty()) lastPage = Math.max(lastPage, 3);
-        wrapper.setLastPage(lastPage);
-
+        wrapper.setPage2(resumeReqDto);
+        wrapper.setLastPage(3);
         return wrapper;
     }
 

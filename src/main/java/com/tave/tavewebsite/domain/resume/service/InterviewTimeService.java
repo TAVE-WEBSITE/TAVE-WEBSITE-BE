@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.resume.dto.request.InterviewTimeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.InterviewTimeResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
+import com.tave.tavewebsite.domain.resume.entity.ResumeTimeSlot;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,10 +71,10 @@ public class InterviewTimeService {
                 .toList();
     }
 
-    public List<TimeSlotReqDto> convertToDtoList(List<InterviewTime> interviewTimes) {
-        if (interviewTimes == null) return null;
-        return interviewTimes.stream()
-                .map(it -> new TimeSlotReqDto(it.getInterviewDetailTime()))
+    public List<TimeSlotReqDto> convertToDtoListFromTimeSlots(List<ResumeTimeSlot> timeSlots) {
+        if (timeSlots == null) return null;
+        return timeSlots.stream()
+                .map(ts -> new TimeSlotReqDto(ts.getInterviewTime().getInterviewDetailTime()))
                 .toList();
     }
 
