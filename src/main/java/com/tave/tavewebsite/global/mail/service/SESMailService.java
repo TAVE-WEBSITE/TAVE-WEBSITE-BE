@@ -3,6 +3,7 @@ package com.tave.tavewebsite.global.mail.service;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
+import com.tave.tavewebsite.domain.member.entity.DepartmentType;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.mail.util.SESMailFormatUtil;
 import com.tave.tavewebsite.global.mail.util.SESTemplateUtil;
@@ -21,6 +22,41 @@ public class SESMailService {
     private final SESTemplateUtil templateUtil;
     private final SESMailFormatUtil mailFormatUtil;
     private final AmazonSimpleEmailService emailService;
+
+    // 관리자 가입 거절 안내 메일 전송
+    public void sendAdminRejectMail(String recipient, String memberName) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("memberName", memberName);
+
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "AdminSignupRejectTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("관리자 가입 거절 메일 전송 실패", e);
+        }
+    }
+
+
+    // 관리자 가입 승인 안내 메일 전송
+    public void sendAdminApprovalMail(String recipient, String memberName, DepartmentType departmentType) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("name", memberName);
+            templateData.put("departmentType", departmentType.name());
+
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "AdminSignupApprovalTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("관리자 가입 승인 메일 전송 실패", e);
+        }
+    }
+
 
     // 지원 완료 이메일 전송
     public void sendApplySubmitMail(String recipient, String memberName, String generation, FieldType fieldType,
