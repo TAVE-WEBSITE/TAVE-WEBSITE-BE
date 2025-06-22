@@ -1,19 +1,20 @@
 package com.tave.tavewebsite.domain.review.service;
 
 
-import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerResponseDto;
-import com.tave.tavewebsite.domain.review.exception.ReviewNotFoundException;
-import com.tave.tavewebsite.domain.review.mapper.ReviewMapper;
 import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
+import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerResponseDto;
+import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerWithTypeResponseDto;
 import com.tave.tavewebsite.domain.review.dto.response.ReviewResponseDto;
 import com.tave.tavewebsite.domain.review.entity.Review;
+import com.tave.tavewebsite.domain.review.exception.ReviewNotFoundException;
+import com.tave.tavewebsite.domain.review.mapper.ReviewMapper;
 import com.tave.tavewebsite.domain.review.repository.ReviewRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -40,16 +41,26 @@ public class ReviewService {
                 .toList();
     }
 
-    public List<ReviewManagerResponseDto> findAllReviewsByGeneration(String generation) {
-        List<Review> reviews = reviewRepository.findByGeneration(generation);
+    public ReviewManagerWithTypeResponseDto findAllReviewsByGeneration(String generation) {
+        List<Review> reviews = reviewRepository.findAll();
+        List<Review> re = new ArrayList<>();
+        int max = 0;
+        for (Review review : reviews) {
+            if (review.getGeneration().equals(generation) || generation.equals("ALL")) {
+                re.add(review);
+            }
+            max = Math.max(max, Integer.parseInt(review.getGeneration()));
+        }
 
-        return reviews.stream()
+        List<ReviewManagerResponseDto> list = re.stream()
                 .map(reviewMapper::toReviewManagerResponseDto)
                 .toList();
+
+        return ReviewManagerWithTypeResponseDto.of(list, max);
     }
 
     @Transactional
-    public void updateReview(Long reviewId,ReviewRequestDto requestDto) {
+    public void updateReview(Long reviewId, ReviewRequestDto requestDto) {
         Review findReview = findReview(reviewId);
         findReview.update(requestDto);
     }
@@ -60,8 +71,8 @@ public class ReviewService {
     }
 
     /*
-    * 리팩토링
-    * */
+     * 리팩토링
+     * */
 
     private Review findReview(Long reviewId) {
         return reviewRepository.findById(reviewId)
