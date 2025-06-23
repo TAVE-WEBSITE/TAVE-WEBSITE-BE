@@ -37,4 +37,8 @@ public class InterviewTime extends BaseEntity {
                 .build();
     }
 
+    public LocalDateTime getTime() {
+        return interviewDetailTime;
+    }
+
 }

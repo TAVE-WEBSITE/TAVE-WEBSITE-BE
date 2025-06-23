@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -106,7 +107,7 @@ public class ResumeAnswerTempService {
     }
 
     private ResumeTempWrapper loadFromDatabase(Long resumeId) {
-        Resume resume = resumeRepository.findById(resumeId).orElse(null);
+        Resume resume = resumeRepository.findWithAllRelationsById(resumeId).orElse(null);
         if (resume == null) {
             return null;
         }
@@ -114,7 +115,7 @@ public class ResumeAnswerTempService {
         ResumeTempWrapper wrapper = new ResumeTempWrapper();
 
         // 모든 질문+답변 조회
-        List<ResumeQuestion> allQuestions = resumeQuestionRepository.findByResumeId(resumeId);
+        List<ResumeQuestion> allQuestions = resume.getResumeQuestions();
 
         // page 2: 분야별 질문 (fieldType != COMMON)
         List<ResumeAnswerTempDto> page2Answers = allQuestions.stream()
@@ -128,20 +129,19 @@ public class ResumeAnswerTempService {
                 .map(this::toDto)
                 .toList();
 
-        // 전체 질문 합치기
-        List<ResumeAnswerTempDto> mergedAnswers = new java.util.ArrayList<>();
-        mergedAnswers.addAll(page2Answers);
-        mergedAnswers.addAll(page3Answers);
-
         String githubUrl = resume.getGithubUrl();
         String blogUrl = resume.getBlogUrl();
         String portfolioUrl = resume.getPortfolioUrl();
 
-        List<TimeSlotReqDto> timeSlots = interviewTimeService.getTimeSlotsByResumeId(resumeId);
-        List<LanguageLevelResponseDto> languageLevels = programingLanguageService.getLanguageLevel(resumeId);
+        List<TimeSlotReqDto> timeSlots = resume.getResumeTimeSlots().stream()
+                .map(slot -> new TimeSlotReqDto(slot.getInterviewTime().getTime()))
+                .collect(Collectors.toList());
+        List<LanguageLevelResponseDto> languageLevels = resume.getLanguageLevels().stream()
+                .map(LanguageLevelResponseDto::fromEntity)
+                .collect(Collectors.toList());
 
         // 분야별 질문 → page2 세팅
-        if (!page2Answers.isEmpty() || languageLevels != null) {
+        if (!page2Answers.isEmpty() || !languageLevels.isEmpty()) {
             ResumeReqDto page2Dto = new ResumeReqDto(
                     page2Answers,
                     null,
@@ -152,7 +152,7 @@ public class ResumeAnswerTempService {
         }
 
         // 공통 질문 → page3 세팅
-        if (!page3Answers.isEmpty() || timeSlots != null || githubUrl != null || blogUrl != null || portfolioUrl != null) {
+        if (!page3Answers.isEmpty() || timeSlots.isEmpty() || githubUrl != null || blogUrl != null || portfolioUrl != null) {
             ResumeReqDto page3Dto = new ResumeReqDto(
                     page3Answers,
                     timeSlots,
