@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.tave.tavewebsite.domain.programinglaunguage.service.ProgramingLanguageService;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
@@ -15,13 +16,12 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepositor
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
+import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -33,6 +33,7 @@ public class ResumeQuestionService {
     private final ResumeQuestionJdbcRepository resumeQuestionJdbcRepository;
     private final QuestionService questionService;
     private final ResumeTimeService resumeTimeService;
+    private final ProgramingLanguageService programingLanguageService;
 
     public ResumeQuestionResponse createResumeQuestion(Resume resume, FieldType fieldType) {
         // 공통 + 전공별 질문 생성
@@ -59,14 +60,15 @@ public class ResumeQuestionService {
 
     // 공통 질문 수정
     @Transactional
-    public void updateCommonResumeQuestion(Resume resume, List<ResumeQuestionUpdateRequest> updateRequestList, FieldType fieldType) {
+    public void updateCommonResumeQuestion(Resume resume, List<ResumeQuestionUpdateRequest> updateRequestList,
+                                           FieldType fieldType) {
 
         List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType);
 
-        for(int i = 0 ; i < resumeQuestionList.size() ; i++) {
+        for (int i = 0; i < resumeQuestionList.size(); i++) {
             ResumeQuestion target = resumeQuestionList.get(i);
             String answer = updateRequestList.get(i).answer();
-            if(target.getTextLength() < answer.length()) {
+            if (target.getTextLength() < answer.length()) {
                 throw new AnswerTextLengthOverException();
             }
             target.updateAnswer(answer);
@@ -74,21 +76,22 @@ public class ResumeQuestionService {
     }
 
     /*
-    * refactor
-    * */
+     * refactor
+     * */
 
     // Reusme + FieldType으로 조회
     public List<ResumeQuestion> findResumeQuestionsByResumeId(Resume resume, FieldType fieldType) {
         List<ResumeQuestion> resumeQuestionList = resumeQuestionRepository.findByResumeAndFieldType(resume, fieldType);
 
-        if(resumeQuestionList.isEmpty()) {
+        if (resumeQuestionList.isEmpty()) {
             throw new ResumeQuestionNotMatchResumeException();
         }
 
         return resumeQuestionList;
     }
 
-    public List<DetailResumeQuestionResponse> mapResumeQuestionListToDetailResponse(List<ResumeQuestion> resumeQuestionList) {
+    public List<DetailResumeQuestionResponse> mapResumeQuestionListToDetailResponse(
+            List<ResumeQuestion> resumeQuestionList) {
         return resumeQuestionList
                 .stream()
                 .map(DetailResumeQuestionResponse::from)
@@ -96,7 +99,7 @@ public class ResumeQuestionService {
     }
 
     @Transactional
-    public void createResumeAnswer(Long resumeId, ResumeReqDto reqDto){
+    public void createResumeAnswer(Long resumeId, ResumeReqDto reqDto) {
         Resume resume = findIfResumeExists(resumeId);
 
         // resume와 resumeQuestion이 매핑되어 있는지 유효성 검증을 해야하는가?
@@ -105,7 +108,11 @@ public class ResumeQuestionService {
             resumeQuestion.updateAnswer(answer.getAnswer());
         });
 
-        if(!reqDto.timeSlots().isEmpty()) {
+        if (!reqDto.languageLevels().isEmpty()) {
+            programingLanguageService.patchLanguageLevel(resumeId, reqDto.languageLevels());
+        }
+
+        if (!reqDto.timeSlots().isEmpty()) {
             resumeTimeService.createTimeSlot(resumeId, reqDto.timeSlots());
             resume.submit();
         }
@@ -132,7 +139,8 @@ public class ResumeQuestionService {
                 .toList();
     }
 
-    private List<ResumeQuestion> concatResumeQuestion(List<ResumeQuestion> commonQuestionList, List<ResumeQuestion> specificQuestionList) {
+    private List<ResumeQuestion> concatResumeQuestion(List<ResumeQuestion> commonQuestionList,
+                                                      List<ResumeQuestion> specificQuestionList) {
         return Stream.concat(commonQuestionList.stream(), specificQuestionList.stream())
                 .toList();
     }
@@ -142,6 +150,7 @@ public class ResumeQuestionService {
     }
 
     private ResumeQuestion findIfResumeQuestionExists(Long resumeQuestionId) {
-        return resumeQuestionRepository.findById(resumeQuestionId).orElseThrow(ResumeQuestionNotMatchResumeException::new);
+        return resumeQuestionRepository.findById(resumeQuestionId)
+                .orElseThrow(ResumeQuestionNotMatchResumeException::new);
     }
 }
