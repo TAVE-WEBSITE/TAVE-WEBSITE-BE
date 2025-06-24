@@ -144,4 +144,14 @@ public class Resume extends BaseEntity {
         this.finalDocumentEvaluationStatus = finalDocumentEvaluationStatus;
     }
 
+    public List<InterviewTime> getInterviewTimes() {
+        return this.resumeTimeSlots.stream()
+                .map(ResumeTimeSlot::getInterviewTime)
+                .toList();
+    }
+
+    public List<LanguageLevel> getProgramingLanguages() {
+        return this.languageLevels;
+    }
+
 }

@@ -52,4 +52,10 @@ public class ProgramingLanguageService {
         });
     }
 
+    public List<LanguageLevelResponseDto> convertToDtoList(List<LanguageLevel> languageLevels) {
+        if (languageLevels == null) return null;
+        return languageLevels.stream()
+                .map(LanguageLevelResponseDto::fromEntity)
+                .toList();
+    }
 }
