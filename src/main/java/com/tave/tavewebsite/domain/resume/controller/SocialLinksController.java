@@ -45,6 +45,7 @@ public class SocialLinksController {
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPDATE_SUCCESS.getMessage());
     }
 
+    // 포트폴리오 업로드
     @PostMapping("/portfolio")
     public SuccessResponse updatePortfolio(@PathVariable("resumeId") Long resumeId,
                                            @RequestParam("file") MultipartFile file) {
@@ -52,4 +53,5 @@ public class SocialLinksController {
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
+
 }
