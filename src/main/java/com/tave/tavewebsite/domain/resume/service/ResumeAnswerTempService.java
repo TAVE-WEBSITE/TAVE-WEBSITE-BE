@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tave.tavewebsite.domain.programinglaunguage.dto.response.LanguageLevelResponseDto;
+import com.tave.tavewebsite.domain.programinglaunguage.dto.request.LanguageLevelRequestDto;
 import com.tave.tavewebsite.domain.programinglaunguage.service.ProgramingLanguageService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
@@ -136,8 +136,8 @@ public class ResumeAnswerTempService {
         List<TimeSlotReqDto> timeSlots = resume.getResumeTimeSlots().stream()
                 .map(slot -> new TimeSlotReqDto(slot.getInterviewTime().getTime()))
                 .collect(Collectors.toList());
-        List<LanguageLevelResponseDto> languageLevels = resume.getLanguageLevels().stream()
-                .map(LanguageLevelResponseDto::fromEntity)
+        List<LanguageLevelRequestDto> languageLevels = resume.getLanguageLevels().stream()
+                .map(LanguageLevelRequestDto::fromEntity)
                 .collect(Collectors.toList());
 
         // 분야별 질문 → page2 세팅
