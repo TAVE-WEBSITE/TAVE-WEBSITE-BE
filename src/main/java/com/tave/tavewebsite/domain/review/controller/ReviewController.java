@@ -1,19 +1,29 @@
 package com.tave.tavewebsite.domain.review.controller;
 
 
+import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.REVIEW_CREATE;
+import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.REVIEW_DELETE;
+import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.REVIEW_GET_MANAGER;
+import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.REVIEW_GET_NORMAL;
+import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.REVIEW_UPDATE;
+
 import com.tave.tavewebsite.domain.review.dto.request.ReviewRequestDto;
-import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerResponseDto;
+import com.tave.tavewebsite.domain.review.dto.response.ReviewManagerWithTypeResponseDto;
 import com.tave.tavewebsite.domain.review.dto.response.ReviewResponseDto;
 import com.tave.tavewebsite.domain.review.service.ReviewService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static com.tave.tavewebsite.domain.review.controller.SuccessMessage.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequestMapping("/v1")
@@ -33,11 +43,11 @@ public class ReviewController {
     }
 
     @GetMapping("/manager/review/{generation}")
-    public SuccessResponse<List<ReviewManagerResponseDto>> getAllReviews(@PathVariable String generation) {
-        List<ReviewManagerResponseDto> response = reviewService.findAllReviewsByGeneration(generation);
+    public SuccessResponse<ReviewManagerWithTypeResponseDto> getAllReviews(
+            @PathVariable(name = "generation") String generation) {
 
         return new SuccessResponse<>(
-                response,
+                reviewService.findAllReviewsByGeneration(generation),
                 REVIEW_GET_MANAGER.getMessage(generation)
         );
     }

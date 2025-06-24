@@ -5,6 +5,7 @@ import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.exception.CustomAuthenticationEntryPoint;
 import com.tave.tavewebsite.global.security.filter.JwtAuthenticationFilter;
 import com.tave.tavewebsite.global.security.utils.JwtTokenProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -38,7 +37,8 @@ public class Config {
         corsConfiguration.setAllowedOriginPatterns(
                 List.of("http://localhost:3000", "https://localhost:3000", "http://localhost:8080",
                         "https://www.tave-wave.com", "https://tave-admin.info", "https://www.tave-admin.info",
-                        "https://recruit.tave-wave.com"
+                        "https://recruit.tave-wave.com",
+                        "https://tave-apply-rjjft5des-taves-projects-79609e27.vercel.app"
                 ));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
