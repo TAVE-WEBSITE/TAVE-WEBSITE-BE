@@ -9,6 +9,7 @@ import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
 import com.tave.tavewebsite.domain.member.exception.NotFoundUnauthorizedManager;
 import com.tave.tavewebsite.domain.member.exception.NotManagerAccessException;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
+import com.tave.tavewebsite.global.mail.service.SESMailService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
 
     private final MemberRepository memberRepository;
+    private final SESMailService sesMailService;
 
     public void updateAuthentication(String memberId) {
         Long id = Long.valueOf(memberId);
@@ -74,11 +76,14 @@ public class AdminService {
     public void approveManager(Long memberId) {
         Member member = validateUnauthorizedManager(memberId);
         member.updateRole();
+        sesMailService.sendAdminApprovalMail(
+                member.getEmail(), member.getUsername(), member.getDepartment());
     }
 
     @Transactional
     public void rejectManager(Long memberId) {
         Member member = validateUnauthorizedManager(memberId);
+        sesMailService.sendAdminRejectMail(member.getEmail(), member.getUsername());
         memberRepository.delete(member);
     }
 
