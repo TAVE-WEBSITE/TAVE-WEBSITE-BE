@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URL;
 
 @RestController
-@RequestMapping("/v1/member/resume/{resumeId}/social-links")
+@RequestMapping("/v1/member/resume/{resumeId}")
 public class SocialLinksController {
 
     private final SocialLinksService socialLinksService;
@@ -23,7 +23,7 @@ public class SocialLinksController {
     }
 
     // 소셜 링크 등록
-    @PostMapping
+    @PostMapping("/social-links")
     public SuccessResponse registerSocialLinks(@PathVariable("resumeId") Long resumeId,
                                                @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
         socialLinksService.createSocialLinks(resumeId, socialLinksRequestDto);
@@ -31,14 +31,14 @@ public class SocialLinksController {
     }
 
     // 소셜 링크 조회
-    @GetMapping
+    @GetMapping("/social-links")
     public SuccessResponse<SocialLinksResponseDto> getSocialLinks(@PathVariable("resumeId") Long resumeId) {
         return new SuccessResponse<>(socialLinksService.getSocialLinks(resumeId),
                 SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
     }
 
     // 소셜 링크 업데이트
-    @PatchMapping
+    @PatchMapping("/social-links")
     public SuccessResponse updateSocialLinks(@PathVariable("resumeId") Long resumeId,
                                              @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
         socialLinksService.updateSocialLinks(resumeId, socialLinksRequestDto);
