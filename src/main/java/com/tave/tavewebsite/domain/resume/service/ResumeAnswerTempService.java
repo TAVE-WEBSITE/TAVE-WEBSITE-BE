@@ -1,23 +1,47 @@
 package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tave.tavewebsite.domain.programinglaunguage.dto.response.LanguageLevelResponseDto;
+import com.tave.tavewebsite.domain.programinglaunguage.service.ProgramingLanguageService;
+import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.dto.wrapper.ResumeTempWrapper;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.InvalidPageNumberException;
 import com.tave.tavewebsite.domain.resume.exception.TempReadFailedException;
 import com.tave.tavewebsite.domain.resume.exception.TempSaveFailedException;
+import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
+import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ResumeAnswerTempService {
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
+    private final ResumeQuestionRepository resumeQuestionRepository;
+    private final ResumeRepository resumeRepository;
+    private final InterviewTimeService interviewTimeService;
+    private final ProgramingLanguageService programingLanguageService;
+
 
     private final String REDIS_KEY_PREFIX = "resume:temp:";
+
+    private ResumeAnswerTempDto toDto(ResumeQuestion question) {
+        return new ResumeAnswerTempDto(
+                question.getId(),
+                question.getAnswer()
+        );
+    }
 
     @Transactional
     public void tempSaveAnswers(Long resumeId, int page, ResumeReqDto dto) {
@@ -83,8 +107,70 @@ public class ResumeAnswerTempService {
     }
 
     private ResumeTempWrapper loadFromDatabase(Long resumeId) {
-        // 임시 저장 데이터가 DB에 없으므로 항상 null 반환
-        return null;
+        Resume resume = resumeRepository.findWithAllRelationsById(resumeId).orElse(null);
+        if (resume == null) {
+            return null;
+        }
+
+        ResumeTempWrapper wrapper = new ResumeTempWrapper();
+
+        // 모든 질문+답변 조회
+        List<ResumeQuestion> allQuestions = resume.getResumeQuestions();
+
+        // page 2: 분야별 질문 (fieldType != COMMON)
+        List<ResumeAnswerTempDto> page2Answers = allQuestions.stream()
+                .filter(q -> q.getFieldType() != FieldType.COMMON)
+                .map(this::toDto)
+                .toList();
+
+        // page 3: 공통 질문 (fieldType == COMMON)
+        List<ResumeAnswerTempDto> page3Answers = allQuestions.stream()
+                .filter(q -> q.getFieldType() == FieldType.COMMON)
+                .map(this::toDto)
+                .toList();
+
+        String githubUrl = resume.getGithubUrl();
+        String blogUrl = resume.getBlogUrl();
+        String portfolioUrl = resume.getPortfolioUrl();
+
+        List<TimeSlotReqDto> timeSlots = resume.getResumeTimeSlots().stream()
+                .map(slot -> new TimeSlotReqDto(slot.getInterviewTime().getTime()))
+                .collect(Collectors.toList());
+        List<LanguageLevelResponseDto> languageLevels = resume.getLanguageLevels().stream()
+                .map(LanguageLevelResponseDto::fromEntity)
+                .collect(Collectors.toList());
+
+        // 분야별 질문 → page2 세팅
+        if (!page2Answers.isEmpty() || !languageLevels.isEmpty()) {
+            ResumeReqDto page2Dto = new ResumeReqDto(
+                    page2Answers,
+                    null,
+                    languageLevels,
+                    null, null, null
+            );
+            wrapper.setPage2(page2Dto);
+        }
+
+        // 공통 질문 → page3 세팅
+        if (!page3Answers.isEmpty() || timeSlots.isEmpty() || githubUrl != null || blogUrl != null || portfolioUrl != null) {
+            ResumeReqDto page3Dto = new ResumeReqDto(
+                    page3Answers,
+                    timeSlots,
+                    null,
+                    githubUrl,
+                    blogUrl,
+                    portfolioUrl
+            );
+            wrapper.setPage3(page3Dto);
+        }
+
+        // 마지막 저장 페이지 계산
+        int lastPage = 1;
+        if (wrapper.getPage2() != null) lastPage = 2;
+        if (wrapper.getPage3() != null) lastPage = Math.max(lastPage, 3);
+        wrapper.setLastPage(lastPage);
+
+        return wrapper;
     }
 
     public int getLastPage(Long resumeId) {

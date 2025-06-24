@@ -114,6 +114,7 @@ public class ResumeQuestionService {
 
         if (!reqDto.timeSlots().isEmpty()) {
             resumeTimeService.createTimeSlot(resumeId, reqDto.timeSlots());
+            resume.submit();
         }
     }
 

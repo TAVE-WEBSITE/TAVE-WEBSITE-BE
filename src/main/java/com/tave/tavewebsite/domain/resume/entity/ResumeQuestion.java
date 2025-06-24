@@ -58,7 +58,7 @@ public class ResumeQuestion extends BaseEntity {
                 .fieldType(question.getFieldType())
                 .ordered(question.getOrdered()) // todo Question 순서 사용 or 자체 ResumeQuestion 순서 생성? 의논
                 .answerType(question.getAnswerType())
-                .textLength(question.getTextLength())
+                .textLength(question.getTextLength() != null ? question.getTextLength() : 0)
                 .build();
     }
 

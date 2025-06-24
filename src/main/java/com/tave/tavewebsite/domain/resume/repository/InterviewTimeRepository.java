@@ -18,4 +18,6 @@ public interface InterviewTimeRepository extends JpaRepository<InterviewTime, Lo
             "FROM InterviewTime i " +
             "ORDER BY CAST(i.interviewDetailTime AS localdate)")
     List<LocalDate> findDistinctInterviewDates();
+
+    List<InterviewTime> findByResumeId(Long resumeId);
 }
