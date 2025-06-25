@@ -3,16 +3,15 @@ package com.tave.tavewebsite.domain.member.controller;
 import com.tave.tavewebsite.domain.member.dto.request.*;
 import com.tave.tavewebsite.domain.member.dto.response.RefreshResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.SignInResponseDto;
-import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.service.AuthService;
 import com.tave.tavewebsite.domain.member.service.MemberService;
-import com.tave.tavewebsite.global.mail.dto.MailResponseDto;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import static com.tave.tavewebsite.domain.member.controller.MemberSuccessMessage.MANAGER_MEMBER_SIGNUP;
 import static com.tave.tavewebsite.domain.member.controller.MemberSuccessMessage.NORMAL_MEMBER_SIGNUP;
 
 @RequiredArgsConstructor
@@ -24,9 +23,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/signup")
-    public SuccessResponse<MailResponseDto> registerManager(@RequestBody @Valid RegisterManagerRequestDto requestDto) {
-        MailResponseDto response = memberService.saveMember(requestDto);
-        return new SuccessResponse<>(response);
+    public SuccessResponse registerManager(@RequestBody @Valid RegisterManagerRequestDto requestDto) {
+        memberService.saveMember(requestDto);
+        return new SuccessResponse<>(MANAGER_MEMBER_SIGNUP.getMessage());
     }
 
     @PostMapping("/auth/normal/signup")

@@ -24,6 +24,21 @@ public class SESMailService {
     private final SESMailFormatUtil mailFormatUtil;
     private final AmazonSimpleEmailService emailService;
 
+    // 이메일 인증번호 발송
+    public void sendEmailAuthenticationCode(String recipient, String authenticationCode) {
+        try{
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("authCode", authenticationCode);
+
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "EmailVerificationTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e) {
+            throw new RuntimeException("인증 번호 전송 실패", e);
+        }
+    }
+
     // 관리자 가입 거절 안내 메일 전송
     public void sendAdminRejectMail(String recipient, String memberName) {
         try {
@@ -169,34 +184,6 @@ public class SESMailService {
             emailService.sendTemplatedEmail(request);
         } catch (Exception e) {
             throw new RuntimeException("관리자 가입 신청 실패", e);
-        }
-    }
-
-    // 관리자 가입 거절 메일
-    public void sendAdminApplyDeniedNotification(String recipient, String memberName) {
-        try{
-            Map<String, String> templateData = new HashMap<>();
-            templateData.put("memberName", memberName);
-            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
-                    recipient, "AdminApplyDeniedTemplate", templateData
-            );
-            emailService.sendTemplatedEmail(request);
-        } catch (Exception e){
-            throw new RuntimeException("관리자 가입 신청 거절 메일 전송 실패", e);
-        }
-    }
-
-    // 관리자 가입 승인 메일
-    public void sendAdminApplyAdmittedNotification(String recipient, String memberName) {
-        try{
-            Map<String, String> templateData = new HashMap<>();
-            templateData.put("memberName", memberName);
-            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
-                    recipient, "AdminApplyAdmittedTemplate", templateData
-            );
-            emailService.sendTemplatedEmail(request);
-        } catch (Exception e){
-            throw new RuntimeException("관리자 가입 신청 승인 메일 전송 실패", e);
         }
     }
 
