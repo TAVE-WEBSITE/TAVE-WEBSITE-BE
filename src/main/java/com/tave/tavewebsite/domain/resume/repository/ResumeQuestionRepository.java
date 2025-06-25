@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface ResumeQuestionRepository extends JpaRepository<ResumeQuestion, Long> {
     List<ResumeQuestion> findByResumeId(Long resumeId);
-
     List<ResumeQuestion> findByResumeAndFieldType(Resume resume, FieldType fieldType);
+    boolean existsByResumeId(Long resumeId);
 }
