@@ -29,6 +29,12 @@ public class InterviewPlaceService {
         interviewPlaceRepository.saveAll(saveList);
     }
 
+    public List<InterviewPlaceDetailDto> getInterviewPlaceList() {
+        return getInterviewPlaceActiveList().stream()
+                .map(InterviewPlaceDetailDto::of)
+                .toList();
+    }
+
     private List<InterviewPlace> getInterviewPlaceActiveList() {
         return interviewPlaceRepository.findByStatus(Status.ACTIVE);
     }
