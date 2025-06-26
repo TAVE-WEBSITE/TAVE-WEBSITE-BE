@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.domain.resume.exception.AlreadySubmittedResumeException;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
 import jakarta.persistence.*;
@@ -123,12 +124,12 @@ public class Resume extends BaseEntity {
         this.portfolioUrl = portfolioUrl;
     }
 
-//    public void submit() {
-//        if (this.state == ResumeState.SUBMITTED) {
-//            throw new AlreadySubmittedResumeException();
-//        }
-//        this.state = ResumeState.SUBMITTED;
-//    }
+    public void submit() {
+        if (this.state == ResumeState.SUBMITTED) {
+            throw new AlreadySubmittedResumeException();
+        }
+        this.state = ResumeState.SUBMITTED;
+    }
 
     public boolean isSubmitted() {
         return this.state == ResumeState.SUBMITTED;

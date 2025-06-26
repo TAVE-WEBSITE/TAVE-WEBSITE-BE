@@ -8,6 +8,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
@@ -46,11 +47,10 @@ public class AuthService {
         Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(NotFoundMemberException::new);
 
-        boolean isSubmitted = resumeRepository.findByMemberId(member.getId())
-                .map(Resume::isSubmitted)
-                .orElse(false);
-
-        return SignInResponseDto.from(jwtToken, member, isSubmitted);
+        ResumeState resumeState = resumeRepository.findByMemberId(member.getId())
+                .map(Resume::getState)
+                .orElse(ResumeState.TEMPORARY);
+        return SignInResponseDto.from(jwtToken, member, resumeState);
     }
 
     public void signOut(String accessToken, HttpServletResponse response) {

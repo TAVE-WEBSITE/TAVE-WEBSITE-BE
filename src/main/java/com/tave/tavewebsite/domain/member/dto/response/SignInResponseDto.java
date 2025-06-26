@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.member.dto.response;
 import com.tave.tavewebsite.domain.member.entity.DepartmentType;
 import com.tave.tavewebsite.domain.member.entity.JobType;
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
 
 public record SignInResponseDto(
@@ -16,9 +17,9 @@ public record SignInResponseDto(
         String generation,
         DepartmentType department,
         JobType job,
-        boolean isSubmitted
+        ResumeState resumeState
 ) {
-    public static SignInResponseDto from(JwtToken token, Member member, boolean isSubmitted) {
+    public static SignInResponseDto from(JwtToken token, Member member, ResumeState resumeState) {
         return new SignInResponseDto(token.getGrantType(),
                 token.getAccessToken(),
                 member.getId(),
@@ -29,6 +30,6 @@ public record SignInResponseDto(
                 member.getGeneration(),
                 member.getDepartment(),
                 member.getJob(),
-                isSubmitted);
+                resumeState);
     }
 }
