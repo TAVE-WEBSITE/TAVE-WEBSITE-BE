@@ -52,7 +52,7 @@ public class AuthController {
 
     @GetMapping("/auth/signout")
     public SuccessResponse signOut(@RequestHeader("Authorization") String token, HttpServletResponse response) {
-        authService.singOut(token, response);
+        authService.signOut(token, response);
         return SuccessResponse.ok(MemberSuccessMessage.SIGN_OUT_SUCCESS.getMessage());
     }
 
