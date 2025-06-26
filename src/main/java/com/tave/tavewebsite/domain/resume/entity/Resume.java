@@ -4,27 +4,17 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
-import com.tave.tavewebsite.domain.resume.exception.AlreadySubmittedResumeException;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -133,11 +123,15 @@ public class Resume extends BaseEntity {
         this.portfolioUrl = portfolioUrl;
     }
 
-    public void submit() {
-        if (this.state == ResumeState.SUBMITTED) {
-            throw new AlreadySubmittedResumeException();
-        }
-        this.state = ResumeState.SUBMITTED;
+//    public void submit() {
+//        if (this.state == ResumeState.SUBMITTED) {
+//            throw new AlreadySubmittedResumeException();
+//        }
+//        this.state = ResumeState.SUBMITTED;
+//    }
+
+    public boolean isSubmitted() {
+        return this.state == ResumeState.SUBMITTED;
     }
 
     public void updateFinalDocumentEvaluationStatus(EvaluationStatus finalDocumentEvaluationStatus) {

@@ -15,9 +15,10 @@ public record SignInResponseDto(
         String agitId,
         String generation,
         DepartmentType department,
-        JobType job
+        JobType job,
+        boolean isSubmitted
 ) {
-    public static SignInResponseDto from(JwtToken token, Member member) {
+    public static SignInResponseDto from(JwtToken token, Member member, boolean isSubmitted) {
         return new SignInResponseDto(token.getGrantType(),
                 token.getAccessToken(),
                 member.getId(),
@@ -27,6 +28,7 @@ public record SignInResponseDto(
                 member.getAgitId(),
                 member.getGeneration(),
                 member.getDepartment(),
-                member.getJob());
+                member.getJob(),
+                isSubmitted);
     }
 }

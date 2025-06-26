@@ -4,8 +4,11 @@ import com.tave.tavewebsite.domain.member.dto.request.RefreshTokenRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.SignUpRequestDto;
 import com.tave.tavewebsite.domain.member.dto.response.RefreshResponseDto;
 import com.tave.tavewebsite.domain.member.dto.response.SignInResponseDto;
+import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import com.tave.tavewebsite.global.security.entity.JwtToken;
 import com.tave.tavewebsite.global.security.exception.JwtValidException.NotMatchRefreshTokenException;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
     private final MemberRepository memberRepository;
+    private final ResumeRepository resumeRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisUtil redisUtil;
@@ -39,12 +43,17 @@ public class AuthService {
         JwtToken jwtToken = generateToken(requestDto.email());
         CookieUtil.setCookie(response, "refreshToken", jwtToken.getRefreshToken());
 
-        return SignInResponseDto.from(generateToken(requestDto.email()),
-                memberRepository.findByEmail(requestDto.email()).get());
+        Member member = memberRepository.findByEmail(requestDto.email())
+                .orElseThrow(NotFoundMemberException::new);
 
+        boolean isSubmitted = resumeRepository.findByMemberId(member.getId())
+                .map(Resume::isSubmitted)
+                .orElse(false);
+
+        return SignInResponseDto.from(jwtToken, member, isSubmitted);
     }
 
-    public void singOut(String accessToken, HttpServletResponse response) {
+    public void signOut(String accessToken, HttpServletResponse response) {
         redisUtil.set(accessToken, "ban accessToken", ACCESS_TOKEN_MAX_AGE);
         CookieUtil.deleteCookie(response, "refreshToken");
     }
