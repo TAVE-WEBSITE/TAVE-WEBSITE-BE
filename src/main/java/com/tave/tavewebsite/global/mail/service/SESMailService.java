@@ -26,7 +26,7 @@ public class SESMailService {
 
     // 이메일 인증번호 발송
     public void sendEmailAuthenticationCode(String recipient, String authenticationCode) {
-        try{
+        try {
             Map<String, String> templateData = new HashMap<>();
             templateData.put("authCode", authenticationCode);
 
@@ -175,7 +175,7 @@ public class SESMailService {
 
     // 관리자 가입 신청 완료 메일
     public void sendAdminApplySuccessNotification(String recipient, String memberName) {
-        try{
+        try {
             Map<String, String> templateData = new HashMap<>();
             templateData.put("memberName", memberName);
             SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
@@ -187,4 +187,18 @@ public class SESMailService {
         }
     }
 
+    // 관리자 이메일 인증번호 발송
+    public void sendAdminEmailVerification(String recipient, String authenticationCode) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("authCode", authenticationCode);
+
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "AdminEmailVerificationTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e) {
+            throw new RuntimeException("관리자 이메일 인증번호 전송 실패", e);
+        }
+    }
 }

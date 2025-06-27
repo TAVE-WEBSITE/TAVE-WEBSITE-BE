@@ -57,7 +57,7 @@ public class MemberService {
             findIfEmailExists(req.email());
 
         String code = generateCode();
-        sesMailService.sendEmailAuthenticationCode(req.email(), code);
+        sesMailService.sendAdminEmailVerification(req.email(), code);
         redisUtil.set(req.email(), code, 3);
     }
 
