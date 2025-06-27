@@ -110,6 +110,10 @@ public class MemberService {
     }
 
     public void validateMemberInfoAndSendVerificationCode(ResetPasswordVerifyRequestDto req) {
+        if (!isValidEmail(req.email())) {
+            throw new InvalidEmailFormatException();
+        }
+
         if (req.reset()) {
             // 비밀번호 재설정: 기존 회원 정보 검증
             Member member = memberRepository.findByEmail(req.email())
@@ -130,6 +134,10 @@ public class MemberService {
         String code = generateCode();
         sesMailService.sendUserEmailVerification(req.email(), code);
         redisUtil.set(req.email(), code, 3);
+    }
+
+    private boolean isValidEmail(String email) {
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 
 //    public void verifyNormalMemberForPasswordReset(ResetPasswordVerifyRequestDto req) {
