@@ -13,16 +13,19 @@ import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLang
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.FieldTypeInvalidException;
 import com.tave.tavewebsite.domain.resume.exception.MemberNotFoundException;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.mapper.ResumeMapper;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
+import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
@@ -42,6 +45,7 @@ public class PersonalInfoService {
     private final ResumeQuestionService resumeQuestionService;
     private final InterviewTimeRepository interviewTimeRepository;
     private final ApplicantHistoryRepository applicantHistoryRepository;
+    private final ResumeQuestionRepository resumeQuestionRepository;
 
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
@@ -75,8 +79,26 @@ public class PersonalInfoService {
     }
 
     public ResumeQuestionResponse createResumeQuestions(Resume resume) {
-        return resumeQuestionService.createResumeQuestion(resume, resume.getField());
+        boolean exists = resumeQuestionRepository.existsByResumeId(resume.getId());
+        if (exists) {
+            // 이미 질문이 있으면 기존 질문 불러오기
+            List<ResumeQuestion> questions = resumeQuestionRepository.findByResumeId(resume.getId());
+            return ResumeQuestionResponse.of(
+                    questions.stream()
+                            .filter(q -> q.getFieldType() == FieldType.COMMON)
+                            .map(DetailResumeQuestionResponse::from)
+                            .toList(),
+                    questions.stream()
+                            .filter(q -> q.getFieldType() != FieldType.COMMON)
+                            .map(DetailResumeQuestionResponse::from)
+                            .toList()
+            );
+        } else {
+            // 질문이 없으면 새로 생성
+            return resumeQuestionService.createResumeQuestion(resume, resume.getField());
+        }
     }
+
 
     @Transactional
     public void updatePersonalInfo(Long resumeId, PersonalInfoRequestDto requestDto) {

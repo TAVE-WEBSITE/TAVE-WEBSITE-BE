@@ -22,7 +22,8 @@ public enum MemberSuccessMessage {
     MANAGER_APPROVED("대기 운영진이 승인되었습니다."),
     MANAGER_REJECTED("대기 운영진이 거절되었습니다."),
 
-    NORMAL_MEMBER_SIGNUP("일반 회원 가입에 성공했습니다.");
+    NORMAL_MEMBER_SIGNUP("일반 회원 가입에 성공했습니다."),
+    MANAGER_MEMBER_SIGNUP("관리자 가입 신청을 완료하였습니다.");
 
     private final String message;
 
