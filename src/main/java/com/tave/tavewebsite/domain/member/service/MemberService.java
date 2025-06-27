@@ -110,13 +110,23 @@ public class MemberService {
     }
 
     public void validateMemberInfoAndSendVerificationCode(ResetPasswordVerifyRequestDto req) {
-        Member member = memberRepository.findByEmail(req.email())
-                .orElseThrow(NotFoundMemberException::new);
+        if (req.reset()) {
+            // 비밀번호 재설정: 기존 회원 정보 검증
+            Member member = memberRepository.findByEmail(req.email())
+                    .orElseThrow(NotFoundMemberException::new);
 
-        if (!member.getUsername().equals(req.name()) || !member.getBirthday().toString().equals(req.birth())) {
-            throw new NotFoundMemberException();
+            if (!member.getUsername().equals(req.name()) ||
+                    !member.getBirthday().toString().equals(req.birth())) {
+                throw new NotFoundMemberException();
+            }
+        } else {
+            // 회원가입: 중복 이메일 검증
+            memberRepository.findByEmail(req.email()).ifPresent(m -> {
+                throw new DuplicateEmailException();
+            });
         }
 
+        // 인증번호 생성 및 전송
         String code = generateCode();
         sesMailService.sendUserEmailVerification(req.email(), code);
         redisUtil.set(req.email(), code, 3);
@@ -158,7 +168,7 @@ public class MemberService {
         member.update(req.validatedPassword(), passwordEncoder);
     }
 
-    public List<MemberResumeDto> findMemberResumeDto(String generation, List<String> email){
+    public List<MemberResumeDto> findMemberResumeDto(String generation, List<String> email) {
         return memberRepository.findMemberIdAndResumeIdByGenAndEmails(generation, email);
     }
 
