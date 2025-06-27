@@ -201,4 +201,20 @@ public class SESMailService {
             throw new RuntimeException("관리자 이메일 인증번호 전송 실패", e);
         }
     }
+
+    // 일반 유저 이메일 인증번호 발송
+    public void sendUserEmailVerification(String recipient, String authenticationCode) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("authCode", authenticationCode);
+
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "UserEmailVerificationTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+        } catch (Exception e) {
+            throw new RuntimeException("유저 이메일 인증번호 전송 실패", e);
+        }
+    }
+
 }

@@ -109,7 +109,7 @@ public class MemberService {
         );
     }
 
-    public void verifyNormalMemberForPasswordReset(ResetPasswordVerifyRequestDto req) {
+    public void validateMemberInfoAndSendVerificationCode(ResetPasswordVerifyRequestDto req) {
         Member member = memberRepository.findByEmail(req.email())
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -117,8 +117,21 @@ public class MemberService {
             throw new NotFoundMemberException();
         }
 
-        mailService.sendAuthenticationCode(req.email());
+        String code = generateCode();
+        sesMailService.sendUserEmailVerification(req.email(), code);
+        redisUtil.set(req.email(), code, 3);
     }
+
+//    public void verifyNormalMemberForPasswordReset(ResetPasswordVerifyRequestDto req) {
+//        Member member = memberRepository.findByEmail(req.email())
+//                .orElseThrow(NotFoundMemberException::new);
+//
+//        if (!member.getUsername().equals(req.name()) || !member.getBirthday().toString().equals(req.birth())) {
+//            throw new NotFoundMemberException();
+//        }
+//
+//        mailService.sendAuthenticationCode(req.email());
+//    }
 
     public void verifyAuthCodeForPasswordReset(String email, String code) {
         String validatedNumber = (String) redisUtil.get(email);
