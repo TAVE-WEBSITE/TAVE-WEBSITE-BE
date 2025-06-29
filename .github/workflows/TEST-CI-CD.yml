@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   # Docker 이미지를 빌드하고 Docker Hub에 푸시하는 작업을 정의합니다.
-  build-docker-image:
+  build:
     runs-on: ubuntu-latest # 워크플로우가 실행될 환경을 지정합니다.
     steps:
       # 리포지토리의 코드를 체크아웃합니다.
