@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.emailnotification.dto.request.EmailNotificati
 import com.tave.tavewebsite.domain.emailnotification.dto.response.EmailNotificationApplyResponseDto;
 import com.tave.tavewebsite.domain.emailnotification.service.EmailNotificationService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,8 +33,8 @@ public class NormalEmailNotificationController {
     }
 
     @GetMapping("/admin/notification/reservation")
-    public SuccessResponse sendEmailBatch() {
-        emailNotificationService.setSchedulerOfApplyNotificationEmail();
+    public SuccessResponse sendEmailBatch(HttpServletRequest request) {
+        emailNotificationService.setSchedulerOfApplyNotificationEmail(request);
         return SuccessResponse.ok(EmailNotificationSuccessMessage.APPLY_EMAIL_BATCH_JOB_RESERVE.getMessage());
     }
 
