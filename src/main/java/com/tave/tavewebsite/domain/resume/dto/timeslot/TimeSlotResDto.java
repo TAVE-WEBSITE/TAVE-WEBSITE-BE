@@ -13,8 +13,8 @@ public record TimeSlotResDto(
 ) {
     public static TimeSlotResDto from(ResumeTimeSlot resumeTimeSlot) {
 
-        LocalDate date = getLocalDate(resumeTimeSlot.getInterviewTime().getInterviewDetailTime());
-        LocalTime time = getLocalTime(resumeTimeSlot.getInterviewTime().getInterviewDetailTime());
+        LocalDate date = getLocalDate(resumeTimeSlot.getInterviewDetailTime());
+        LocalTime time = getLocalTime(resumeTimeSlot.getInterviewDetailTime());
         LocalDateTime localDateTime = LocalDateTime.of(date, time);
         return new TimeSlotResDto(localDateTime);
     }
