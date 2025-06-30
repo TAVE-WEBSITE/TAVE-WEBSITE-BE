@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-
 @Entity
 @Getter
 @SuperBuilder
@@ -45,10 +44,14 @@ public class Question extends BaseEntity {
 
     private Integer textLength;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean required;
+
     public static Question of(QuestionSaveRequest dto, Integer ordered) {
 
         AnswerType type = dto.answerType();
-        if(type == null) {
+        if (type == null) {
             type = AnswerType.TEXTAREA;
         }
 
@@ -58,6 +61,7 @@ public class Question extends BaseEntity {
                 .ordered(ordered)
                 .textLength(dto.textLength())
                 .answerType(type)
+                .required(dto.required())
                 .build();
     }
 
@@ -65,6 +69,7 @@ public class Question extends BaseEntity {
         this.content = dto.content();
         this.fieldType = dto.fieldType();
         this.textLength = dto.textLength();
+        this.required = dto.required();
     }
 
     public void updateOrdered(Integer ordered) {
