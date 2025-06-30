@@ -40,7 +40,8 @@ public class Config {
                         "https://www.tave-wave.com", "https://tave-admin.info", "https://www.tave-admin.info",
                         "https://recruit.tave-wave.com",
                         "https://tave-apply-rjjft5des-taves-projects-79609e27.vercel.app",
-                        "https://test.tave-wave.com/"
+                        "https://feat-api.d2hnz1q3fz81jx.amplifyapp.com",
+                        "https://test.tave-wave.com"
                 ));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
