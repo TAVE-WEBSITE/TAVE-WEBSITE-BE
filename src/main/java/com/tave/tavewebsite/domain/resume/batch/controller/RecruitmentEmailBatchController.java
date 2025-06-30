@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.resume.batch.controller;
 
 import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +16,14 @@ public class RecruitmentEmailBatchController {
     private final ApplyInitialSetupService applyInitialSetupService;
 
     @GetMapping("/document/email")
-    public SuccessResponse runDocumentEmailBatch() {
-        applyInitialSetupService.changeDocumentAnnouncementFlag(true);
+    public SuccessResponse runDocumentEmailBatch(HttpServletRequest request) {
+        applyInitialSetupService.changeDocumentAnnouncementFlag(true, request);
         return SuccessResponse.ok(RecruitmentBatchSuccessMessage.DOCUMENT_RESULT_BATCH_JOB_EXECUTE.getMessage());
     }
 
     @GetMapping("/last/email")
-    public SuccessResponse runLastEmailBatch() {
-        applyInitialSetupService.changeLastAnnouncementFlag(true);
+    public SuccessResponse runLastEmailBatch(HttpServletRequest request) {
+        applyInitialSetupService.changeLastAnnouncementFlag(true, request);
         return SuccessResponse.ok(RecruitmentBatchSuccessMessage.LAST_RESULT_BATCH_JOB_EXECUTE.getMessage());
     }
 }

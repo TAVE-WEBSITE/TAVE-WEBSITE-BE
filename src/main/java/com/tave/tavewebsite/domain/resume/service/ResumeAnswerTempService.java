@@ -134,7 +134,7 @@ public class ResumeAnswerTempService {
         String portfolioUrl = resume.getPortfolioUrl();
 
         List<TimeSlotReqDto> timeSlots = resume.getResumeTimeSlots().stream()
-                .map(slot -> new TimeSlotReqDto(slot.getInterviewTime().getTime()))
+                .map(slot -> new TimeSlotReqDto(slot.getInterviewDetailTime()))
                 .collect(Collectors.toList());
         List<LanguageLevelRequestDto> languageLevels = resume.getLanguageLevels().stream()
                 .map(LanguageLevelRequestDto::fromEntity)

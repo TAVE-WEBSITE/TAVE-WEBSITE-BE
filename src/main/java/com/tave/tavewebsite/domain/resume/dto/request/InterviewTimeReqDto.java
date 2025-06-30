@@ -22,8 +22,6 @@ public record InterviewTimeReqDto(
         @NotEmpty(message = "HH:mm 형식의 String 값을 전송해주세요.")
         String endTime,
 
-        int progressTime,
-
-        Long resumeId
+        int progressTime
 ) {
 }

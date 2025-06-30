@@ -7,13 +7,16 @@ import com.tave.tavewebsite.domain.apply.initial.setup.exception.ApplyInitialSet
 import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSetupRepository;
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class ApplyInitialSetupService {
 
@@ -51,15 +54,19 @@ public class ApplyInitialSetupService {
         applyInitialSetupRepository.deleteById(1L);
     }
 
-    public void changeDocumentAnnouncementFlag(Boolean flag) {
+    public void changeDocumentAnnouncementFlag(Boolean flag, HttpServletRequest request) {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(DocumentResultBatchJobFailException::new);
+        log.info("서류 평가 완료 이메일 전송 예약 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
+                request.getHeader("User-Agent"));
         applyInitialSetup.changeDocumentAnnouncementFlag(flag);
     }
 
-    public void changeLastAnnouncementFlag(Boolean flag) {
+    public void changeLastAnnouncementFlag(Boolean flag, HttpServletRequest request) {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(DocumentResultBatchJobFailException::new);
+        log.info("최종 평가 완료 이메일 전송 예약 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
+                request.getHeader("User-Agent"));
         applyInitialSetup.changeLastAnnouncementFlag(flag);
     }
 }

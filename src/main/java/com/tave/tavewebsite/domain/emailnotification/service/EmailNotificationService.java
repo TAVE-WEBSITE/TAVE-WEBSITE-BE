@@ -12,6 +12,7 @@ import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificatio
 import com.tave.tavewebsite.domain.emailnotification.util.EmailNotificationMapper;
 import com.tave.tavewebsite.global.mail.service.SESMailService;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +36,7 @@ public class EmailNotificationService {
         emailNotificationRepository.save(EmailNotificationMapper.map(dto));
     }
 
-    public void setSchedulerOfApplyNotificationEmail() {
+    public void setSchedulerOfApplyNotificationEmail(HttpServletRequest request) {
         LocalDate targetDate;
         LocalTime now = LocalTime.now();
         if (now.isBefore(LocalTime.of(3, 0))) {
@@ -43,6 +44,9 @@ public class EmailNotificationService {
         } else {
             targetDate = LocalDate.now().plusDays(1); // 내일 03:00 예약
         }
+
+        log.info("신규 지원 모집 이메일 전송 예약 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
+                request.getHeader("User-Agent"));
 
         String key = "email_batch_" + targetDate.format(DateTimeFormatter.ISO_DATE);
 
