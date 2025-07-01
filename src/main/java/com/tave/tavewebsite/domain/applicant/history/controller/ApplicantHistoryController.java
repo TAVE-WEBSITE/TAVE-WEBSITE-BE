@@ -4,6 +4,8 @@ import com.tave.tavewebsite.domain.applicant.history.dto.response.ApplicantHisto
 import com.tave.tavewebsite.domain.applicant.history.service.ApplicantHistoryService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import java.util.List;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +33,8 @@ public class ApplicantHistoryController {
     }
 
     @GetMapping("/admin/config/applicant/history/interview/status")
-    public SuccessResponse updateApplicantHistoryFromInterview() {
-        applicantHistoryService.changeApplicantStatusFromInterviewStatus();
+    public SuccessResponse updateApplicantHistoryFromInterview(HttpServletRequest request) {
+        applicantHistoryService.changeApplicantStatusFromInterviewStatus(request);
         return SuccessResponse.ok(
                 ApplicantHistorySuccessMessage.APPLICANT_STATUS_UPDATE_BY_INTERVIEW_SUCCESS.getMessage());
     }
