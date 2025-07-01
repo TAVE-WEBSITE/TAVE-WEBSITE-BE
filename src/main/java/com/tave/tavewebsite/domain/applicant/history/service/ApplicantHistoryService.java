@@ -38,13 +38,7 @@ public class ApplicantHistoryService {
     }
 
     public void changeApplicantStatusFromInterviewStatus(HttpServletRequest request) {
-        log.info("모든 이력서 최종 평가 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
-                request.getHeader("User-Agent"));
-
-        String key = "delete_all_resume";
-
-        // redis에 모든 이력서 삭제 키 설정
-        redisUtil.set(key, "SCHEDULED", 30 * 24 * 60); //초기 설정의 최종 발표날이 지나면 이 키를 확인한 후 이력서 삭제를 진행한다.
+        log.info("현재 완료된 면접 평가 status를 기준으로 벌크 업데이트를 진행합니다.");
         applicantHistoryRepository.bulkSyncApplicationStatusFromResumeInterviewStatus();
     }
 
