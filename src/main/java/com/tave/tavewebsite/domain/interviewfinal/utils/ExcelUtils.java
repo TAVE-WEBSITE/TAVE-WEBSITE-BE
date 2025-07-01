@@ -108,4 +108,8 @@ public class ExcelUtils {
         return wrapStyle;
     }
 
+    public void writeText(Row row, String value, int idx){
+        row.createCell(idx).setCellValue(value);
+    }
+
 }
