@@ -33,7 +33,7 @@ public interface ApplicantHistoryRepository extends JpaRepository<ApplicantHisto
                 UPDATE applicant_history ah
                 SET application_status = 
                   CASE r.final_document_evaluation_status
-                    WHEN 'PASS' THEN 'FINAL_ACCEPTED'
+                    WHEN 'FINAL_PASS' THEN 'FINAL_ACCEPTED'
                     WHEN 'FAIL' THEN 'REJECTED'
                     ELSE ah.application_status
                   END
