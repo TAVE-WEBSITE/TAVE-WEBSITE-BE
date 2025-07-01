@@ -10,15 +10,12 @@ import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailEx
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,10 +27,14 @@ public class S3Service {
 
     private final AmazonS3 s3Client;
     private final String bucketName;
+    private final String possibleTimeTableXLSX;
 
-    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName) {
+    private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${interview_possible_time_table}") String interviewPossibleTimeTable ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
+        this.possibleTimeTableXLSX = interviewPossibleTimeTable;
     }
 
     public URL uploadImages(MultipartFile file) {
