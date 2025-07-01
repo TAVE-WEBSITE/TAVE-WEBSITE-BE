@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.resume.batch.writer;
 
 import com.tave.tavewebsite.domain.resume.batch.entity.LastResultDLQ;
 import com.tave.tavewebsite.domain.resume.batch.repository.LastResultDLQRepository;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.global.mail.service.SESMailService;
 import java.util.ArrayList;
@@ -45,9 +46,11 @@ public class LastResultWriterConfig {
             for (Resume item : items) {
                 try {
                     retryTemplate.execute(context -> {
-                        sesMailService.sendFinalResultMail(item.getMember().getEmail(),
-                                item.getMember().getUsername(), item.getResumeGeneration());
-                        log.info("메일 전송 성공: {}", item.getMember().getEmail());
+                        if(item.getFinalDocumentEvaluationStatus() == EvaluationStatus.PASS) {
+                            sesMailService.sendFinalResultMail(item.getMember().getEmail(),
+                                    item.getMember().getUsername(), item.getResumeGeneration());
+                            log.info("메일 전송 성공: {}", item.getMember().getEmail());
+                        }
                         return null;
                     }, context -> {
                         Throwable lastError = context.getLastThrowable();
