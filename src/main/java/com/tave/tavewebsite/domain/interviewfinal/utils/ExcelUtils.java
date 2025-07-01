@@ -3,16 +3,12 @@ package com.tave.tavewebsite.domain.interviewfinal.utils;
 import com.tave.tavewebsite.domain.member.entity.Sex;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 
 @Slf4j
@@ -70,6 +66,46 @@ public class ExcelUtils {
             case APP_FRONTEND -> FieldType.APPFRONTEND;
             default -> FieldType.PARSING_NULL;
         };
+    }
+
+    // 헤더 스타일 생성 메서드
+    public CellStyle createHeaderStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+
+        // 폰트 설정
+        Font font = workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 12);
+        font.setBold(true);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        style.setFont(font);
+
+        // 배경색 설정
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        // 정렬 설정
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        // 테두리 설정
+        style.setBorderTop(BorderStyle.MEDIUM);
+        style.setBorderBottom(BorderStyle.MEDIUM);
+        style.setBorderLeft(BorderStyle.MEDIUM);
+        style.setBorderRight(BorderStyle.MEDIUM);
+        style.setTopBorderColor(IndexedColors.WHITE.getIndex());
+        style.setBottomBorderColor(IndexedColors.WHITE.getIndex());
+
+        return style;
+    }
+
+    // 면접 시간 (Body) Cell 스타일
+    public CellStyle setBodyStyleOfInterviewTime(Workbook workbook) {
+        CellStyle wrapStyle = workbook.createCellStyle();
+        wrapStyle.setWrapText(true);
+        wrapStyle.setAlignment(HorizontalAlignment.CENTER);
+        wrapStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        return wrapStyle;
     }
 
 }
