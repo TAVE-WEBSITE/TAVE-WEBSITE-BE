@@ -112,4 +112,10 @@ public class ExcelUtils {
         row.createCell(idx).setCellValue(value);
     }
 
+    public void writeText(Row row, String value, int idx, CellStyle cellStyle){
+        Cell cell = row.createCell(idx);
+        cell.setCellValue(value);
+        cell.setCellStyle(cellStyle);
+    }
+
 }
