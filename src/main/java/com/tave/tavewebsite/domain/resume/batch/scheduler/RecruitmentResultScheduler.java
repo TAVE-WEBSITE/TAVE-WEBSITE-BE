@@ -5,6 +5,8 @@ import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSe
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
 import com.tave.tavewebsite.domain.resume.batch.service.RecruitmentEmailBatchService;
 import java.time.LocalDateTime;
+
+import com.tave.tavewebsite.domain.resume.service.ResumeEvaluateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -18,6 +20,7 @@ public class RecruitmentResultScheduler {
 
     private final RecruitmentEmailBatchService recruitmentEmailBatchService;
     private final ApplyInitialSetupRepository applyInitialSetupRepository;
+    private final ResumeEvaluateService resumeEvaluateService;
 
     @Scheduled(fixedRate = 300_000) // 5분마다 실행
     @SchedulerLock(name = "documentResultEmailJobLock", lockAtMostFor = "PT10M") // 락 10분간 유지
@@ -54,6 +57,10 @@ public class RecruitmentResultScheduler {
             recruitmentEmailBatchService.runLastResultJobAsync();
             applyInitialSetup.changeLastAnnouncementFlag(false);
             applyInitialSetupRepository.save(applyInitialSetup);
+
+            log.info("이력서 전체 삭제가 실행 되었습니다.");
+            //이력서 전체 삭제
+            resumeEvaluateService.deleteAllResume();
         }
     }
 }
