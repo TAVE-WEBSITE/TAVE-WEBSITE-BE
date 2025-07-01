@@ -41,9 +41,9 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     })
     Optional<Resume> findWithAllRelationsById(Long id);
 
-    @Query("SELECT r as resume, it as interviewTime, m as member " +
+    @Query("SELECT r as resume, rs as resumeTimeSlot, m as member " +
             "FROM Resume r " +
-            "LEFT JOIN InterviewTime it ON r.id = it.resumeId " +
+            "LEFT JOIN ResumeTimeSlot rs ON r.id = rs.resume.id " +
             "LEFT JOIN Member m ON r.member.id = m.id " +
             "WHERE r.resumeGeneration = :generation AND r.finalDocumentEvaluationStatus = :evaluationStatus")
     List<Tuple> findResumesWithInterviewTimesAndMemberByGenerationAndStatus(
