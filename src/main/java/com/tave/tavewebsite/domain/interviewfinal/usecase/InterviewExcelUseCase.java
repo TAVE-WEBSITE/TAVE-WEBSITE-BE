@@ -46,6 +46,10 @@ public class InterviewExcelUseCase {
         s3Service.uploadWorkbookToS3(workbook);
     }
 
+    public S3ExcelFileInputStreamDto getPossibleInterviewTimeCSV() throws IOException {
+        return s3DownloadSerivce.downloadPossibleTimeTableXlsx();
+    }
+
     /*
     * refactor
     * */
