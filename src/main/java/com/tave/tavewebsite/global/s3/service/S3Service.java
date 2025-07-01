@@ -86,6 +86,26 @@ public class S3Service {
         }
     }
 
+    public void uploadWorkbookToS3(Workbook workbook) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            workbook.write(out);
+            byte[] bytes = out.toByteArray();
+
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(XLSX_APPLICATION_TYPE);
+            metadata.setContentLength(bytes.length);
+
+            // S3 업로드
+            PutObjectRequest request = new PutObjectRequest(bucketName, possibleTimeTableXLSX, inputStream, metadata);
+            s3Client.putObject(request);
+
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
     public URL getImageUrl(String key) {
         try {
             return s3Client.getUrl(bucketName, key);
