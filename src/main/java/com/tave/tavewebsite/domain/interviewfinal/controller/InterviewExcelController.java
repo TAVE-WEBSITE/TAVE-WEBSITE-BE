@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class InterviewExcelController {
@@ -20,6 +22,16 @@ public class InterviewExcelController {
 
         useCase.savePossibleInterviewTimeCSV();
 
+    }
+
+    @GetMapping("/v1/normal/excel/interviewer/time-table")
+    public ResponseEntity<InputStreamResource> downloadPossibleTimeTableExcel() throws IOException {
+        S3ExcelFileInputStreamDto dto = useCase.getPossibleInterviewTimeCSV();
+
+        return ResponseEntity.ok()
+                .headers(dto.headers())
+                .contentLength(dto.contentLength())
+                .body(dto.inputStreamResource());
     }
 
 }
