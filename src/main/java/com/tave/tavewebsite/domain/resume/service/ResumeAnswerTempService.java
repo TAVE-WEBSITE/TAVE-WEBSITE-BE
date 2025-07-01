@@ -80,30 +80,43 @@ public class ResumeAnswerTempService {
         String key = REDIS_KEY_PREFIX + resumeId;
         try {
             String json = (String) redisUtil.get(key);
-            if (json != null) {
-                return objectMapper.readValue(json, ResumeTempWrapper.class);
+
+            // Redis에 아무 값도 없으면 → 기본 wrapper 반환
+            if (json == null || json.isBlank()) {
+                return createEmptyWrapper();
             }
 
-            // 캐시 미스 → DB에서 조회 시도
-            ResumeTempWrapper dbData = loadFromDatabase(resumeId);
-
-            if (dbData != null) {
-                // Redis에 다시 저장 (Write-through 캐시)
-                String dbJson = objectMapper.writeValueAsString(dbData);
-                redisUtil.set(key, dbJson, 2592000);
-                return dbData;
+            ResumeTempWrapper parsed = objectMapper.readValue(json, ResumeTempWrapper.class);
+            if (parsed == null) {
+                return createEmptyWrapper();
             }
 
-            // DB에도 데이터 없으면 기본값 세팅 후 반환
-            ResumeTempWrapper emptyWrapper = new ResumeTempWrapper();
-            emptyWrapper.setLastPage(1);
-            // 나머지 필드는 null 또는 기본 상태로 둠
-
-            return emptyWrapper;
+            return parsed;
 
         } catch (Exception e) {
-            throw new TempReadFailedException();
+            // Redis JSON 파싱 실패 등 → fallback: DB 조회 시도
+            try {
+                ResumeTempWrapper dbData = loadFromDatabase(resumeId);
+
+                if (dbData != null) {
+                    // Redis에 다시 저장 (Write-through)
+                    String dbJson = objectMapper.writeValueAsString(dbData);
+                    redisUtil.set(key, dbJson, 2592000);
+                    return dbData;
+                }
+
+                return createEmptyWrapper();
+            } catch (Exception ex) {
+                // DB 조회 실패까지 발생하면 기본값 반환
+                return createEmptyWrapper();
+            }
         }
+    }
+
+    private ResumeTempWrapper createEmptyWrapper() {
+        ResumeTempWrapper emptyWrapper = new ResumeTempWrapper();
+        emptyWrapper.setLastPage(1);
+        return emptyWrapper;
     }
 
     private ResumeTempWrapper loadFromDatabase(Long resumeId) {
