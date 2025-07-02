@@ -49,4 +49,17 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     List<Tuple> findResumesWithInterviewTimesAndMemberByGenerationAndStatus(
             @Param("generation") String generation,
             @Param("evaluationStatus") EvaluationStatus evaluationStatus);
+
+    // FIXME - BETA TEST REPO 기능
+    @Query("""
+        SELECT r
+        FROM Resume r
+        JOIN FETCH r.member m
+        LEFT JOIN FETCH r.resumeTimeSlots rts
+        WHERE r.finalDocumentEvaluationStatus = :status
+        """)
+    List<Resume> findAllWithMemberAndTimeSlotsByStatus(
+            @Param("status") EvaluationStatus status
+    );
+
 }
