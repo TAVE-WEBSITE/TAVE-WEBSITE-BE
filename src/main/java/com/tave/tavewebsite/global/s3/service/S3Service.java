@@ -9,17 +9,16 @@ import com.sksamuel.scrimage.webp.WebpWriter;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
-
-import java.io.*;
-import java.net.URL;
-import java.util.UUID;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.net.URL;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -135,10 +134,12 @@ public class S3Service {
 
             log.warn("체크 포인트 ============");
 
+            WebpWriter webpWriter = new WebpWriter().withLossless();
+
             // WebP로 변환
             return ImmutableImage.loader() // 라이브러리 객체 생성
                     .fromFile(tempFile) // .jpg or .png File 가져옴
-                    .output(WebpWriter.DEFAULT, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
+                    .output(webpWriter, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
         } catch (Exception e) {
             log.error("이미지 변환 에러 메세지: {}", e.getMessage(), e);
             throw new S3ConvertFailException();
