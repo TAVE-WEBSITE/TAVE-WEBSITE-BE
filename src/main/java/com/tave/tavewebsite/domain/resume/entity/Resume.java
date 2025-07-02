@@ -51,15 +51,15 @@ public class Resume extends BaseEntity {
     private String resumeGeneration;
 
     @Size(max = 255)
-    @Column(length = 50)
+    @Column(length = 255)
     private String blogUrl;
 
     @Size(max = 255)
-    @Column(length = 50)
+    @Column(length = 255)
     private String githubUrl;
 
     @Size(max = 255)
-    @Column(length = 50)
+    @Column(length = 255)
     private String portfolioUrl;
 
     @Column(length = 10)
