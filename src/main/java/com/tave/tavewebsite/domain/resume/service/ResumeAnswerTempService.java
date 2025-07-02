@@ -78,31 +78,48 @@ public class ResumeAnswerTempService {
 
     public ResumeTempWrapper getTempSavedAnswers(Long resumeId) {
         String key = REDIS_KEY_PREFIX + resumeId;
+
+        ResumeTempWrapper wrapper = null;
+
         try {
             String json = (String) redisUtil.get(key);
-            if (json != null) {
-                return objectMapper.readValue(json, ResumeTempWrapper.class);
+
+            // Redis 값이 존재하고, 비어있지 않으면 파싱 시도
+            if (json != null && !json.isBlank()) {
+                try {
+                    wrapper = objectMapper.readValue(json, ResumeTempWrapper.class);
+                } catch (Exception jsonEx) {
+                    // 파싱 실패 시 wrapper는 그대로 null → DB fallback
+                }
             }
 
-            // 캐시 미스 → DB에서 조회 시도
-            ResumeTempWrapper dbData = loadFromDatabase(resumeId);
+            // Redis에 값이 없거나 파싱 실패한 경우 → DB 조회
+            if (wrapper == null) {
+                wrapper = loadFromDatabase(resumeId);
 
-            if (dbData != null) {
-                // Redis에 다시 저장 (Write-through 캐시)
-                String dbJson = objectMapper.writeValueAsString(dbData);
-                redisUtil.set(key, dbJson, 2592000);
-                return dbData;
+                if (wrapper != null) {
+                    try {
+                        String dbJson = objectMapper.writeValueAsString(wrapper);
+                        redisUtil.set(key, dbJson, 2592000);
+                    } catch (Exception e) {
+                        // Redis 저장 실패 → 무시하고 wrapper만 반환
+                    }
+                }
             }
 
-            // DB에도 데이터 없으면 기본값 세팅 후 반환
-            ResumeTempWrapper emptyWrapper = new ResumeTempWrapper();
-            emptyWrapper.setLastPage(1);
-            // 나머지 필드는 null 또는 기본 상태로 둠
+            // DB에도 없으면 → 기본 빈 wrapper
+            if (wrapper == null) {
+                wrapper = new ResumeTempWrapper();
+                wrapper.setLastPage(1);
+            }
 
-            return emptyWrapper;
+            return wrapper;
 
         } catch (Exception e) {
-            throw new TempReadFailedException();
+            // Redis 접근 자체가 실패한 경우 → 기본 빈 wrapper 반환
+            ResumeTempWrapper fallback = new ResumeTempWrapper();
+            fallback.setLastPage(1);
+            return fallback;
         }
     }
 

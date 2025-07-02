@@ -21,9 +21,21 @@ public class RecruitmentEmailBatchController {
         return SuccessResponse.ok(RecruitmentBatchSuccessMessage.DOCUMENT_RESULT_BATCH_JOB_EXECUTE.getMessage());
     }
 
+    @GetMapping("/document/email/cancel")
+    public SuccessResponse cancelDocumentEmailBatch(HttpServletRequest request) {
+        applyInitialSetupService.changeDocumentAnnouncementFlag(false, request);
+        return SuccessResponse.ok(RecruitmentBatchSuccessMessage.DOCUMENT_RESULT_BATCH_JOB_CANCEL.getMessage());
+    }
+
     @GetMapping("/last/email")
     public SuccessResponse runLastEmailBatch(HttpServletRequest request) {
         applyInitialSetupService.changeLastAnnouncementFlag(true, request);
         return SuccessResponse.ok(RecruitmentBatchSuccessMessage.LAST_RESULT_BATCH_JOB_EXECUTE.getMessage());
+    }
+
+    @GetMapping("/last/email/cancel")
+    public SuccessResponse cancelLastEmailBatch(HttpServletRequest request) {
+        applyInitialSetupService.changeLastAnnouncementFlag(false, request);
+        return SuccessResponse.ok(RecruitmentBatchSuccessMessage.LAST_RESULT_BATCH_JOB_CANCEL.getMessage());
     }
 }

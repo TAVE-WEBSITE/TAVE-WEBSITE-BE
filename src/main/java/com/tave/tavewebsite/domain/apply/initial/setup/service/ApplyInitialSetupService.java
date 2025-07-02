@@ -65,7 +65,7 @@ public class ApplyInitialSetupService {
     public void changeLastAnnouncementFlag(Boolean flag, HttpServletRequest request) {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(DocumentResultBatchJobFailException::new);
-        log.info("최종 평가 완료 이메일 전송 예약 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
+        log.info("최종 평가 완료 이메일 전송 flag 변경 : {}, 실행자 ip : {}, 기기 종류 : {}", flag, request.getRemoteAddr(),
                 request.getHeader("User-Agent"));
         applyInitialSetup.changeLastAnnouncementFlag(flag);
     }
