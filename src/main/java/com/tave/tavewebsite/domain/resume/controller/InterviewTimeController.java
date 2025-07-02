@@ -36,7 +36,7 @@ public class InterviewTimeController {
         return new SuccessResponse<>(response, GET_DISTINCT_INTERVIEW_TIME_DAY.getMessage());
     }
 
-    @GetMapping("/normal/config/interview-time")
+    @GetMapping("/member/config/interview-time")
     public SuccessResponse<List<TimeSlotResDto>> getInterviewTimeList() {
 
         List<TimeSlotResDto> response = interviewTimeService.getAllInterviewTimes();
