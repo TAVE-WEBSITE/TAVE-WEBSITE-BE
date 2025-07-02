@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.resume.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tave.tavewebsite.domain.question.entity.Question;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
@@ -31,7 +30,6 @@ public class ResumeQuestion extends BaseEntity {
     @Column(length = 300, nullable = false)
     private String question;
 
-    @Size(min = 1, max = 1000)
     @Column(length = 1000)
     private String answer;
 
