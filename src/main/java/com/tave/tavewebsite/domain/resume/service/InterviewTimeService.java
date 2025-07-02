@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.tave.tavewebsite.domain.resume.dto.request.InterviewTimeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.InterviewTimeResponseDto;
+import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
 import com.tave.tavewebsite.domain.resume.entity.InterviewTime;
 import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -49,6 +50,17 @@ public class InterviewTimeService {
             }
         }
     }
+
+    public List<TimeSlotResDto> getAllInterviewTimes() {
+        return interviewTimeRepository.findAllByOrderByInterviewDetailTimeAsc()
+                .stream()
+                .map(TimeSlotResDto::from)
+                .toList();
+    }
+
+    /*
+     * refactor
+     * */
 
     public List<InterviewTimeResponseDto> distinctInterviewDay() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d");
