@@ -37,11 +37,43 @@ public class SocialLinksService {
 
     // 소셜 링크 조회
     public SocialLinksResponseDto getSocialLinks(Long resumeId) {
+        String portfolioUrl = getPortfolioFromRedisOrDb(resumeId);
+
+        try {
+            String redisKey = "resume:" + resumeId + ":socialLinks";
+            String redisJson = (String) redisUtil.get(redisKey);
+
+            if (redisJson != null) {
+                try {
+                    SocialLinksRequestDto dto = objectMapper.readValue(redisJson, SocialLinksRequestDto.class);
+                    return new SocialLinksResponseDto(
+                            dto.getBlogUrl(), dto.getGithubUrl(), portfolioUrl
+                    );
+                } catch (Exception parseError) {
+                    // Redis 파싱 실패 → DB fallback, parseError;
+                }
+            }
+        } catch (Exception redisError) {
+            // Redis 접근 실패 → DB fallback, redisError;
+        }
+
+        // DB fallback
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
 
-        return new SocialLinksResponseDto(resume.getBlogUrl(), resume.getGithubUrl(), resume.getPortfolioUrl());
+        return new SocialLinksResponseDto(
+                resume.getBlogUrl(),
+                resume.getGithubUrl(),
+                portfolioUrl
+        );
     }
+
+//    public SocialLinksResponseDto getSocialLinks(Long resumeId) {
+//        Resume resume = resumeRepository.findById(resumeId)
+//                .orElseThrow(ResumeNotFoundException::new);
+//
+//        return new SocialLinksResponseDto(resume.getBlogUrl(), resume.getGithubUrl(), resume.getPortfolioUrl());
+//    }
 
     // 소셜 링크 업데이트
     @Transactional
@@ -71,22 +103,6 @@ public class SocialLinksService {
         }
     }
 
-    // Redis 에서 임시 저장된 데이터 불러오기
-    public SocialLinksRequestDto getSocialLinksFromRedis(Long resumeId) {
-        try {
-            String key = "resume:" + resumeId + ":socialLinks";
-            String json = (String) redisUtil.get(key);
-            if (json == null) {
-                throw new TempNotFoundException();
-            }
-            return objectMapper.readValue(json, SocialLinksRequestDto.class);
-        } catch (TempNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new TempParseFailedException();
-        }
-    }
-
     public void savePortfolioToRedis(Long resumeId, String portfolioUrl) {
         try {
             String key = "resume:" + resumeId + ":portfolioUrl";
@@ -103,6 +119,23 @@ public class SocialLinksService {
         } catch (Exception e) {
             throw new TempParseFailedException();
         }
+    }
+
+    private String getPortfolioFromRedisOrDb(Long resumeId) {
+        String key = "resume:" + resumeId + ":portfolioUrl";
+        String url = (String) redisUtil.get(key);
+
+        if (url != null) {
+            return url;
+        }
+
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
+        String dbUrl = resume.getPortfolioUrl();
+        if (dbUrl != null) {
+            savePortfolioToRedis(resumeId, dbUrl); // Redis에 캐싱
+        }
+        return dbUrl;
     }
 
 }
