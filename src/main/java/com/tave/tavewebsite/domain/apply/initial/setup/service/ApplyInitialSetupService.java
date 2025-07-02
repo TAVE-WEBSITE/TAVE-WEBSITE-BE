@@ -69,4 +69,11 @@ public class ApplyInitialSetupService {
                 request.getHeader("User-Agent"));
         applyInitialSetup.changeLastAnnouncementFlag(flag);
     }
+
+    public String getCurrentGeneration(){
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+        log.info("현재 기수 = {}", applyInitialSetup.getGeneration());
+        return applyInitialSetup.getGeneration();
+    }
 }
