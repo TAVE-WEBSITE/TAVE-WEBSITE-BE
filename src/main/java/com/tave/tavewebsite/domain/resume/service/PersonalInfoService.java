@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.resume.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicationStatus;
 import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
@@ -11,8 +10,10 @@ import com.tave.tavewebsite.domain.programinglaunguage.entity.ProgramingLanguage
 import com.tave.tavewebsite.domain.programinglaunguage.repository.LanguageLevelRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLanguageRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
+import com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
@@ -48,7 +49,18 @@ public class PersonalInfoService {
     private final ResumeQuestionRepository resumeQuestionRepository;
 
     private final RedisUtil redisUtil;
-    private final ObjectMapper objectMapper;
+
+    @Transactional
+    public CreatePersonalInfoResponse createPersonalInfoAndQuestions(Long memberId, PersonalInfoCreateRequestDto requestDto) {
+        Resume resume = createPersonalInfo(memberId, requestDto);
+        ResumeQuestionResponse questions = createResumeQuestions(resume);
+
+        return CreatePersonalInfoResponse.of(
+                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
+                questions,
+                resume.getId()
+        );
+    }
 
     @Transactional
     public Resume createPersonalInfo(Long memberId, PersonalInfoCreateRequestDto requestDto) {

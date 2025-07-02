@@ -1,9 +1,10 @@
 package com.tave.tavewebsite.global.mail.util;
 
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import org.springframework.stereotype.Component;
 
 @Component
 public class SESMailFormatUtil {
@@ -13,7 +14,7 @@ public class SESMailFormatUtil {
     }
 
     public String formatKoreanDateTime(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 (E) HH:mm")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 (E) HH:mm:ss")
                 .withLocale(Locale.KOREAN);
         return dateTime.format(formatter);
     }

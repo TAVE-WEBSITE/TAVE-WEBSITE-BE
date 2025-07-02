@@ -31,17 +31,26 @@ public class PersonalInfoController {
     public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(
             @PathVariable("memberId") Long memberId,
             @RequestBody @Valid PersonalInfoCreateRequestDto requestDto) {
-        Resume resume = personalInfoService.createPersonalInfo(memberId, requestDto);
-        ResumeQuestionResponse questions = personalInfoService.createResumeQuestions(resume);
 
-        CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
-                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
-                questions,
-                resume.getId()
-        );
-
+        CreatePersonalInfoResponse response = personalInfoService.createPersonalInfoAndQuestions(memberId, requestDto);
         return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
     }
+
+//    @PostMapping("/{memberId}")
+//    public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(
+//            @PathVariable("memberId") Long memberId,
+//            @RequestBody @Valid PersonalInfoCreateRequestDto requestDto) {
+//        Resume resume = personalInfoService.createPersonalInfo(memberId, requestDto);
+//        ResumeQuestionResponse questions = personalInfoService.createResumeQuestions(resume);
+//
+//        CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
+//                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
+//                questions,
+//                resume.getId()
+//        );
+//
+//        return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
+//    }
 
     // 전체 개인정보 조회
     @GetMapping("/{memberId}")
