@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.resume.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicationStatus;
 import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
@@ -11,8 +10,10 @@ import com.tave.tavewebsite.domain.programinglaunguage.entity.ProgramingLanguage
 import com.tave.tavewebsite.domain.programinglaunguage.repository.LanguageLevelRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLanguageRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
+import com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
@@ -48,7 +49,18 @@ public class PersonalInfoService {
     private final ResumeQuestionRepository resumeQuestionRepository;
 
     private final RedisUtil redisUtil;
-    private final ObjectMapper objectMapper;
+
+    @Transactional
+    public CreatePersonalInfoResponse createPersonalInfoAndQuestions(Long memberId, PersonalInfoCreateRequestDto requestDto) {
+        Resume resume = createPersonalInfo(memberId, requestDto);
+        ResumeQuestionResponse questions = createResumeQuestions(resume);
+
+        return CreatePersonalInfoResponse.of(
+                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
+                questions,
+                resume.getId()
+        );
+    }
 
     @Transactional
     public Resume createPersonalInfo(Long memberId, PersonalInfoCreateRequestDto requestDto) {
@@ -57,17 +69,30 @@ public class PersonalInfoService {
 
         FieldType fieldType = validateAndConvertFieldType(requestDto.getField());
 
-        // 1. 기존 이력서 조회
+        // 기존 이력서 조회
         Resume existingResume = resumeRepository.findByMemberId(memberId).orElse(null);
 
         if (existingResume != null) {
-            // 2. 이미 있으면 기존 이력서 반환
+            FieldType existingFieldType = existingResume.getField();
+
+            if (!existingFieldType.equals(fieldType)) {
+                // FieldType 이 변경된 경우 기존 이력서 및 관련 데이터 제거
+                deleteRelatedResumeData(existingResume);
+
+                // 새로운 이력서 생성
+                Resume newResume = resumeRepository.save(ResumeMapper.toResume(requestDto, member, fieldType));
+                createApplicantHistory(fieldType, member, requestDto.getGeneration());
+                createLanguages(newResume);
+                return newResume;
+            }
+
+            // FieldType 같으면 기존 Resume 정보만 업데이트
             PersonalInfoRequestDto requestAsUpdateDto = PersonalInfoRequestDto.fromCreateRequest(requestDto);
             existingResume.updatePersonalInfo(requestAsUpdateDto, fieldType);
             return resumeRepository.save(existingResume);
         }
 
-        // 3. 없으면 새로 생성
+        // 없으면 새로 생성
         Resume savedResume = resumeRepository.save(ResumeMapper.toResume(requestDto, member, fieldType));
 
         createApplicantHistory(fieldType, member, requestDto.getGeneration());
@@ -181,4 +206,22 @@ public class PersonalInfoService {
         applicantHistoryRepository.save(applicantHistory);
     }
 
+    private void deleteRelatedResumeData(Resume resume) {
+        Long resumeId = resume.getId();
+
+        // 1. Redis 임시저장 삭제
+        redisUtil.deleteByPrefix("resume:" + resumeId + ":");
+        // 2. 프로그래밍 언어 레벨 삭제
+        languageLevelRepository.deleteByResumeId(resumeId);
+        // 3. 질문 삭제
+        resumeQuestionRepository.deleteByResumeId(resumeId);
+        // 4. 이력서 삭제
+        resumeRepository.delete(resume);
+    }
+
+    private void createLanguages(Resume resume) {
+        List<ProgramingLanguage> byField = programingLanguageRepository.findByField(resume.getField());
+        List<LanguageLevel> languageLevels = LanguageLevelMapper.toLanguageLevel(byField, resume);
+        languageLevelRepository.saveAll(languageLevels);
+    }
 }

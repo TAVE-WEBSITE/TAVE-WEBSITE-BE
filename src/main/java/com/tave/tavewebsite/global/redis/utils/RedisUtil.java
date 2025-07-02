@@ -31,4 +31,12 @@ public class RedisUtil {
         Long ttl = redisTemplate.getExpire(key);
         return ttl;
     }
+
+    // prefix 기반 키 삭제
+    public void deleteByPrefix(String prefix) {
+        var keys = redisTemplate.keys(prefix + "*");
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
 }

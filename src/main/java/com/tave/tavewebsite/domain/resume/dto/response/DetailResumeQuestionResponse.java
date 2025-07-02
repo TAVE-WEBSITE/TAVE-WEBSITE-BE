@@ -13,7 +13,8 @@ public record DetailResumeQuestionResponse(
         FieldType fieldType,
         Integer ordered,
         AnswerType answerType,
-        Integer textLength
+        Integer textLength,
+        Boolean required
 
 ) {
     public static DetailResumeQuestionResponse from(ResumeQuestion resumeQuestion) {
@@ -25,6 +26,7 @@ public record DetailResumeQuestionResponse(
                 .ordered(resumeQuestion.getOrdered())
                 .answerType(resumeQuestion.getAnswerType())
                 .textLength(resumeQuestion.getTextLength())
+                .required(resumeQuestion.getRequired())
                 .build();
     }
 

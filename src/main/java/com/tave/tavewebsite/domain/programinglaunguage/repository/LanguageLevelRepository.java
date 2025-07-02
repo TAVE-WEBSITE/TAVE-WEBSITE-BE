@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LanguageLevelRepository extends JpaRepository<LanguageLevel, Long> {
+    void deleteByResumeId(Long resumeId);
 }

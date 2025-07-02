@@ -50,6 +50,10 @@ public class ResumeQuestion extends BaseEntity {
 
     private Integer textLength;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean required;
+
     public static ResumeQuestion of(Resume resume, Question question) {
 
         return ResumeQuestion.builder()
@@ -59,6 +63,7 @@ public class ResumeQuestion extends BaseEntity {
                 .ordered(question.getOrdered()) // todo Question 순서 사용 or 자체 ResumeQuestion 순서 생성? 의논
                 .answerType(question.getAnswerType())
                 .textLength(question.getTextLength() != null ? question.getTextLength() : 0)
+                .required(question.getRequired())
                 .build();
     }
 

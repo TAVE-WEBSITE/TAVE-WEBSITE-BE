@@ -90,6 +90,11 @@ public class ResumeEvaluateService {
         ).toList();
     }
 
+    @Transactional
+    public void deleteAllResume(){
+        resumeRepository.deleteAll();
+    }
+
     private Resume findIfResumeExists(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(ResumeNotFoundException::new);
     }
