@@ -22,7 +22,7 @@ public class ProgramingLanguageAdminController {
 
     private final ProgramingLanguageAdminService programingLanguageAdminService;
 
-    @GetMapping("/member/lan/{field}")
+    @GetMapping("/member/lan/field/{field}")
     public SuccessResponse<List<ProgrammingLanguageResponseDto>> getAllProgrammingLanguageByField(
             @PathVariable("field") String field) {
         return new SuccessResponse<>(programingLanguageAdminService.getAllProgramingLanguagesByField(field),
