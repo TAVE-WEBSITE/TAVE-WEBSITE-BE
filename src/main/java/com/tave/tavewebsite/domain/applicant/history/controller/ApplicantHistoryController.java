@@ -22,18 +22,4 @@ public class ApplicantHistoryController {
         return new SuccessResponse<>(applicantHistoryService.getApplicantHistory(id),
                 ApplicantHistorySuccessMessage.READ_SUCCESS.getMessage());
     }
-
-    @GetMapping("/admin/config/applicant/history/document/status")
-    public SuccessResponse updateApplicantHistoryFromDocument() {
-        applicantHistoryService.changeApplicantStatusFromDocumentStatus();
-        return SuccessResponse.ok(
-                ApplicantHistorySuccessMessage.APPLICANT_STATUS_UPDATE_BY_DOCUMENT_SUCCESS.getMessage());
-    }
-
-    @GetMapping("/admin/config/applicant/history/interview/status")
-    public SuccessResponse updateApplicantHistoryFromInterview() {
-        applicantHistoryService.changeApplicantStatusFromInterviewStatus();
-        return SuccessResponse.ok(
-                ApplicantHistorySuccessMessage.APPLICANT_STATUS_UPDATE_BY_INTERVIEW_SUCCESS.getMessage());
-    }
 }
