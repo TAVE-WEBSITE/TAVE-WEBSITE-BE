@@ -8,6 +8,8 @@ import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSe
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +54,13 @@ public class ApplyInitialSetupService {
         }
 
         applyInitialSetupRepository.deleteById(1L);
+    }
+
+    public boolean checkRecruitExpiration() {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+
+        return applyInitialSetup.isOverDocumentEndDate();
     }
 
     public void changeDocumentAnnouncementFlag(Boolean flag, HttpServletRequest request) {
