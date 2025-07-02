@@ -17,25 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/manager")
+@RequestMapping("/v1")
 public class ProgramingLanguageAdminController {
 
     private final ProgramingLanguageAdminService programingLanguageAdminService;
 
-    @GetMapping("/lan/{field}")
+    @GetMapping("/member/lan/{field}")
     public SuccessResponse<List<ProgrammingLanguageResponseDto>> getAllProgrammingLanguageByField(
             @PathVariable("field") String field) {
         return new SuccessResponse<>(programingLanguageAdminService.getAllProgramingLanguagesByField(field),
                 ProgramingLanguageSuccessMessage.READ_LANGUAGE_SUCCESS.getMessage());
     }
 
-    @PostMapping("/lan")
+    @PostMapping("/manager/lan")
     public SuccessResponse postProgrammingLanguage(@RequestBody ProgramingLanguageRequestDto requestDto) {
         programingLanguageAdminService.createProgramingLanguage(requestDto);
         return SuccessResponse.ok(ProgramingLanguageSuccessMessage.CREATE_LANGUAGE_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/lan/{id}")
+    @DeleteMapping("/manager/lan/{id}")
     public SuccessResponse deleteProgrammingLanguageById(@PathVariable("id") Long id) {
         programingLanguageAdminService.deleteProgramingLanguage(id);
         return SuccessResponse.ok(ProgramingLanguageSuccessMessage.DELETE_LANGUAGE_SUCCESS.getMessage());
