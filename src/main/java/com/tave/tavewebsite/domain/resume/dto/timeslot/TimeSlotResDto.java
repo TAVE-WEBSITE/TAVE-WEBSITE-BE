@@ -26,6 +26,10 @@ public record TimeSlotResDto(
         return new TimeSlotResDto(localDateTime);
     }
 
+    public static TimeSlotResDto from(InterviewTime interviewTime) {
+        return new TimeSlotResDto(interviewTime.getInterviewDetailTime());
+    }
+
     private static LocalDate getLocalDate(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         return LocalDate.parse(localDateTime.format(formatter), formatter);
