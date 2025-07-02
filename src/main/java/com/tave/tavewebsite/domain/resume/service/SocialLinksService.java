@@ -154,7 +154,7 @@ public class SocialLinksService {
         try {
             String key = "resume:" + resumeId + ":socialLinks";
             String value = objectMapper.writeValueAsString(dto);
-            redisUtil.set(key, value, 86400); // TTL 1일
+            redisUtil.set(key, value, 2592000);
         } catch (Exception e) {
             throw new TempSaveFailedException();
         }
@@ -163,7 +163,7 @@ public class SocialLinksService {
     public void savePortfolioToRedis(Long resumeId, String portfolioUrl) {
         try {
             String key = "resume:" + resumeId + ":portfolioUrl";
-            redisUtil.set(key, portfolioUrl, 86400); // TTL 1일
+            redisUtil.set(key, portfolioUrl, 2592000);
         } catch (Exception e) {
             throw new TempSaveFailedException();
         }
