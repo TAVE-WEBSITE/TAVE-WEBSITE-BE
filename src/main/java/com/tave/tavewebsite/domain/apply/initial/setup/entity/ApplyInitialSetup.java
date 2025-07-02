@@ -101,4 +101,9 @@ public class ApplyInitialSetup extends BaseEntity {
         this.lastAnnouncementFlag = LastAnnouncementFlag;
     }
 
+    public boolean isOverDocumentEndDate() {
+
+        return (LocalDateTime.now().isBefore(this.documentRecruitEndDate));
+    }
+
 }
