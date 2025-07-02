@@ -78,7 +78,7 @@ public class InterviewFinalController {
         return new SuccessResponse<>(response,INTERVIEW_FINAL_TIME_TABLE_LIST.getMessage());
     }
 
-    @PostMapping("/v1/manager/skrr")
+    @PostMapping("/v1/manager/test/interview-final")
     public SuccessResponse saveInterviewFinalTest() {
 
         interviewFinalUseCase.getInterviewFinalSaveListTestVersion();
