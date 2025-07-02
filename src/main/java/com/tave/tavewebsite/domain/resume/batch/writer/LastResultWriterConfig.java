@@ -46,7 +46,8 @@ public class LastResultWriterConfig {
             for (Resume item : items) {
                 try {
                     retryTemplate.execute(context -> {
-                        if(item.getFinalDocumentEvaluationStatus() == EvaluationStatus.PASS) {
+                        if (item.getFinalDocumentEvaluationStatus() == EvaluationStatus.PASS ||
+                                item.getFinalDocumentEvaluationStatus() == EvaluationStatus.FINAL_PASS) {
                             sesMailService.sendFinalResultMail(item.getMember().getEmail(),
                                     item.getMember().getUsername(), item.getResumeGeneration());
                             log.info("메일 전송 성공: {}", item.getMember().getEmail());
