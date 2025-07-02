@@ -27,6 +27,7 @@ public class SocialLinksController {
     public SuccessResponse registerSocialLinks(@PathVariable("resumeId") Long resumeId,
                                                @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
         socialLinksService.createSocialLinks(resumeId, socialLinksRequestDto);
+        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto);
         return SuccessResponse.ok(SocialLinksSuccessMessage.CREATE_SUCCESS.getMessage());
     }
 
@@ -42,6 +43,7 @@ public class SocialLinksController {
     public SuccessResponse updateSocialLinks(@PathVariable("resumeId") Long resumeId,
                                              @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
         socialLinksService.updateSocialLinks(resumeId, socialLinksRequestDto);
+        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto);
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPDATE_SUCCESS.getMessage());
     }
 
@@ -51,6 +53,7 @@ public class SocialLinksController {
                                            @RequestParam("file") MultipartFile file) {
         URL portfolioUrl = s3Service.uploadFile(file);
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
+        socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString());
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
 
