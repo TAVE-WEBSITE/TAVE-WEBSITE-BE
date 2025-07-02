@@ -21,7 +21,7 @@ import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessM
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/v1/normal/info")
+@RequestMapping("/v1/member/info")
 public class PersonalInfoController {
 
     private final PersonalInfoService personalInfoService;
