@@ -6,4 +6,5 @@ public enum AnswerType {
     INPUT,
     URL,
     TIME,
+    FILE
 }
