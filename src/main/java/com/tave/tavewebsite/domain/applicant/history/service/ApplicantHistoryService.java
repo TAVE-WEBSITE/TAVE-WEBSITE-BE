@@ -4,12 +4,8 @@ import com.tave.tavewebsite.domain.applicant.history.dto.response.ApplicantHisto
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
 import com.tave.tavewebsite.domain.applicant.history.util.ApplicantHistoryMapper;
-
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,7 +33,7 @@ public class ApplicantHistoryService {
         applicantHistoryRepository.bulkSyncApplicationStatusFromResumeDocumentStatus();
     }
 
-    public void changeApplicantStatusFromInterviewStatus(HttpServletRequest request) {
+    public void changeApplicantStatusFromInterviewStatus() {
         log.info("현재 완료된 면접 평가 status를 기준으로 벌크 업데이트를 진행합니다.");
         applicantHistoryRepository.bulkSyncApplicationStatusFromResumeInterviewStatus();
     }
