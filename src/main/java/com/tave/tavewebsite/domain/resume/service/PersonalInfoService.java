@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.resume.service;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicationStatus;
 import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
+import com.tave.tavewebsite.domain.applicant.history.service.ApplicantHistoryService;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
@@ -31,10 +32,9 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +46,14 @@ public class PersonalInfoService {
     private final ResumeQuestionService resumeQuestionService;
     private final InterviewTimeRepository interviewTimeRepository;
     private final ApplicantHistoryRepository applicantHistoryRepository;
+    private final ApplicantHistoryService applicantHistoryService;
     private final ResumeQuestionRepository resumeQuestionRepository;
 
     private final RedisUtil redisUtil;
 
     @Transactional
-    public CreatePersonalInfoResponse createPersonalInfoAndQuestions(Long memberId, PersonalInfoCreateRequestDto requestDto) {
+    public CreatePersonalInfoResponse createPersonalInfoAndQuestions(Long memberId,
+                                                                     PersonalInfoCreateRequestDto requestDto) {
         Resume resume = createPersonalInfo(memberId, requestDto);
         ResumeQuestionResponse questions = createResumeQuestions(resume);
 
@@ -81,7 +83,10 @@ public class PersonalInfoService {
 
                 // 새로운 이력서 생성
                 Resume newResume = resumeRepository.save(ResumeMapper.toResume(requestDto, member, fieldType));
-                createApplicantHistory(fieldType, member, requestDto.getGeneration());
+
+                // 마이페이지 지원 fieldType 변경
+                applicantHistoryService.changeApplicantFieldType(fieldType, memberId, requestDto.getGeneration());
+
                 createLanguages(newResume);
                 return newResume;
             }

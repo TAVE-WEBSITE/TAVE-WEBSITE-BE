@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.applicant.history.dto.response.ApplicantHisto
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
 import com.tave.tavewebsite.domain.applicant.history.util.ApplicantHistoryMapper;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,17 @@ public class ApplicantHistoryService {
         return histories.stream()
                 .map(ApplicantHistoryMapper::toResponseDto)
                 .toList();
+    }
+
+    public void changeApplicantFieldType(FieldType fieldType, Long memberId, String generation) {
+        List<ApplicantHistory> applicantHistories =
+                applicantHistoryRepository.findAllByMemberIdWithMember(memberId);
+
+        for (ApplicantHistory applicantHistory : applicantHistories) {
+            if (applicantHistory.getGeneration().equals(generation)) {
+                applicantHistory.updateFieldType(fieldType);
+            }
+        }
     }
 
     public void changeApplicantStatusFromDocumentStatus() {
