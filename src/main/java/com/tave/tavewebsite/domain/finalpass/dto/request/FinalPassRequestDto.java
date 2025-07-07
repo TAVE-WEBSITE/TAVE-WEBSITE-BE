@@ -1,11 +1,12 @@
 package com.tave.tavewebsite.domain.finalpass.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -23,7 +24,8 @@ public class FinalPassRequestDto {
 
     @NotNull(message = "회비 납부 마감기한 필수로 입력해주세요.")
     @FutureOrPresent(message = "회비 납부 마감기한은 오늘 또는 미래여야 합니다.")
-    private LocalDate feeDeadline;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    private LocalDateTime feeDeadline;
 
     @NotBlank(message = "은행명 필수로 입력해주세요.")
     @Size(max = 10, message = "은행명은 10자 이하로 입력해주세요.")
@@ -43,7 +45,8 @@ public class FinalPassRequestDto {
 
     @NotNull(message = "아지트 초대 설문 조사 마감기한 필수로 입력해주세요.")
     @FutureOrPresent(message = "설문 마감기한은 오늘 또는 미래여야 합니다.")
-    private LocalDate surveyDeadline;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    private LocalDateTime surveyDeadline;
 
     @NotBlank(message = "OT 공지방 링크 필수로 입력해주세요.")
     @Size(max = 200, message = "링크는 200자 이하로 입력해주세요.")
@@ -55,5 +58,6 @@ public class FinalPassRequestDto {
 
     @NotNull(message = "OT 마감기한 필수로 입력해주세요. ")
     @FutureOrPresent(message = "OT 마감기한은 오늘 또는 미래여야 합니다.")
-    private LocalDate otDeadline;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    private LocalDateTime otDeadline;
 }
