@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.tave.tavewebsite.domain.apply.initial.setup.controller.ApplyInitialSetupSuccessMessage.CHECK_APPLY_RECRUIT_END_DATE;
+
 @RestController
 @RequiredArgsConstructor
 public class ApplyInitialSetupController {
@@ -41,5 +43,12 @@ public class ApplyInitialSetupController {
     public SuccessResponse deleteApplyInitialSetup() {
         applyInitialSetupService.deleteInitialSetup();
         return SuccessResponse.ok(ApplyInitialSetupSuccessMessage.APPLY_INITIAL_SETUP_DELETE_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/v1/member/apply-recruit/expiration")
+    public SuccessResponse<Boolean> checkApplyEndDateExpiration() {
+        boolean result = applyInitialSetupService.checkRecruitExpiration();
+
+        return new SuccessResponse<>(result, CHECK_APPLY_RECRUIT_END_DATE.getMessage());
     }
 }

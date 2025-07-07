@@ -1,9 +1,10 @@
 package com.tave.tavewebsite.domain.interviewfinal.controller;
 
-import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
+import com.tave.tavewebsite.domain.interviewfinal.service.InterviewFinalTestService;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.global.security.CurrentMember;
@@ -28,7 +29,7 @@ public class InterviewFinalController {
     @GetMapping("/v1/manager/interview-final/form")
     public ResponseEntity<InputStreamResource> interviewFinalForm() throws IOException {
 
-        InterviewFormInputStreamDto dto = interviewFinalUseCase.downloadInterviewFinal();
+        S3ExcelFileInputStreamDto dto = interviewFinalUseCase.downloadInterviewFinal();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())
@@ -75,6 +76,14 @@ public class InterviewFinalController {
         InterviewTimeTableDto response = interviewFinalUseCase.getTimeTableList(generation);
 
         return new SuccessResponse<>(response,INTERVIEW_FINAL_TIME_TABLE_LIST.getMessage());
+    }
+
+    @PostMapping("/v1/manager/test/interview-final")
+    public SuccessResponse saveInterviewFinalTest() {
+
+        interviewFinalUseCase.getInterviewFinalSaveListTestVersion();
+
+        return new SuccessResponse<>(BETA_INTERVIEW_FINAL_LIST_CREATED.getMessage());
     }
 
 }

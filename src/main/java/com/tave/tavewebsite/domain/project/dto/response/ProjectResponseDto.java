@@ -12,6 +12,7 @@ public class ProjectResponseDto {
     private final String generation;
     private final FieldType field;
     private final String blogUrl;
+    private final String imageUrl;
 
     public ProjectResponseDto(Project project) {
         this.id = project.getId();
@@ -20,5 +21,6 @@ public class ProjectResponseDto {
         this.generation = project.getGeneration();
         this.field = project.getField();
         this.blogUrl = project.getBlogUrl();
+        this.imageUrl = project.getImgUrl();
     }
 }

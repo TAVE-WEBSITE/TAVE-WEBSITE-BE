@@ -9,20 +9,16 @@ import com.sksamuel.scrimage.webp.WebpWriter;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.UUID;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.net.URL;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,10 +26,14 @@ public class S3Service {
 
     private final AmazonS3 s3Client;
     private final String bucketName;
+    private final String possibleTimeTableXLSX;
 
-    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName) {
+    private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${interview_possible_time_table}") String interviewPossibleTimeTable ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
+        this.possibleTimeTableXLSX = interviewPossibleTimeTable;
     }
 
     public URL uploadImages(MultipartFile file) {
@@ -85,6 +85,26 @@ public class S3Service {
         }
     }
 
+    public void uploadWorkbookToS3(Workbook workbook) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            workbook.write(out);
+            byte[] bytes = out.toByteArray();
+
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(XLSX_APPLICATION_TYPE);
+            metadata.setContentLength(bytes.length);
+
+            // S3 업로드
+            PutObjectRequest request = new PutObjectRequest(bucketName, possibleTimeTableXLSX, inputStream, metadata);
+            s3Client.putObject(request);
+
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
     public URL getImageUrl(String key) {
         try {
             return s3Client.getUrl(bucketName, key);
@@ -114,10 +134,12 @@ public class S3Service {
 
             log.warn("체크 포인트 ============");
 
+            WebpWriter webpWriter = new WebpWriter().withLossless();
+
             // WebP로 변환
             return ImmutableImage.loader() // 라이브러리 객체 생성
                     .fromFile(tempFile) // .jpg or .png File 가져옴
-                    .output(WebpWriter.DEFAULT, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
+                    .output(webpWriter, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
         } catch (Exception e) {
             log.error("이미지 변환 에러 메세지: {}", e.getMessage(), e);
             throw new S3ConvertFailException();

@@ -57,6 +57,7 @@ cloud:
       static: ${region}
 
 final_interview_form: ${FINAL_INTERVIEW_FORM}
+interview_possible_time_table: ${INTERVIEW_POSSIBLE_TIME_TABLE_XLSX}
 
 logging:
   level:

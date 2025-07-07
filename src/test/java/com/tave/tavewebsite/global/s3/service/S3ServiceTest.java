@@ -20,7 +20,7 @@ class S3ServiceTest {
     @BeforeEach
     void setUp() {
         AmazonS3 s3Client = mock(AmazonS3.class);
-        s3Service = new S3Service(s3Client, "hihi"); // 생성자 주입 방식
+        s3Service = new S3Service(s3Client, "hihi", "dummy"); // 생성자 주입 방식
     }
 
     @DisplayName("MultipartFile을 .webp으로 업로드합니다.")

@@ -5,13 +5,11 @@ import com.tave.tavewebsite.domain.interviewfinal.exception.ExcelBadRequestExcep
 import com.tave.tavewebsite.domain.interviewfinal.exception.ExcelNullPointException;
 import com.tave.tavewebsite.domain.interviewfinal.utils.ExcelUtils;
 import com.tave.tavewebsite.domain.member.entity.Sex;
+import com.tave.tavewebsite.domain.resume.dto.response.ResumeMemberInfoDto;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 @Slf4j
 @Service
@@ -27,6 +26,9 @@ import java.util.List;
 public class InterviewExcelService {
 
     private final ExcelUtils excelUtils;
+
+    private static final String[] HEADERS = {"이름", "성별", "이메일", "지원 분야", "대학"};
+    private static final int HEADER_SIZE = 5;
 
     public List<InterviewFinalConvertDto> exportInterviewFinalFromExcel(MultipartFile file) {
         List<InterviewFinalConvertDto> dtoList = new ArrayList<>();
@@ -55,6 +57,64 @@ public class InterviewExcelService {
         }
 
         return dtoList;
+    }
+
+    public void writeCSVHeader(Workbook workbook, Sheet sheet, List<LocalDate> localDateList) {
+        // 폰트 생성. Header, Body 분리
+        CellStyle headerStyle = excelUtils.createHeaderStyle(workbook);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < HEADER_SIZE; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(HEADERS[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        sheet.setColumnWidth(2, 5000); // 이메일 컬럼 너비 조정.
+
+        for (int i = HEADER_SIZE; i < HEADER_SIZE + localDateList.size(); i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(localDateList.get(i - HEADER_SIZE).toString());
+            cell.setCellStyle(headerStyle);
+            sheet.setColumnWidth(i, 6000);
+        }
+    }
+
+    // 면접 시간 (Body) Cell 스타일
+    public CellStyle setCSVBodyStyleOfInterviewTime(Workbook workbook) {
+        return excelUtils.setBodyStyleOfInterviewTime(workbook);
+    }
+
+    // 인적사항 작성
+    public int writeInfoOfRecruiter(Row row, ResumeMemberInfoDto dto, int startIdx){
+
+        excelUtils.writeText(row, dto.username(), startIdx++);
+        excelUtils.writeText(row, dto.sex(), startIdx++);
+        excelUtils.writeText(row, dto.email(), startIdx++);
+        excelUtils.writeText(row, dto.field(), startIdx++);
+        excelUtils.writeText(row, dto.univ(), startIdx++);
+
+        return startIdx;
+    }
+
+    // 지원자의 면접가능시간 작성
+    public int writePossibleTimeOfRecruiter(
+            TreeMap<LocalDate, List<LocalTime>> possibleTimes, List<LocalDate> distinctDateList ,
+            CellStyle cellStyle, Row row, int startIdx
+    ){
+        for (LocalDate date : distinctDateList) {
+            List<LocalTime> times = possibleTimes.get(date);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < times.size(); i++) {
+                if (i > 0) {
+                    if (i % 4 == 0) sb.append("\n");
+                    else sb.append(", ");
+                }
+                sb.append(times.get(i).toString());
+            }
+            excelUtils.writeText(row, sb.toString(), startIdx++, cellStyle);
+        }
+        return startIdx;
     }
 
     private InterviewFinalConvertDto convertRowToInterviewFinal(Row row) {
