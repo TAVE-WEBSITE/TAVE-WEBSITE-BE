@@ -16,15 +16,14 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepositor
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
