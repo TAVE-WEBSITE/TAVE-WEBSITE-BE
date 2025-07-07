@@ -38,7 +38,7 @@ public class InterviewExcelController {
     }
 
     // 면접관 전용 시간표 파일 업로드
-    @PostMapping("/interview/time-table")
+    @PostMapping("/excel/interview/time-table")
     public SuccessResponse saveInterviewTimeTableForManager(
             @RequestPart(name="file") MultipartFile file
     ) {
@@ -49,7 +49,7 @@ public class InterviewExcelController {
     }
 
     // 면접관 전용 시간표 파일 다운로드
-    @GetMapping("/interview/time-table")
+    @GetMapping("/excel/interview/time-table")
     public ResponseEntity<InputStreamResource> downloadInterviewTimeTableForManager() throws IOException {
         S3ExcelFileInputStreamDto dto = useCase.getInterviewTimeTableForManagerXLSX();
 
