@@ -35,8 +35,8 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
 
     @EntityGraph(attributePaths = {
             "resumeQuestions",
-            "interviewTimes",
-            "programingLanguages"
+            "languageLevels",
+            "resumeTimeSlots"
     })
     Optional<Resume> findWithAllRelationsById(Long id);
 
