@@ -2,9 +2,12 @@ package com.tave.tavewebsite.domain.finalpass.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -40,7 +43,7 @@ public class FinalPass {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate feeDeadline;
+    private LocalDateTime feeDeadline;
 
     // 아지트 초대 설문 조사
     @NotNull
@@ -49,7 +52,7 @@ public class FinalPass {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate surveyDeadline;
+    private LocalDateTime surveyDeadline;
 
     // OT 공지방
     @NotNull
@@ -62,5 +65,5 @@ public class FinalPass {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate otDeadline;
+    private LocalDateTime otDeadline;
 }
