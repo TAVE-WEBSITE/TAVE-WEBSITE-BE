@@ -74,7 +74,7 @@ public class Resume extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 50)
     private List<ResumeTimeSlot> resumeTimeSlots = new ArrayList<>();
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -138,10 +138,6 @@ public class Resume extends BaseEntity {
         }
         this.state = ResumeState.SUBMITTED;
     }
-
-//    public boolean isSubmitted() {
-//        return this.state == ResumeState.SUBMITTED;
-//    }
 
     public void updateFinalDocumentEvaluationStatus(EvaluationStatus finalDocumentEvaluationStatus) {
         this.finalDocumentEvaluationStatus = finalDocumentEvaluationStatus;
