@@ -13,6 +13,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,17 +73,22 @@ public class Resume extends BaseEntity {
     @JoinColumn(name = "memberId", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     private List<ResumeTimeSlot> resumeTimeSlots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<LanguageLevel> languageLevels = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<ResumeQuestion> resumeQuestions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<ResumeEvaluation> resumeEvaluations = new ArrayList<>();
+
 
     @Builder
     public Resume(String school, String major, String minor, String resumeGeneration, String blogUrl, String githubUrl,
@@ -131,9 +139,9 @@ public class Resume extends BaseEntity {
         this.state = ResumeState.SUBMITTED;
     }
 
-    public boolean isSubmitted() {
-        return this.state == ResumeState.SUBMITTED;
-    }
+//    public boolean isSubmitted() {
+//        return this.state == ResumeState.SUBMITTED;
+//    }
 
     public void updateFinalDocumentEvaluationStatus(EvaluationStatus finalDocumentEvaluationStatus) {
         this.finalDocumentEvaluationStatus = finalDocumentEvaluationStatus;

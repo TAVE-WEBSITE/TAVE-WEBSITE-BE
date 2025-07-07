@@ -159,7 +159,7 @@ public class ResumeQuestionService {
 
     @Transactional(readOnly = true)
     public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
-        List<Resume> resumes = resumeRepository.findAllById(resumeIds);
+        List<Resume> resumes = resumeRepository.findAllWithResumeTimeSlotsByIdIn(resumeIds);
 
         List<CommonResumeResponse> commonList = new ArrayList<>();
         List<SpecificResumeResponseDto> specificList = new ArrayList<>();
