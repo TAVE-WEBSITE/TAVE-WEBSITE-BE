@@ -55,6 +55,11 @@ public class InterviewExcelUseCase {
         s3Service.uploadTimeTableForMangerXLSXToS3(file);
     }
 
+    public S3ExcelFileInputStreamDto getInterviewTimeTableForManagerXLSX() throws IOException {
+        return s3DownloadSerivce.downloadInterviewTimeTableForManagerXLSX();
+    }
+
+
     /*
     * refactor
     * */

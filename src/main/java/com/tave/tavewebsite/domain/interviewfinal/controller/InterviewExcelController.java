@@ -48,4 +48,15 @@ public class InterviewExcelController {
         return SuccessResponse.ok(INTERVIEW_TIME_TABLE_FOR_MANAGER_SAVED.getMessage());
     }
 
+    // 면접관 전용 시간표 파일 다운로드
+    @GetMapping("/interview/time-table")
+    public ResponseEntity<InputStreamResource> downloadInterviewTimeTableForManager() throws IOException {
+        S3ExcelFileInputStreamDto dto = useCase.getInterviewTimeTableForManagerXLSX();
+
+        return ResponseEntity.ok()
+                .headers(dto.headers())
+                .contentLength(dto.contentLength())
+                .body(dto.inputStreamResource());
+    }
+
 }
