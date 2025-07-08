@@ -24,7 +24,7 @@ public class FinalPassRequestDto {
 
     @NotNull(message = "회비 납부 마감기한 필수로 입력해주세요.")
     @FutureOrPresent(message = "회비 납부 마감기한은 오늘 또는 미래여야 합니다.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime feeDeadline;
 
     @NotBlank(message = "은행명 필수로 입력해주세요.")
@@ -45,7 +45,7 @@ public class FinalPassRequestDto {
 
     @NotNull(message = "아지트 초대 설문 조사 마감기한 필수로 입력해주세요.")
     @FutureOrPresent(message = "설문 마감기한은 오늘 또는 미래여야 합니다.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime surveyDeadline;
 
     @NotBlank(message = "OT 공지방 링크 필수로 입력해주세요.")
@@ -58,6 +58,6 @@ public class FinalPassRequestDto {
 
     @NotNull(message = "OT 마감기한 필수로 입력해주세요. ")
     @FutureOrPresent(message = "OT 마감기한은 오늘 또는 미래여야 합니다.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime otDeadline;
 }
