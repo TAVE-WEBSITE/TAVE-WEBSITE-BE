@@ -26,19 +26,24 @@ public class S3Service {
 
     private final AmazonS3 s3Client;
     private final String bucketName;
+    private final String highQualityBucketName;
     private final String possibleTimeTableXLSX;
 
     private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${interview_possible_time_table}") String interviewPossibleTimeTable ) {
+    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${app.s3.high-quality-bucket}") String highQualityBucketName,
+                     @Value("${interview_possible_time_table}") String interviewPossibleTimeTable ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
+        this.highQualityBucketName = highQualityBucketName;
         this.possibleTimeTableXLSX = interviewPossibleTimeTable;
     }
 
     public URL uploadImages(MultipartFile file) {
         File convertFile = convertToWebp(file.getName(), file);
-        String key = validateFileName(convertFile.getName());
+        String key = validateFileName(convertFile.getName(), bucketName);
+        log.info("getName: {}", convertFile.getName());
+        log.info("key: {}", key);
         // MultipartFile에서 InputStream을 얻어 S3에 업로드합니다.
         try (InputStream inputStream = new FileInputStream(convertFile)) {
             ObjectMetadata metadata = setMetaData(convertFile);
@@ -48,6 +53,24 @@ public class S3Service {
             s3Client.putObject(putRequest);
             convertFile.delete();
             return getImageUrl(key);
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
+    public URL uploadHighQualityImages(MultipartFile file) {
+        String key = validateFileName(file.getName(), highQualityBucketName);
+        log.info("getName: {}", file.getName());
+        log.info("key: {}", key);
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+            log.info("ContentType: {}", file.getContentType());
+            s3Client.putObject(highQualityBucketName, key, file.getInputStream(), metadata);
+
+            return s3Client.getUrl(highQualityBucketName, key);
+
         } catch (IOException e) {
             throw new S3UploadFailException();
         }
@@ -65,7 +88,7 @@ public class S3Service {
         try {
             uploadFile = convertMultipartFileToFile(file);
 
-            String key = validateFileName(uploadFile.getName());
+            String key = validateFileName(uploadFile.getName(), bucketName);
 
             try (InputStream inputStream = new FileInputStream(uploadFile)) {
                 ObjectMetadata metadata = new ObjectMetadata();
@@ -134,12 +157,13 @@ public class S3Service {
 
             log.warn("체크 포인트 ============");
 
-            WebpWriter webpWriter = new WebpWriter().withLossless();
+            // Webp 변환 없이 그대로 저장하는 로직이 추가되어 기존 DEFAULT 사용
+//            WebpWriter webpWriter = new WebpWriter().withLossless();
 
             // WebP로 변환
             return ImmutableImage.loader() // 라이브러리 객체 생성
                     .fromFile(tempFile) // .jpg or .png File 가져옴
-                    .output(webpWriter, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
+                    .output(WebpWriter.DEFAULT, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
         } catch (Exception e) {
             log.error("이미지 변환 에러 메세지: {}", e.getMessage(), e);
             throw new S3ConvertFailException();
@@ -167,8 +191,9 @@ public class S3Service {
         return metadata;
     }
 
-    private String validateFileName(String key) {
+    private String validateFileName(String key, String bucketName) {
         if (s3Client.doesObjectExist(bucketName, key) || !StringUtils.hasText(key)) {
+            log.info("getFileExtension 테스트 {}", getFileExtension(key));
             return UUID.randomUUID() + getFileExtension(key);
         }
         return key;
