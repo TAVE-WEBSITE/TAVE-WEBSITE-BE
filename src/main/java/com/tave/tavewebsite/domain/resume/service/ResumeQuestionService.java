@@ -160,18 +160,13 @@ public class ResumeQuestionService {
     public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
         List<Resume> resumes = resumeRepository.findAllWithResumeTimeSlotsByIdIn(resumeIds);
 
-        List<CommonResumeResponse> commonList = new ArrayList<>();
-        List<SpecificResumeResponseDto> specificList = new ArrayList<>();
+        List<ResumeResponse> resumeResponseList = new ArrayList<>();
 
         for (Resume resume : resumes) {
             List<DetailResumeQuestionResponse> commonQuestions = getResumeQuestionList(resume, FieldType.COMMON);
             List<DetailResumeQuestionResponse> specificQuestions = getResumeQuestionList(resume, resume.getField());
 
-            List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
-                    .map(LanguageLevelResponseDto::fromEntity)
-                    .toList();
-
-            commonList.add(CommonResumeResponse.of(
+            List<CommonResumeResponse> commonList = List.of(CommonResumeResponse.of(
                     resume.getId(),
                     resume.getBlogUrl(),
                     resume.getGithubUrl(),
@@ -179,14 +174,19 @@ public class ResumeQuestionService {
                     commonQuestions
             ));
 
-            specificList.add(SpecificResumeResponseDto.of(
+            List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
+                    .map(LanguageLevelResponseDto::fromEntity)
+                    .toList();
+
+            List<SpecificResumeResponseDto> specificList = List.of(SpecificResumeResponseDto.of(
                     resume.getId(),
                     specificQuestions,
                     languageLevels
             ));
+
+            resumeResponseList.add(ResumeResponse.of(resume.getId(), commonList, specificList));
         }
 
-        return ResumeListResponse.of(commonList, specificList);
+        return ResumeListResponse.of(resumeResponseList);
     }
-
 }

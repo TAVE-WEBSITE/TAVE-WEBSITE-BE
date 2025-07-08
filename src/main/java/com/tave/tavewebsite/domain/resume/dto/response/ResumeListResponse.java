@@ -3,10 +3,9 @@ package com.tave.tavewebsite.domain.resume.dto.response;
 import java.util.List;
 
 public record ResumeListResponse(
-        List<CommonResumeResponse> common,
-        List<SpecificResumeResponseDto> specific
+        List<ResumeResponse> resumeList
 ) {
-    public static ResumeListResponse of(List<CommonResumeResponse> common, List<SpecificResumeResponseDto> specific) {
-        return new ResumeListResponse(common, specific);
+    public static ResumeListResponse of(List<ResumeResponse> resumeList) {
+        return new ResumeListResponse(resumeList);
     }
 }
