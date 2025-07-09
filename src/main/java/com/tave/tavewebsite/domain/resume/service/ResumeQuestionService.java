@@ -158,7 +158,7 @@ public class ResumeQuestionService {
 
     @Transactional(readOnly = true)
     public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
-        List<Resume> resumes = resumeRepository.findAllWithResumeTimeSlotsByIdIn(resumeIds);
+        List<Resume> resumes = resumeRepository.findAllWithRelationsByIdIn(resumeIds);
 
         List<ResumeResponse> resumeResponseList = new ArrayList<>();
 

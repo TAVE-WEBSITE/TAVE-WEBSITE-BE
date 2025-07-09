@@ -61,12 +61,11 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
             @Param("status") EvaluationStatus status
     );
 
-    @Query("""
-            SELECT DISTINCT r
-            FROM Resume r
-            LEFT JOIN FETCH r.resumeTimeSlots
-            WHERE r.id IN :resumeIds
-            """)
-    List<Resume> findAllWithResumeTimeSlotsByIdIn(@Param("resumeIds") List<Long> resumeIds);
+    @EntityGraph(attributePaths = {
+            "resumeQuestions",
+            "resumeTimeSlots",
+            "programingLanguages"
+    })
+    List<Resume> findAllWithRelationsByIdIn(List<Long> resumeIds);
 
 }
