@@ -166,13 +166,7 @@ public class ResumeQuestionService {
             List<DetailResumeQuestionResponse> commonQuestions = getResumeQuestionList(resume, FieldType.COMMON);
             List<DetailResumeQuestionResponse> specificQuestions = getResumeQuestionList(resume, resume.getField());
 
-            List<CommonResumeResponse> commonList = List.of(CommonResumeResponse.of(
-                    resume.getId(),
-                    resume.getBlogUrl(),
-                    resume.getGithubUrl(),
-                    resume.getPortfolioUrl(),
-                    commonQuestions
-            ));
+            List<CommonResumeResponse> commonList = List.of(CommonResumeResponse.of(resume, commonQuestions));
 
             List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
                     .map(LanguageLevelResponseDto::fromEntity)
