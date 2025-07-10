@@ -14,7 +14,7 @@ import java.io.IOException;
 import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.*;
 
 @RestController
-@RequestMapping("/v1/normal")
+@RequestMapping("/v1/manager")
 @RequiredArgsConstructor
 public class InterviewExcelController {
 
