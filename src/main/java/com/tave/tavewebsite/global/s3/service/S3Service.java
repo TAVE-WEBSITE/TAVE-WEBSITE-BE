@@ -32,9 +32,6 @@ public class S3Service {
     private final String possibleTimeTableXLSX;
     private final String interviewTimeTableForManagerXLSX;
 
-
-    private String key1;
-
     private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${app.s3.high-quality-bucket}") String highQualityBucketName,
