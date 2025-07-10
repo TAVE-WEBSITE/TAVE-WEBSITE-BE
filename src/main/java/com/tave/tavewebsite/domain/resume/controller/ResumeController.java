@@ -20,7 +20,7 @@ public class ResumeController {
 
     private final ResumeUseCase resumeUseCase;
 
-    @GetMapping("/v1/normal/resume/interview-time")
+    @GetMapping("/v1/manager/resume/interview-time")
     public SuccessResponse getResumeListToInterviewTime(
             @RequestParam("date")
             @DateTimeFormat(pattern = "yyyy-MM-dd")
