@@ -81,4 +81,12 @@ public class InterviewExcelController {
                 .body(dto.inputStreamResource());
     }
 
+    // 면접 평가 양식에 면접자 데이터 삽입 후 S3에 저장
+    @PostMapping("/excel/interview/evaluation")
+    public void saveInterviewEvaluation(
+            @RequestPart(name="file") MultipartFile file
+    ){
+        useCase.insertInterviewerAndStoreToS3(file);
+    }
+
 }
