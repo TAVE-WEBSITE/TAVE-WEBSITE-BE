@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.tave.tavewebsite.domain.resume.controller.ResumeEvaluateSuccessMessage.*;
+import static com.tave.tavewebsite.domain.resume.controller.message.ResumeEvaluateSuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor

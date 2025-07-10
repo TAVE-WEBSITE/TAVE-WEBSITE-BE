@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.wrapper.ResumeTempWrapper;
 import com.tave.tavewebsite.domain.resume.service.ResumeAnswerTempService;
@@ -7,7 +8,7 @@ import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.TEMP_SAVE_SUCCESS;
+import static com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage.TEMP_SAVE_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor

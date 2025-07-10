@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.ANSWER_CREATE_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.QUESTION_READ_SUCCESS;
+import static com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage.ANSWER_CREATE_SUCCESS;
+import static com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage.QUESTION_READ_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor

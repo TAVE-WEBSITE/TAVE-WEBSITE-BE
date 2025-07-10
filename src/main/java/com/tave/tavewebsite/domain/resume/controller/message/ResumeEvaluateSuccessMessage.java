@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.domain.resume.controller;
+package com.tave.tavewebsite.domain.resume.controller.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

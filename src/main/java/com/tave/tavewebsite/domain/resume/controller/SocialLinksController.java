@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.resume.controller.message.SocialLinksSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.response.SocialLinksResponseDto;
 import com.tave.tavewebsite.domain.resume.service.SocialLinksService;
