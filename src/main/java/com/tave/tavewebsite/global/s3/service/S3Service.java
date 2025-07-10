@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.webp.WebpWriter;
+import com.tave.tavewebsite.domain.interviewfinal.exception.EmptyFileException;
+import com.tave.tavewebsite.domain.interviewfinal.exception.IsNotXlsxFileException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
@@ -28,15 +30,22 @@ public class S3Service {
     private final String bucketName;
     private final String highQualityBucketName;
     private final String possibleTimeTableXLSX;
+    private final String interviewTimeTableForManagerXLSX;
+
+
+    private String key1;
 
     private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${app.s3.high-quality-bucket}") String highQualityBucketName,
-                     @Value("${interview_possible_time_table}") String interviewPossibleTimeTable ) {
+                     @Value("${interview_possible_time_table}") String interviewPossibleTimeTable,
+                     @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager
+                     ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.highQualityBucketName = highQualityBucketName;
         this.possibleTimeTableXLSX = interviewPossibleTimeTable;
+        this.interviewTimeTableForManagerXLSX= interviewTimeTableForManager;
     }
 
     public URL uploadImages(MultipartFile file) {
@@ -128,6 +137,20 @@ public class S3Service {
         }
     }
 
+    public void uploadTimeTableForMangerXLSXToS3(MultipartFile file) {
+        try {
+            checkEmptyFile(file);
+            checkIsXLSXFile(file);
+
+            storeXLSXFile(file, interviewTimeTableForManagerXLSX);
+
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
+
+
     public URL getImageUrl(String key) {
         try {
             return s3Client.getUrl(bucketName, key);
@@ -157,13 +180,12 @@ public class S3Service {
 
             log.warn("체크 포인트 ============");
 
-            // Webp 변환 없이 그대로 저장하는 로직이 추가되어 기존 DEFAULT 사용
-//            WebpWriter webpWriter = new WebpWriter().withLossless();
+            WebpWriter webpWriter = new WebpWriter().withLossless();
 
             // WebP로 변환
             return ImmutableImage.loader() // 라이브러리 객체 생성
                     .fromFile(tempFile) // .jpg or .png File 가져옴
-                    .output(WebpWriter.DEFAULT, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
+                    .output(webpWriter, new File(fileName + ".webp")); // 손실 압축 설정, fileName.webp로 파일 생성
         } catch (Exception e) {
             log.error("이미지 변환 에러 메세지: {}", e.getMessage(), e);
             throw new S3ConvertFailException();
@@ -205,6 +227,27 @@ public class S3Service {
             return key.substring(dotIndex);
         }
         return ""; // 확장자가 없는 경우 빈 문자열 반환
+    }
+
+    private void storeXLSXFile(MultipartFile file, String key) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+
+        // S3에 업로드 (동일 키가 있으면 덮어쓰기)
+        s3Client.putObject(bucketName, key, file.getInputStream(), metadata);
+    }
+
+    private void checkEmptyFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new EmptyFileException();
+        }
+    }
+
+    private void checkIsXLSXFile(MultipartFile file) {
+        if (!XLSX_APPLICATION_TYPE.equals(file.getContentType())) {
+            throw new IsNotXlsxFileException();
+        }
     }
 
 }

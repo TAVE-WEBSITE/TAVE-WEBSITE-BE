@@ -19,19 +19,23 @@ public class S3DownloadSerivce {
     private final String bucketName;
     private final String finalInterviewBasicFormUrl;
     private final String interviewPossibleTimeTable;
+    private final String interviewTimeTableForManager;
     private static final String FINAL_INTERVIEW_FORM_NAME = "최종 면접 시간표 설정 양식.xlsx";
     private static final String POSSIBLE_TIME_TABLE_FORM_NAME = "면접자 면접가능시간.xlsx";
+    private static final String INTERVIEW_TIME_TABLE_FOR_MANAGER_FILE_NAME = "면접관 전용 면접시간표.xlsx";
     private static final String HEADER_ATTACHMENT = "attachment";
 
     public S3DownloadSerivce(AmazonS3 s3Client,@Value("${bucket_name}") String bucketName,
              @Value("${final_interview_form}") String finalInterviewBasicFormUrl,
-             @Value("${interview_possible_time_table}") String interviewPossibleTimeTable
+             @Value("${interview_possible_time_table}") String interviewPossibleTimeTable,
+             @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager
 
     ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.finalInterviewBasicFormUrl = finalInterviewBasicFormUrl;
         this.interviewPossibleTimeTable = interviewPossibleTimeTable;
+        this.interviewTimeTableForManager = interviewTimeTableForManager;
     }
 
     public S3ExcelFileInputStreamDto downloadInterviewFinalSetUpForm() throws IOException {
@@ -46,6 +50,15 @@ public class S3DownloadSerivce {
     public S3ExcelFileInputStreamDto downloadPossibleTimeTableXlsx() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewPossibleTimeTable);
         HttpHeaders headers = createHttpHeaders(POSSIBLE_TIME_TABLE_FORM_NAME);
+
+        return S3ExcelFileInputStreamDto.from(
+                s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
+        );
+    }
+
+    public S3ExcelFileInputStreamDto downloadInterviewTimeTableForManagerXLSX() throws IOException {
+        S3Object s3Object = s3Client.getObject(bucketName, interviewTimeTableForManager);
+        HttpHeaders headers = createHttpHeaders(INTERVIEW_TIME_TABLE_FOR_MANAGER_FILE_NAME);
 
         return S3ExcelFileInputStreamDto.from(
                 s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
