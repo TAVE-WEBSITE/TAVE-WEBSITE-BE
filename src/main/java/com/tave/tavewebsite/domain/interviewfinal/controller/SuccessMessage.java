@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum SuccessMessage {
 
     INTERVIEW_TIME_TABLE_FOR_MANAGER_SAVED(200, "면접에 참여하는 운영진이 볼 [면접 시간표]를 업로드했습니다"),
+    INTERVIEW_EVALUATION_XLSX_SAVED(200, "면접 평가 시트에 면접자 정보 추가, S3에 업로드했습니다."),
     INTERVIEW_FINAL_DELETE_ALL(200, "최종 면접 데이터를 모두 삭제합니다."),
     INTERVIEW_FINAL_TIME_TABLE_LIST(200, "면접 시간표를 조회합니다."),
     INTERVIEW_FINAL_MEMBER_INFO(200, "회원의 면접 시간 및 장소 정보를 제공합니다."),

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.INTERVIEW_TIME_TABLE_FOR_MANAGER_SAVED;
+import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.*;
 
 @RestController
 @RequestMapping("/v1/normal")
@@ -83,10 +83,12 @@ public class InterviewExcelController {
 
     // 면접 평가 양식에 면접자 데이터 삽입 후 S3에 저장
     @PostMapping("/excel/interview/evaluation")
-    public void saveInterviewEvaluation(
+    public SuccessResponse saveInterviewEvaluation(
             @RequestPart(name="file") MultipartFile file
     ){
         useCase.insertInterviewerAndStoreToS3(file);
+
+        return SuccessResponse.ok(INTERVIEW_EVALUATION_XLSX_SAVED.getMessage());
     }
 
 }
