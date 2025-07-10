@@ -6,10 +6,12 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.webp.WebpWriter;
+import com.tave.tavewebsite.domain.interviewfinal.exception.IsNotXlsxFileException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.EmptyFileException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,13 +29,20 @@ public class S3Service {
     private final AmazonS3 s3Client;
     private final String bucketName;
     private final String possibleTimeTableXLSX;
+    private final String interviewTimeTableForManagerXLSX;
+
+
+    private String key1;
 
     private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${interview_possible_time_table}") String interviewPossibleTimeTable ) {
+    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName,
+                     @Value("${interview_possible_time_table}") String interviewPossibleTimeTable,
+                     @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.possibleTimeTableXLSX = interviewPossibleTimeTable;
+        this.interviewTimeTableForManagerXLSX= interviewTimeTableForManager;
     }
 
     public URL uploadImages(MultipartFile file) {
@@ -104,6 +113,20 @@ public class S3Service {
             throw new S3UploadFailException();
         }
     }
+
+    public void uploadTimeTableForMangerXLSXToS3(MultipartFile file) {
+        try {
+            checkEmptyFile(file);
+            checkIsXLSXFile(file);
+
+            storeXLSXFile(file, interviewTimeTableForManagerXLSX);
+
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
+
 
     public URL getImageUrl(String key) {
         try {
@@ -180,6 +203,27 @@ public class S3Service {
             return key.substring(dotIndex);
         }
         return ""; // 확장자가 없는 경우 빈 문자열 반환
+    }
+
+    private void storeXLSXFile(MultipartFile file, String key) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+
+        // S3에 업로드 (동일 키가 있으면 덮어쓰기)
+        s3Client.putObject(bucketName, key, file.getInputStream(), metadata);
+    }
+
+    private void checkEmptyFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new EmptyFileException();
+        }
+    }
+
+    private void checkIsXLSXFile(MultipartFile file) {
+        if (!XLSX_APPLICATION_TYPE.equals(file.getContentType())) {
+            throw new IsNotXlsxFileException();
+        }
     }
 
 }
