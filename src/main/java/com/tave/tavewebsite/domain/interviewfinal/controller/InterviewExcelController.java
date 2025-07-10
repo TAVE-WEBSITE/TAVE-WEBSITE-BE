@@ -70,4 +70,15 @@ public class InterviewExcelController {
                 .body(dto.inputStreamResource());
     }
 
+    // 면접 평가 시트 다운로드
+    @GetMapping("/excel/interview/evaluation")
+    public ResponseEntity<InputStreamResource> downloadInterviewEvaluation() throws IOException {
+        S3ExcelFileInputStreamDto dto = useCase.getInterviewEvaluationXLSX();
+
+        return ResponseEntity.ok()
+                .headers(dto.headers())
+                .contentLength(dto.contentLength())
+                .body(dto.inputStreamResource());
+    }
+
 }

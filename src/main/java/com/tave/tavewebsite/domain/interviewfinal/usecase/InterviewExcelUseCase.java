@@ -63,6 +63,11 @@ public class InterviewExcelUseCase {
         return s3DownloadSerivce.downloadInterviewEvaluationInitialFormXLSX();
     }
 
+    public S3ExcelFileInputStreamDto getInterviewEvaluationXLSX() throws IOException {
+        return s3DownloadSerivce.downloadInterviewEvaluationXLSX();
+    }
+
+
     /*
     * refactor
     * */
