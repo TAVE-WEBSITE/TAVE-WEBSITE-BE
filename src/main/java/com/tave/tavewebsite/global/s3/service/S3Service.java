@@ -6,12 +6,12 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.webp.WebpWriter;
+import com.tave.tavewebsite.domain.interviewfinal.exception.EmptyFileException;
 import com.tave.tavewebsite.domain.interviewfinal.exception.IsNotXlsxFileException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.EmptyFileException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,26 +28,28 @@ public class S3Service {
 
     private final AmazonS3 s3Client;
     private final String bucketName;
+    private final String highQualityBucketName;
     private final String possibleTimeTableXLSX;
     private final String interviewTimeTableForManagerXLSX;
 
-
-    private String key1;
-
     private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName,
+    public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${app.s3.high-quality-bucket}") String highQualityBucketName,
                      @Value("${interview_possible_time_table}") String interviewPossibleTimeTable,
-                     @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager ) {
+                     @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager
+                     ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
+        this.highQualityBucketName = highQualityBucketName;
         this.possibleTimeTableXLSX = interviewPossibleTimeTable;
         this.interviewTimeTableForManagerXLSX= interviewTimeTableForManager;
     }
 
     public URL uploadImages(MultipartFile file) {
         File convertFile = convertToWebp(file.getName(), file);
-        String key = validateFileName(convertFile.getName());
+        String key = validateFileName(convertFile.getName(), bucketName);
+        log.info("getName: {}", convertFile.getName());
+        log.info("key: {}", key);
         // MultipartFile에서 InputStream을 얻어 S3에 업로드합니다.
         try (InputStream inputStream = new FileInputStream(convertFile)) {
             ObjectMetadata metadata = setMetaData(convertFile);
@@ -57,6 +59,24 @@ public class S3Service {
             s3Client.putObject(putRequest);
             convertFile.delete();
             return getImageUrl(key);
+        } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
+    public URL uploadHighQualityImages(MultipartFile file) {
+        String key = validateFileName(file.getName(), highQualityBucketName);
+        log.info("getName: {}", file.getName());
+        log.info("key: {}", key);
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+            log.info("ContentType: {}", file.getContentType());
+            s3Client.putObject(highQualityBucketName, key, file.getInputStream(), metadata);
+
+            return s3Client.getUrl(highQualityBucketName, key);
+
         } catch (IOException e) {
             throw new S3UploadFailException();
         }
@@ -74,7 +94,7 @@ public class S3Service {
         try {
             uploadFile = convertMultipartFileToFile(file);
 
-            String key = validateFileName(uploadFile.getName());
+            String key = validateFileName(uploadFile.getName(), bucketName);
 
             try (InputStream inputStream = new FileInputStream(uploadFile)) {
                 ObjectMetadata metadata = new ObjectMetadata();
@@ -190,8 +210,9 @@ public class S3Service {
         return metadata;
     }
 
-    private String validateFileName(String key) {
+    private String validateFileName(String key, String bucketName) {
         if (s3Client.doesObjectExist(bucketName, key) || !StringUtils.hasText(key)) {
+            log.info("getFileExtension 테스트 {}", getFileExtension(key));
             return UUID.randomUUID() + getFileExtension(key);
         }
         return key;
