@@ -14,7 +14,7 @@ import java.io.IOException;
 import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.INTERVIEW_TIME_TABLE_FOR_MANAGER_SAVED;
 
 @RestController
-@RequestMapping("/v1/manager")
+@RequestMapping("/v1/normal")
 @RequiredArgsConstructor
 public class InterviewExcelController {
 
@@ -52,6 +52,17 @@ public class InterviewExcelController {
     @GetMapping("/excel/interview/time-table")
     public ResponseEntity<InputStreamResource> downloadInterviewTimeTableForManager() throws IOException {
         S3ExcelFileInputStreamDto dto = useCase.getInterviewTimeTableForManagerXLSX();
+
+        return ResponseEntity.ok()
+                .headers(dto.headers())
+                .contentLength(dto.contentLength())
+                .body(dto.inputStreamResource());
+    }
+
+    // 면접 평가 초기 양식 다운로드
+    @GetMapping("/excel/interview/evaluation-form")
+    public ResponseEntity<InputStreamResource> downloadInterviewEvaluationInitialForm() throws IOException {
+        S3ExcelFileInputStreamDto dto = useCase.getInterviewEvaluationInitialFormXLSX();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())

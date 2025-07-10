@@ -59,6 +59,9 @@ public class InterviewExcelUseCase {
         return s3DownloadSerivce.downloadInterviewTimeTableForManagerXLSX();
     }
 
+    public S3ExcelFileInputStreamDto getInterviewEvaluationInitialFormXLSX() throws IOException {
+        return s3DownloadSerivce.downloadInterviewEvaluationInitialFormXLSX();
+    }
 
     /*
     * refactor
