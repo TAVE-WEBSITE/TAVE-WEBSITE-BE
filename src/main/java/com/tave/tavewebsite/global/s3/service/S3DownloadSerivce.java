@@ -83,6 +83,16 @@ public class S3DownloadSerivce {
         );
     }
 
+    // 면접 평가 시트 다운로드 (질문 + 면접자 정보)
+    public S3ExcelFileInputStreamDto downloadInterviewEvaluationXLSX() throws IOException {
+        S3Object s3Object = s3Client.getObject(bucketName, interviewEvaluationXLSX);
+        HttpHeaders headers = createHttpHeaders(INTERVIEW_EVALUATION_XLSX_NAME);
+
+        return S3ExcelFileInputStreamDto.from(
+                s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
+        );
+    }
+
     /*
     * refactor
     * */
