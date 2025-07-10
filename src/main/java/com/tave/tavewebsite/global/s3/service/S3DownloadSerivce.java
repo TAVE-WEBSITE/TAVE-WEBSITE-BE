@@ -46,6 +46,7 @@ public class S3DownloadSerivce {
         this.interviewEvaluationXLSX = interviewEvaluationXLSX;
     }
 
+    // 최종면접 설정 양식 다운로드
     public S3ExcelFileInputStreamDto downloadInterviewFinalSetUpForm() throws IOException {
             S3Object s3Object = s3Client.getObject(bucketName, finalInterviewBasicFormUrl);
             HttpHeaders headers = createHttpHeaders(FINAL_INTERVIEW_FORM_NAME);
@@ -55,6 +56,7 @@ public class S3DownloadSerivce {
             );
     }
 
+    // 서류합격자들 면접 가능 시간 파악 엑셀
     public S3ExcelFileInputStreamDto downloadPossibleTimeTableXlsx() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewPossibleTimeTable);
         HttpHeaders headers = createHttpHeaders(POSSIBLE_TIME_TABLE_FORM_NAME);
@@ -64,6 +66,7 @@ public class S3DownloadSerivce {
         );
     }
 
+    // 면접 시간표 다운로드 (관리자용)
     public S3ExcelFileInputStreamDto downloadInterviewTimeTableForManagerXLSX() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewTimeTableForManager);
         HttpHeaders headers = createHttpHeaders(INTERVIEW_TIME_TABLE_FOR_MANAGER_FILE_NAME);
