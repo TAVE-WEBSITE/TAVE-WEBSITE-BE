@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static com.tave.tavewebsite.domain.resume.controller.message.ResumeSuccessMesssage.RESUME_GET_TO_DATE_AND_TIME_SUCCESS;
+
 @RestController
 @RequiredArgsConstructor
 public class ResumeController {
@@ -31,6 +33,6 @@ public class ResumeController {
 
         ResumeListResponse response = resumeUseCase.getResumeByInterviewDateTime(date, time);
 
-        return new SuccessResponse(response, "");
+        return new SuccessResponse(response, RESUME_GET_TO_DATE_AND_TIME_SUCCESS.getMessage());
     }
 }
