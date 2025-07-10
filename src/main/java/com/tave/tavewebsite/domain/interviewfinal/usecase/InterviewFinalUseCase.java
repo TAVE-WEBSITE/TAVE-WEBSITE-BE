@@ -2,7 +2,7 @@ package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFormInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
@@ -11,6 +11,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDa
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
 import com.tave.tavewebsite.domain.interviewfinal.mapper.InterviewFinalMapper;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
+import com.tave.tavewebsite.domain.interviewfinal.service.InterviewFinalTestService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewSaveService;
 import com.tave.tavewebsite.domain.interviewfinal.utils.InterviewGroupUtil;
@@ -40,13 +41,14 @@ public class InterviewFinalUseCase {
     private final InterviewExcelService interviewExcelService;
     private final InterviewSaveService interviewSaveService;
     private final InterviewGetService interviewGetService;
+    private final InterviewFinalTestService interviewTestService; // todo 베타 테스트 용 로직.
     private final S3DownloadSerivce s3DownloadSerivce;
     private final InterviewPlaceService interviewPlaceService;
     private final InterviewFinalMapper mapper;
     private final InterviewGroupUtil groupUtil;
     private final MemberService memberService;
 
-    public InterviewFormInputStreamDto downloadInterviewFinal() throws IOException {
+    public S3ExcelFileInputStreamDto downloadInterviewFinal() throws IOException {
         return s3DownloadSerivce.downloadInterviewFinalSetUpForm();
     }
 
@@ -102,6 +104,13 @@ public class InterviewFinalUseCase {
 
         return InterviewTimeTableDto.of(totalDateTimeList, timeTableList);
     }
+
+    // todo 베타 테스트용 기능이므로 추 후 삭제할 것.
+    public void getInterviewFinalSaveListTestVersion() {
+        interviewTestService.saveResumePassListTestVersion();
+    }
+
+
 
     /*
     * refactor

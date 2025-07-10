@@ -8,13 +8,13 @@ import org.springframework.http.HttpHeaders;
 import java.io.IOException;
 
 @Builder
-public record InterviewFormInputStreamDto(
+public record S3ExcelFileInputStreamDto(
         InputStreamResource inputStreamResource,
         HttpHeaders headers,
         long contentLength
 ) {
-    public static InterviewFormInputStreamDto from(S3ObjectInputStream s3ObjectInputStream, HttpHeaders headers, long contentLength) throws IOException {
-        return InterviewFormInputStreamDto.builder()
+    public static S3ExcelFileInputStreamDto from(S3ObjectInputStream s3ObjectInputStream, HttpHeaders headers, long contentLength) throws IOException {
+        return S3ExcelFileInputStreamDto.builder()
                 .inputStreamResource(new InputStreamResource(s3ObjectInputStream))
                 .headers(headers)
                 .contentLength(contentLength)

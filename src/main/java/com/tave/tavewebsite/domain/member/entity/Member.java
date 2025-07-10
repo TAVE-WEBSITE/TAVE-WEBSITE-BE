@@ -1,9 +1,5 @@
 package com.tave.tavewebsite.domain.member.entity;
 
-import static com.tave.tavewebsite.domain.member.entity.RoleType.MANAGER;
-import static com.tave.tavewebsite.domain.member.entity.RoleType.MEMBER;
-import static com.tave.tavewebsite.domain.member.entity.RoleType.UNAUTHORIZED_MANAGER;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
@@ -11,25 +7,20 @@ import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeEvaluation;
 import com.tave.tavewebsite.global.common.BaseEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.tave.tavewebsite.domain.member.entity.RoleType.*;
 
 @Entity
 @Getter
@@ -123,6 +114,7 @@ public class Member extends BaseEntity {
                 .email(dto.email())
                 .username(dto.username())
                 .phoneNumber(dto.phoneNumber())
+                .sex(dto.sex())
                 .password(encoder.encode(dto.password()))
                 .birthday(dto.getBirthdayAsLocalDate())
                 .role(MEMBER)

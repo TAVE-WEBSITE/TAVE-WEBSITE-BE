@@ -1,16 +1,7 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.DELETE_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.READ_INTERVIEW_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.READ_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.SUBMIT_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.TEMP_LOAD_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.TEMP_SAVE_SUCCESS;
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.UPDATE_SUCCESS;
-
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
-import com.tave.tavewebsite.domain.resume.dto.request.TempPersonalInfoDto;
 import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
@@ -19,17 +10,13 @@ import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,17 +31,26 @@ public class PersonalInfoController {
     public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(
             @PathVariable("memberId") Long memberId,
             @RequestBody @Valid PersonalInfoCreateRequestDto requestDto) {
-        Resume resume = personalInfoService.createPersonalInfo(memberId, requestDto);
-        ResumeQuestionResponse questions = personalInfoService.createResumeQuestions(resume);
 
-        CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
-                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
-                questions,
-                resume.getId()
-        );
-
+        CreatePersonalInfoResponse response = personalInfoService.createPersonalInfoAndQuestions(memberId, requestDto);
         return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
     }
+
+//    @PostMapping("/{memberId}")
+//    public SuccessResponse<CreatePersonalInfoResponse> createPersonalInfoWithQuestions(
+//            @PathVariable("memberId") Long memberId,
+//            @RequestBody @Valid PersonalInfoCreateRequestDto requestDto) {
+//        Resume resume = personalInfoService.createPersonalInfo(memberId, requestDto);
+//        ResumeQuestionResponse questions = personalInfoService.createResumeQuestions(resume);
+//
+//        CreatePersonalInfoResponse response = CreatePersonalInfoResponse.of(
+//                PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage(),
+//                questions,
+//                resume.getId()
+//        );
+//
+//        return new SuccessResponse<>(response, PersonalInfoSuccessMessage.CREATE_SUCCESS.getMessage());
+//    }
 
     // 전체 개인정보 조회
     @GetMapping("/{memberId}")

@@ -3,15 +3,10 @@ package com.tave.tavewebsite.domain.member.service;
 import com.tave.tavewebsite.domain.member.dto.request.*;
 import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.member.exception.DuplicateEmailException;
-import com.tave.tavewebsite.domain.member.exception.DuplicateNicknameException;
-import com.tave.tavewebsite.domain.member.exception.ExpiredNumberException;
-import com.tave.tavewebsite.domain.member.exception.NotFoundMemberException;
-import com.tave.tavewebsite.domain.member.exception.NotMatchedNumberException;
-import com.tave.tavewebsite.domain.member.exception.NotMatchedPassword;
+import com.tave.tavewebsite.domain.member.exception.*;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
-import com.tave.tavewebsite.global.mail.dto.MailResponseDto;
 import com.tave.tavewebsite.global.mail.service.MailService;
+import com.tave.tavewebsite.global.mail.service.SESMailService;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -29,20 +25,24 @@ public class MemberService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
+    private final SESMailService sesMailService;
 
-    public MailResponseDto saveMember(RegisterManagerRequestDto requestDto) {
+    public void saveMember(RegisterManagerRequestDto requestDto) {
 
         validateNickname(requestDto.nickname());
         validateEmail(requestDto.email());
 
         Member saveMember = memberRepository.save(Member.toMember(requestDto, passwordEncoder));
-        return mailService.sendManagerRegisterMessage(saveMember.getEmail());
+        sesMailService.sendAdminApplySuccessNotification(saveMember.getEmail(), saveMember.getUsername());
     }
 
     public void saveNormalMember(RegisterMemberRequestDto dto) {
         validateEmail(dto.email());
 
-        memberRepository.save(Member.toNormalMember(dto, passwordEncoder));
+        Member normalMember = Member.toNormalMember(dto, passwordEncoder);
+
+        memberRepository.save(normalMember);
+        sesMailService.sendJoinSuccessNotification(normalMember.getEmail(), normalMember.getUsername(), normalMember.getEmail());
     }
 
     public void deleteMember(long id) {
@@ -56,7 +56,9 @@ public class MemberService {
         else
             findIfEmailExists(req.email());
 
-        mailService.sendAuthenticationCode(req.email());
+        String code = generateCode();
+        sesMailService.sendAdminEmailVerification(req.email(), code);
+        redisUtil.set(req.email(), code, 3);
     }
 
     public void verityNumber(ValidateEmailReq req, Boolean reset) {
@@ -107,16 +109,39 @@ public class MemberService {
         );
     }
 
-    public void verifyNormalMemberForPasswordReset(ResetPasswordVerifyRequestDto req) {
-        Member member = memberRepository.findByEmail(req.email())
-                .orElseThrow(NotFoundMemberException::new);
+    public void validateMemberInfoAndSendVerificationCode(ResetPasswordVerifyRequestDto req) {
+        if (req.reset()) {
+            // 비밀번호 재설정: 기존 회원 정보 검증
+            Member member = memberRepository.findByEmail(req.email())
+                    .orElseThrow(NotFoundMemberException::new);
 
-        if (!member.getUsername().equals(req.name()) || !member.getBirthday().toString().equals(req.birth())) {
-            throw new NotFoundMemberException();
+            if (!member.getUsername().equals(req.name()) ||
+                    !member.getBirthday().toString().equals(req.birth())) {
+                throw new NotFoundMemberException();
+            }
+        } else {
+            // 회원가입: 중복 이메일 검증
+            memberRepository.findByEmail(req.email()).ifPresent(m -> {
+                throw new DuplicateEmailException();
+            });
         }
 
-        mailService.sendAuthenticationCode(req.email());
+        // 인증번호 생성 및 전송
+        String code = generateCode();
+        sesMailService.sendUserEmailVerification(req.email(), code);
+        redisUtil.set(req.email(), code, 3);
     }
+
+//    public void verifyNormalMemberForPasswordReset(ResetPasswordVerifyRequestDto req) {
+//        Member member = memberRepository.findByEmail(req.email())
+//                .orElseThrow(NotFoundMemberException::new);
+//
+//        if (!member.getUsername().equals(req.name()) || !member.getBirthday().toString().equals(req.birth())) {
+//            throw new NotFoundMemberException();
+//        }
+//
+//        mailService.sendAuthenticationCode(req.email());
+//    }
 
     public void verifyAuthCodeForPasswordReset(String email, String code) {
         String validatedNumber = (String) redisUtil.get(email);
@@ -143,8 +168,12 @@ public class MemberService {
         member.update(req.validatedPassword(), passwordEncoder);
     }
 
-    public List<MemberResumeDto> findMemberResumeDto(String generation, List<String> email){
+    public List<MemberResumeDto> findMemberResumeDto(String generation, List<String> email) {
         return memberRepository.findMemberIdAndResumeIdByGenAndEmails(generation, email);
     }
 
+    private String generateCode() {
+        Random random = new Random();
+        return String.format("%06d", random.nextInt(1000000)); // 6자리의 랜덤한 코드를 만든다.
+    }
 }

@@ -1,6 +1,5 @@
 package com.tave.tavewebsite.domain.resume.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tave.tavewebsite.domain.question.entity.Question;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
@@ -31,7 +30,6 @@ public class ResumeQuestion extends BaseEntity {
     @Column(length = 300, nullable = false)
     private String question;
 
-    @Size(min = 1, max = 1000)
     @Column(length = 1000)
     private String answer;
 
@@ -50,6 +48,10 @@ public class ResumeQuestion extends BaseEntity {
 
     private Integer textLength;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean required;
+
     public static ResumeQuestion of(Resume resume, Question question) {
 
         return ResumeQuestion.builder()
@@ -59,6 +61,7 @@ public class ResumeQuestion extends BaseEntity {
                 .ordered(question.getOrdered()) // todo Question 순서 사용 or 자체 ResumeQuestion 순서 생성? 의논
                 .answerType(question.getAnswerType())
                 .textLength(question.getTextLength() != null ? question.getTextLength() : 0)
+                .required(question.getRequired())
                 .build();
     }
 

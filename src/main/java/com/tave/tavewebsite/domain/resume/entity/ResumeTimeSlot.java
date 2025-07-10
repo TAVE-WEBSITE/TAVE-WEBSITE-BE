@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @SuperBuilder
@@ -21,14 +23,17 @@ public class ResumeTimeSlot extends BaseEntity {
     @JoinColumn(name = "resume_id", nullable = false)
     private Resume resume;
 
-    @ManyToOne
-    @JoinColumn(name = "interview_time_id", nullable = false)
-    private InterviewTime interviewTime;
+    @Column(nullable = false)
+    private Long interviewTimeId;
+
+    @Column(nullable = false)
+    private LocalDateTime interviewDetailTime;
 
     public static ResumeTimeSlot of(Resume resume, InterviewTime interviewTime) {
         return ResumeTimeSlot.builder().
                 resume(resume).
-                interviewTime(interviewTime).
+                interviewTimeId(interviewTime.getId()).
+                interviewDetailTime(interviewTime.getInterviewDetailTime()).
                 build();
     }
 }

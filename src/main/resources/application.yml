@@ -57,6 +57,12 @@ cloud:
       static: ${region}
 
 final_interview_form: ${FINAL_INTERVIEW_FORM}
+interview_possible_time_table: ${INTERVIEW_POSSIBLE_TIME_TABLE_XLSX}
+interview_time_table_for_manager: ${INTERVIEW_TIME_TABLE_FOR_MANAGER}
+
+app:
+  s3:
+    high-quality-bucket: ${HIGH_QUALITY_BUCKET}
 
 logging:
   level:

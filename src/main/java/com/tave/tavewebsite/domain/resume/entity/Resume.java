@@ -7,24 +7,18 @@ import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
 import com.tave.tavewebsite.domain.resume.exception.AlreadySubmittedResumeException;
 import com.tave.tavewebsite.global.common.BaseEntity;
 import com.tave.tavewebsite.global.common.FieldType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -60,15 +54,15 @@ public class Resume extends BaseEntity {
     private String resumeGeneration;
 
     @Size(max = 255)
-    @Column(length = 50)
+    @Column(length = 255)
     private String blogUrl;
 
     @Size(max = 255)
-    @Column(length = 50)
+    @Column(length = 255)
     private String githubUrl;
 
     @Size(max = 255)
-    @Column(length = 50)
+    @Column(length = 255)
     private String portfolioUrl;
 
     @Column(length = 10)
@@ -79,17 +73,22 @@ public class Resume extends BaseEntity {
     @JoinColumn(name = "memberId", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<ResumeTimeSlot> resumeTimeSlots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<LanguageLevel> languageLevels = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<ResumeQuestion> resumeQuestions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     private List<ResumeEvaluation> resumeEvaluations = new ArrayList<>();
+
 
     @Builder
     public Resume(String school, String major, String minor, String resumeGeneration, String blogUrl, String githubUrl,
@@ -144,11 +143,11 @@ public class Resume extends BaseEntity {
         this.finalDocumentEvaluationStatus = finalDocumentEvaluationStatus;
     }
 
-    public List<InterviewTime> getInterviewTimes() {
-        return this.resumeTimeSlots.stream()
-                .map(ResumeTimeSlot::getInterviewTime)
-                .toList();
-    }
+//    public List<InterviewTime> getInterviewTimes() {
+//        return this.resumeTimeSlots.stream()
+//                .map(ResumeTimeSlot::getInterviewTime)
+//                .toList();
+//    }
 
     public List<LanguageLevel> getProgramingLanguages() {
         return this.languageLevels;

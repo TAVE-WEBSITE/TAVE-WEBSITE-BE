@@ -21,19 +21,14 @@ public class InterviewTime extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime interviewDetailTime;
 
-    @Column(nullable = false)
-    private Long resumeId;
-
     @Builder
-    public InterviewTime(LocalDateTime interviewTime, Long resumeId) {
+    public InterviewTime(LocalDateTime interviewTime) {
         this.interviewDetailTime = interviewTime;
-        this.resumeId = resumeId;
     }
 
-    public static InterviewTime of(LocalDateTime localDateTime, Long resumeId) {
+    public static InterviewTime of(LocalDateTime localDateTime) {
         return InterviewTime.builder()
                 .interviewTime(localDateTime)
-                .resumeId(resumeId)
                 .build();
     }
 

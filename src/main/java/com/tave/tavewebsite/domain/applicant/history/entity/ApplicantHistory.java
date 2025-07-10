@@ -53,4 +53,12 @@ public class ApplicantHistory extends BaseEntity {
         this.member = member;
         member.addApplicantHistory(this);
     }
+
+    public void updateStatus(ApplicationStatus status) {
+        this.applicationStatus = status;
+    }
+
+    public void updateFieldType(FieldType fieldType) {
+        this.fieldType = fieldType;
+    }
 }

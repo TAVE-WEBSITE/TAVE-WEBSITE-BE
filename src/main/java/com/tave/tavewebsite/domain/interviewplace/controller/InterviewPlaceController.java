@@ -1,10 +1,12 @@
 package com.tave.tavewebsite.domain.interviewplace.controller;
 
 import com.tave.tavewebsite.domain.interviewplace.dto.request.InterviewPlaceSaveDto;
+import com.tave.tavewebsite.domain.interviewplace.dto.response.InterviewPlaceDetailDto;
 import com.tave.tavewebsite.domain.interviewplace.service.InterviewPlaceService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +28,13 @@ public class InterviewPlaceController {
 
         return new SuccessResponse<>(INTERVIEW_PLACE_CREATED.getMessage());
     }
+
+    @GetMapping("/v1/manager/interview-place")
+    public SuccessResponse<List<InterviewPlaceDetailDto>> getInterviewPlaceList() {
+        List<InterviewPlaceDetailDto> response = interviewPlaceService.getInterviewPlaceList();
+
+        return new SuccessResponse<>(response, INTERVIEW_PLACE_GET.getMessage());
+    }
+
 
 }

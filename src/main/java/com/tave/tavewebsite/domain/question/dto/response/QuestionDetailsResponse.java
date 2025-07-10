@@ -12,7 +12,8 @@ public record QuestionDetailsResponse(
         FieldType fieldType,
         Integer ordered,
         Integer textLength,
-        AnswerType answerType
+        AnswerType answerType,
+        Boolean required
 ) {
     public static QuestionDetailsResponse of(Question question) {
         return QuestionDetailsResponse.builder()
@@ -22,6 +23,7 @@ public record QuestionDetailsResponse(
                 .ordered(question.getOrdered())
                 .textLength(question.getTextLength())
                 .answerType(question.getAnswerType())
+                .required(question.getRequired())
                 .build();
     }
 }

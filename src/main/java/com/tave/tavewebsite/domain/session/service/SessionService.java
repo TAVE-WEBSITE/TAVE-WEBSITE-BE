@@ -27,7 +27,7 @@ public class SessionService {
     private final S3Service s3Service;
 
     public SessionResponseDto saveSession(SessionRequestDto sessionRequestDto, MultipartFile file) {
-        URL savedImageUrl = s3Service.uploadImages(file);
+        URL savedImageUrl = s3Service.uploadHighQualityImages(file);
         Session savedSession = sessionRepository.save(Session.of(sessionRequestDto, savedImageUrl, timeUtil));
 
         return SessionResponseDto.from(savedSession);
@@ -68,7 +68,7 @@ public class SessionService {
 
     private void updateSessionImgUrl( Session findSession, MultipartFile file) {
         if(file != null){
-            URL savedImageUrl = s3Service.uploadImages(file);
+            URL savedImageUrl = s3Service.uploadHighQualityImages(file);
             findSession.updateImgUrl(savedImageUrl);
         }
     }

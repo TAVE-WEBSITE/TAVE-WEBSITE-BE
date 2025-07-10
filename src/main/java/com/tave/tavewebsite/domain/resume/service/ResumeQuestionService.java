@@ -1,11 +1,11 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.tave.tavewebsite.domain.programinglaunguage.dto.response.LanguageLevelResponseDto;
 import com.tave.tavewebsite.domain.programinglaunguage.service.ProgramingLanguageService;
 import com.tave.tavewebsite.domain.question.service.QuestionService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeQuestionUpdateRequest;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
-import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
-import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
+import com.tave.tavewebsite.domain.resume.dto.response.*;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.AnswerTextLengthOverException;
@@ -16,12 +16,14 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionJdbcRepositor
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
-import java.util.List;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -152,5 +154,33 @@ public class ResumeQuestionService {
     private ResumeQuestion findIfResumeQuestionExists(Long resumeQuestionId) {
         return resumeQuestionRepository.findById(resumeQuestionId)
                 .orElseThrow(ResumeQuestionNotMatchResumeException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
+        List<Resume> resumes = resumeRepository.findAllWithRelationsByIdIn(resumeIds);
+
+        List<ResumeResponse> resumeResponseList = new ArrayList<>();
+
+        for (Resume resume : resumes) {
+            List<DetailResumeQuestionResponse> commonQuestions = getResumeQuestionList(resume, FieldType.COMMON);
+            List<DetailResumeQuestionResponse> specificQuestions = getResumeQuestionList(resume, resume.getField());
+
+            List<CommonResumeResponse> commonList = List.of(CommonResumeResponse.of(resume, commonQuestions));
+
+            List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
+                    .map(LanguageLevelResponseDto::fromEntity)
+                    .toList();
+
+            List<SpecificResumeResponseDto> specificList = List.of(SpecificResumeResponseDto.of(
+                    resume.getId(),
+                    specificQuestions,
+                    languageLevels
+            ));
+
+            resumeResponseList.add(ResumeResponse.of(resume.getId(), commonList, specificList));
+        }
+
+        return ResumeListResponse.of(resumeResponseList);
     }
 }
