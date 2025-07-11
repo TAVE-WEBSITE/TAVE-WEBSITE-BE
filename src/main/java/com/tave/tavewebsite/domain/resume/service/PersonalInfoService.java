@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicationStatus;
 import com.tave.tavewebsite.domain.applicant.history.repository.ApplicantHistoryRepository;
 import com.tave.tavewebsite.domain.applicant.history.service.ApplicantHistoryService;
+import com.tave.tavewebsite.domain.apply.dashboard.service.DashboardService;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.entity.LanguageLevel;
@@ -32,9 +33,10 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +50,7 @@ public class PersonalInfoService {
     private final ApplicantHistoryRepository applicantHistoryRepository;
     private final ApplicantHistoryService applicantHistoryService;
     private final ResumeQuestionRepository resumeQuestionRepository;
+    private final DashboardService dashboardService;
 
     private final RedisUtil redisUtil;
 
@@ -195,6 +198,7 @@ public class PersonalInfoService {
         Resume resume = getResumeEntityById(resumeId);
         resume.submit();
         resumeRepository.save(resume);
+        dashboardService.addDetailedCount(resume, resume.getMember());
     }
 
     public List<TimeSlotResDto> getInterviewTime() {

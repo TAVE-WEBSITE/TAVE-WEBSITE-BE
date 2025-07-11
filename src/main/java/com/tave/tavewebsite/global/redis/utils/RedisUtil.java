@@ -1,9 +1,12 @@
 package com.tave.tavewebsite.global.redis.utils;
 
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +33,28 @@ public class RedisUtil {
     public Long checkExpired(String key) {
         Long ttl = redisTemplate.getExpire(key);
         return ttl;
+    }
+
+    public long countResumeKeysWithPrefix() {
+        ScanOptions options = ScanOptions.scanOptions()
+                .match("resume:temp:" + "*")
+                .count(1000) // 한 번에 검색할 키 수
+                .build();
+
+        long count = 0;
+        try (Cursor<byte[]> cursor = redisTemplate.getConnectionFactory()
+                .getConnection()
+                .scan(options)) {
+
+            while (cursor.hasNext()) {
+                cursor.next();
+                count++;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Redis scan error", e);
+        }
+
+        return count;
     }
 
     // prefix 기반 키 삭제
