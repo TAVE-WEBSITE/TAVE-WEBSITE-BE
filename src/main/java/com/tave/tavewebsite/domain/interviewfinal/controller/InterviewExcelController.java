@@ -25,7 +25,7 @@ public class InterviewExcelController {
 
         useCase.savePossibleInterviewTimeCSV();
 
-        return SuccessResponse.ok();
+        return SuccessResponse.ok(POSSIBLE_INTERVIEW_TIME_TABLE_CREATED.getMessage());
     }
 
     @GetMapping("/excel/interviewer/time-table")
