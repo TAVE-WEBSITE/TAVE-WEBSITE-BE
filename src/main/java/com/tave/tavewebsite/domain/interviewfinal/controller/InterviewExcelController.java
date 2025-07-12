@@ -21,10 +21,11 @@ public class InterviewExcelController {
     private final InterviewExcelUseCase useCase;
 
     @PostMapping("/excel/interviewer/time-table")
-    public void createPossibleTimeTableExcel() {
+    public SuccessResponse createPossibleTimeTableExcel() {
 
         useCase.savePossibleInterviewTimeCSV();
 
+        return SuccessResponse.ok();
     }
 
     @GetMapping("/excel/interviewer/time-table")
