@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.tave.tavewebsite.domain.resume.controller.AdminConfigSuccessMessage.*;
+import static com.tave.tavewebsite.domain.resume.controller.message.AdminConfigSuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor

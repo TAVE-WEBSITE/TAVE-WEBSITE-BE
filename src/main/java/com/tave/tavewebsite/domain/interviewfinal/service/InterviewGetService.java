@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -32,6 +34,10 @@ public class InterviewGetService {
     public List<InterviewFinal> getInterviewFinalListByGeneration(String generation) {
         return interviewFinalRepository
                 .findAllByGenerationOrderByInterviewDateTimeUsername(generation);
+    }
+
+    public List<InterviewFinal> getInterviewFinalByDateAndTime(LocalDate interviewDate, LocalTime interviewTime) {
+        return interviewFinalRepository.findByInterviewDateAndInterviewTime(interviewDate, interviewTime);
     }
 
 }

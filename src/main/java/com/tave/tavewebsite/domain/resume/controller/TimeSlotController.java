@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.resume.controller.message.TimeSlotSuccessMessage;
 import com.tave.tavewebsite.domain.resume.service.ResumeTimeService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,11 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;
 import com.tave.tavewebsite.domain.resume.dto.response.PersonalInfoResponseDto;
-import com.tave.tavewebsite.domain.resume.dto.response.ResumeQuestionResponse;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
-import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage.*;
+import static com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor

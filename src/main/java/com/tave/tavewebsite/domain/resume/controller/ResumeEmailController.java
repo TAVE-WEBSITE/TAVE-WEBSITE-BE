@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage;
 import com.tave.tavewebsite.domain.resume.service.ResumeEmailService;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
