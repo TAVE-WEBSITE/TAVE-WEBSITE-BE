@@ -10,10 +10,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.Intervi
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
 import com.tave.tavewebsite.domain.interviewfinal.mapper.InterviewFinalMapper;
-import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
-import com.tave.tavewebsite.domain.interviewfinal.service.InterviewFinalTestService;
-import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
-import com.tave.tavewebsite.domain.interviewfinal.service.InterviewSaveService;
+import com.tave.tavewebsite.domain.interviewfinal.service.*;
 import com.tave.tavewebsite.domain.interviewfinal.utils.InterviewGroupUtil;
 import com.tave.tavewebsite.domain.interviewplace.dto.response.InterviewPlaceDetailDto;
 import com.tave.tavewebsite.domain.interviewplace.service.InterviewPlaceService;
@@ -41,6 +38,7 @@ public class InterviewFinalUseCase {
     private final InterviewExcelService interviewExcelService;
     private final InterviewSaveService interviewSaveService;
     private final InterviewGetService interviewGetService;
+    private final InterviewDeleteService interviewDeleteService;
     private final InterviewFinalTestService interviewTestService; // todo 베타 테스트 용 로직.
     private final S3DownloadSerivce s3DownloadSerivce;
     private final InterviewPlaceService interviewPlaceService;
@@ -50,6 +48,10 @@ public class InterviewFinalUseCase {
 
     public S3ExcelFileInputStreamDto downloadInterviewFinal() throws IOException {
         return s3DownloadSerivce.downloadInterviewFinalSetUpForm();
+    }
+
+    public void deleteAll() {
+        interviewDeleteService.deleteAll();
     }
 
     public void insertInterviewEntityFromExcel(MultipartFile file) {

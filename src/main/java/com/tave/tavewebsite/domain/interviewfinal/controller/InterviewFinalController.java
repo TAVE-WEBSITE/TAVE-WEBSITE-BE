@@ -58,6 +58,14 @@ public class InterviewFinalController {
         return SuccessResponse.ok(INTERVIEW_FINAL_CREATED.getMessage());
     }
 
+    @DeleteMapping("/v1/manager/interview-final")
+    public SuccessResponse interviewFinalDelete() {
+
+        interviewFinalUseCase.deleteAll();
+
+        return SuccessResponse.ok(INTERVIEW_FINAL_DELETE_ALL.getMessage());
+    }
+
     @GetMapping("/v1/manager/interview-final")
     public SuccessResponse interviewFinalPageNation(
         @RequestParam int pageNum,
