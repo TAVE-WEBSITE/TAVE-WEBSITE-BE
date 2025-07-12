@@ -70,6 +70,7 @@ public class Question extends BaseEntity {
         this.fieldType = dto.fieldType();
         this.textLength = dto.textLength();
         this.required = dto.required();
+        this.answerType = dto.answerType();
     }
 
     public void updateOrdered(Integer ordered) {
