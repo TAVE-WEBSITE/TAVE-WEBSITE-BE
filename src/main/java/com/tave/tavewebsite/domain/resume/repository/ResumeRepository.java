@@ -64,8 +64,13 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     @EntityGraph(attributePaths = {
             "resumeQuestions",
             "resumeTimeSlots",
-            "programingLanguages"
+            "languageLevels"
     })
     List<Resume> findAllWithRelationsByIdIn(List<Long> resumeIds);
 
+    // resumeTimeSlots만 fetch join으로 가져오고, 나머지는 @BatchSize로 처리
+    @Query("SELECT DISTINCT r FROM Resume r " +
+            "LEFT JOIN FETCH r.resumeTimeSlots " +
+            "WHERE r.id IN :resumeIds")
+    List<Resume> findAllWithTimeSlotsByIdIn(@Param("resumeIds") List<Long> resumeIds);
 }

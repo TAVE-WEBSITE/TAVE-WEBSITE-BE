@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.interviewfinal.service;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
+import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
 import com.tave.tavewebsite.domain.interviewfinal.exception.ExcelBadRequestException;
 import com.tave.tavewebsite.domain.interviewfinal.exception.ExcelNullPointException;
 import com.tave.tavewebsite.domain.interviewfinal.utils.ExcelUtils;
@@ -10,12 +11,14 @@ import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -57,6 +60,42 @@ public class InterviewExcelService {
         }
 
         return dtoList;
+    }
+
+    // 면접 평가 시트에 면접자 정보 작성 비지니스 로직
+    public void writeInterviewerData(Workbook workbook, List<InterviewFinal> interviewList) {
+        try {
+            int startRow = 2;
+            int sequence = 1;
+            Sheet sheet = workbook.getSheetAt(0);
+            CellStyle cellStyle = setCSVBodyStyleOfInterviewTime(workbook);
+            writeInterviewerData(sheet, startRow, interviewList.get(0), sequence, cellStyle);
+
+            for (int i = 1; i < interviewList.size(); i++) {
+                InterviewFinal data = interviewList.get(i);  // 리스트에서 인덱스로 데이터 가져오기
+                InterviewFinal before = interviewList.get(i - 1);
+
+                if(checkSequence(before, data)) sequence++;
+                else sequence = 1;
+
+                writeInterviewerData(sheet, startRow+i, data, sequence, cellStyle);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("엑셀 데이터 작성 실패", e);
+        }
+    }
+
+    private void writeInterviewerData(Sheet sheet, int startRow, InterviewFinal data, int sequence, CellStyle cellStyle) {
+        Row row = sheet.getRow(startRow);
+        if (row == null) {
+            row = sheet.createRow(startRow);
+        }
+
+        // 기존 데이터 작성 로직
+        String value = formatDateTimeToEvaluation(data.getInterviewDate(), data.getInterviewTime(), sequence);
+        excelUtils.writeText(row, value, 0, cellStyle);
+        excelUtils.writeText(row, data.getFieldType().getDisplayName(), 1, cellStyle);
+        excelUtils.writeText(row, data.getUsername(), 2, cellStyle);
     }
 
     public void writeCSVHeader(Workbook workbook, Sheet sheet, List<LocalDate> localDateList) {
@@ -135,6 +174,20 @@ public class InterviewExcelService {
         log.info("=============================");
         log.info("서버에서 인식하는 Excel 마지막 행 번호: {}", sheet.getLastRowNum());
         log.info("=============================");
+    }
+
+    private String formatDateTimeToEvaluation(LocalDate date, LocalTime time, int sequence) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(date.getDayOfMonth()).append("_");
+        sb.append(time.format(DateTimeFormatter.ofPattern("HHmm"))).append("_");
+        sb.append(sequence);
+        return sb.toString();
+    }
+
+    private boolean checkSequence(InterviewFinal before, InterviewFinal after) {
+        return before.getInterviewDate().equals(after.getInterviewDate()) &&
+                before.getInterviewTime().equals(after.getInterviewTime());
     }
 
 }

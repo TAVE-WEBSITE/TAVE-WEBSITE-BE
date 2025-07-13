@@ -12,7 +12,7 @@ import com.tave.tavewebsite.domain.programinglaunguage.entity.ProgramingLanguage
 import com.tave.tavewebsite.domain.programinglaunguage.repository.LanguageLevelRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.repository.ProgramingLanguageRepository;
 import com.tave.tavewebsite.domain.programinglaunguage.util.LanguageLevelMapper;
-import com.tave.tavewebsite.domain.resume.controller.PersonalInfoSuccessMessage;
+import com.tave.tavewebsite.domain.resume.controller.message.PersonalInfoSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoCreateRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.PersonalInfoRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.response.CreatePersonalInfoResponse;

@@ -156,15 +156,55 @@ public class ResumeQuestionService {
                 .orElseThrow(ResumeQuestionNotMatchResumeException::new);
     }
 
+//    @Transactional(readOnly = true)
+//    public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
+//        List<Resume> resumes = resumeRepository.findAllWithTimeSlotsByIdIn(resumeIds);
+//
+//        List<ResumeResponse> resumeResponseList = new ArrayList<>();
+//
+//        for (Resume resume : resumes) {
+//            log.info("resume id: {} COMMON 조회 시작 ", resume.getId());
+//            List<DetailResumeQuestionResponse> commonQuestions = getResumeQuestionList(resume, FieldType.COMMON);
+//            log.info("resume id: {} 파트별 조회 시작 ", resume.getId());
+//            List<DetailResumeQuestionResponse> specificQuestions = getResumeQuestionList(resume, resume.getField());
+//
+//            List<CommonResumeResponse> commonList = List.of(CommonResumeResponse.of(resume, commonQuestions));
+//
+//            List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
+//                    .map(LanguageLevelResponseDto::fromEntity)
+//                    .toList();
+//
+//            List<SpecificResumeResponseDto> specificList = List.of(SpecificResumeResponseDto.of(
+//                    resume.getId(),
+//                    specificQuestions,
+//                    languageLevels
+//            ));
+//
+//            resumeResponseList.add(ResumeResponse.of(resume.getId(), commonList, specificList));
+//        }
+//
+//        return ResumeListResponse.of(resumeResponseList);
+//    }
+
     @Transactional(readOnly = true)
     public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
-        List<Resume> resumes = resumeRepository.findAllWithRelationsByIdIn(resumeIds);
+        List<Resume> resumes = resumeRepository.findAllWithTimeSlotsByIdIn(resumeIds);
 
         List<ResumeResponse> resumeResponseList = new ArrayList<>();
 
         for (Resume resume : resumes) {
-            List<DetailResumeQuestionResponse> commonQuestions = getResumeQuestionList(resume, FieldType.COMMON);
-            List<DetailResumeQuestionResponse> specificQuestions = getResumeQuestionList(resume, resume.getField());
+            List<DetailResumeQuestionResponse> commonQuestions = new ArrayList<>();
+            List<DetailResumeQuestionResponse> specificQuestions = new ArrayList<>();
+            List<ResumeQuestion> rqList = getResumeListByResumeId(resume.getId());
+
+            rqList.forEach(rq -> {
+                DetailResumeQuestionResponse response = DetailResumeQuestionResponse.from(rq);
+                if (rq.getFieldType() == FieldType.COMMON) {
+                    commonQuestions.add(response);
+                } else {
+                    specificQuestions.add(response);
+                }
+            });
 
             List<CommonResumeResponse> commonList = List.of(CommonResumeResponse.of(resume, commonQuestions));
 
@@ -182,5 +222,9 @@ public class ResumeQuestionService {
         }
 
         return ResumeListResponse.of(resumeResponseList);
+    }
+
+    public List<ResumeQuestion> getResumeListByResumeId(Long resumeId) {
+        return resumeQuestionRepository.findByResumeId(resumeId);
     }
 }

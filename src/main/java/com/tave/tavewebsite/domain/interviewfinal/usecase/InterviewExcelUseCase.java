@@ -2,7 +2,9 @@ package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
 import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
+import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeMemberInfoDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.service.InterviewTimeService;
@@ -27,6 +29,7 @@ public class InterviewExcelUseCase {
 
     private final InterviewExcelService interviewExcelService;
     private final InterviewTimeService interviewTimeService;
+    private final InterviewGetService interviewGetService;
     private final ApplyInitialSetupService applyInitialSetupService;
     private final ResumeGetService resumeGetService;
     private final S3DownloadSerivce s3DownloadSerivce;
@@ -47,6 +50,21 @@ public class InterviewExcelUseCase {
         s3Service.uploadWorkbookToS3(workbook);
     }
 
+    public void insertInterviewerAndStoreToS3(MultipartFile file) {
+        String generation = applyInitialSetupService.getCurrentGeneration();
+        List<InterviewFinal> interviewList = interviewGetService.getInterviewFinalListByGeneration(generation);
+
+        try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+            // Excel 에 면접자 정보 작성
+            interviewExcelService.writeInterviewerData(workbook, interviewList);
+            // S3에 업로드
+            s3Service.uploadInterviewEvaluationToS3(workbook);
+        } catch (IOException e) {
+            throw new RuntimeException("엑셀 파일 처리에 실패했습니다.", e);
+        }
+
+    }
+
     public S3ExcelFileInputStreamDto getPossibleInterviewTimeCSV() throws IOException {
         return s3DownloadSerivce.downloadPossibleTimeTableXlsx();
     }
@@ -57,6 +75,14 @@ public class InterviewExcelUseCase {
 
     public S3ExcelFileInputStreamDto getInterviewTimeTableForManagerXLSX() throws IOException {
         return s3DownloadSerivce.downloadInterviewTimeTableForManagerXLSX();
+    }
+
+    public S3ExcelFileInputStreamDto getInterviewEvaluationInitialFormXLSX() throws IOException {
+        return s3DownloadSerivce.downloadInterviewEvaluationInitialFormXLSX();
+    }
+
+    public S3ExcelFileInputStreamDto getInterviewEvaluationXLSX() throws IOException {
+        return s3DownloadSerivce.downloadInterviewEvaluationXLSX();
     }
 
 

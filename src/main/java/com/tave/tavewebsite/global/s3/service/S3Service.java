@@ -31,18 +31,21 @@ public class S3Service {
     private final String highQualityBucketName;
     private final String possibleTimeTableXLSX;
     private final String interviewTimeTableForManagerXLSX;
+    private final String interviewEvaluationXLSX;
 
     private static final String XLSX_APPLICATION_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     public S3Service(AmazonS3 s3Client, @Value("${bucket_name}") String bucketName, @Value("${app.s3.high-quality-bucket}") String highQualityBucketName,
                      @Value("${interview_possible_time_table}") String interviewPossibleTimeTable,
-                     @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager
+                     @Value("${interview_time_table_for_manager}") String interviewTimeTableForManager,
+                     @Value("${interview_evaluation_xlsx}") String interviewEvaluationXLSX
                      ) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.highQualityBucketName = highQualityBucketName;
         this.possibleTimeTableXLSX = interviewPossibleTimeTable;
         this.interviewTimeTableForManagerXLSX= interviewTimeTableForManager;
+        this.interviewEvaluationXLSX = interviewEvaluationXLSX;
     }
 
     public URL uploadImages(MultipartFile file) {
@@ -130,6 +133,25 @@ public class S3Service {
             s3Client.putObject(request);
 
         } catch (IOException e) {
+            throw new S3UploadFailException();
+        }
+    }
+
+    public void uploadInterviewEvaluationToS3(Workbook workbook) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            workbook.write(out);
+            byte[] bytes = out.toByteArray();
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(XLSX_APPLICATION_TYPE);
+            metadata.setContentLength(bytes.length);
+
+            s3Client.putObject(
+                    new PutObjectRequest(bucketName, interviewEvaluationXLSX,
+                            new ByteArrayInputStream(bytes), metadata)
+            );
+        } catch (IOException e) {
+            log.error("S3 업로드 실패: {}", e.getMessage(), e);
             throw new S3UploadFailException();
         }
     }

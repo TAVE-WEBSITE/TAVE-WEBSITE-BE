@@ -59,6 +59,8 @@ cloud:
 final_interview_form: ${FINAL_INTERVIEW_FORM}
 interview_possible_time_table: ${INTERVIEW_POSSIBLE_TIME_TABLE_XLSX}
 interview_time_table_for_manager: ${INTERVIEW_TIME_TABLE_FOR_MANAGER}
+interview_evaluation_initial_form: ${INTERVIEW_EVALUATION_INITIAL_FORM}
+interview_evaluation_xlsx: ${INTERVIEW_EVALUATION_XLSX}
 
 app:
   s3:
