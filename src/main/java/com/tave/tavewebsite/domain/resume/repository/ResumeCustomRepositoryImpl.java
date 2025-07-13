@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.tave.tavewebsite.domain.resume.entity.QResume.resume;
 import static com.tave.tavewebsite.domain.resume.entity.QResumeEvaluation.resumeEvaluation;
@@ -35,6 +36,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         List<ResumeResDto> resumeResDtos = queryFactory
                 .select(Projections.constructor(
                         ResumeResDto.class,
+                        resume.member.id,
                         resume.id,
                         resume.field,
                         resume.member.username,
@@ -60,10 +62,18 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = queryFactory
-                .select(resume.count())
-                .from(resume)
-                .fetchOne();
+        long total = Optional.ofNullable(
+                queryFactory
+                        .select(resume.count())
+                        .from(resume)
+                        .leftJoin(resumeEvaluation)
+                        .on(
+                                resumeEvaluation.resume.id.eq(resume.id)
+                                        .and(resumeEvaluation.member.id.eq(member.getId()))
+                        )
+                        .where(extractedStatus(status))
+                        .fetchOne()
+        ).orElse(0L);
 
         return new PageImpl<>(resumeResDtos, pageable, total);
     }
@@ -89,6 +99,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         List<ResumeResDto> resumeResDtos = queryFactory
                 .select(Projections.constructor(
                         ResumeResDto.class,
+                        resume.member.id,
                         resume.id,
                         resume.field,
                         resume.member.username,
@@ -110,11 +121,6 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = queryFactory
-                .select(resume.count())
-                .from(resume)
-                .fetchOne();
-
         return new PageImpl<>(resumeResDtos, pageable, resumeResDtos.size());
     }
 
@@ -132,23 +138,23 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
 
     @Override
     public long findNotEvaluatedResume(Member member) {
-        Long resumeCount = queryFactory.select(resume.count()).from(resume).fetchOne();
-
+        Long resumeCount = queryFactory.select(resume.count()).from(resume).fetchOne(); // Long 반환 (nullable)
         Long evaluatedCount = queryFactory
                 .select(resumeEvaluation.count())
                 .from(resumeEvaluation)
                 .where(resumeEvaluation.member.id.eq(member.getId()))
-                .fetchOne();
+                .fetchOne(); // Long 반환 (nullable)
 
         return resumeCount - evaluatedCount;
     }
 
-    @Override
     public long findEvaluatedResume(Member member) {
-        return queryFactory
+        Long result = queryFactory
                 .select(resumeEvaluation.count())
                 .from(resumeEvaluation)
                 .where(resumeEvaluation.member.id.eq(member.getId()))
                 .fetchOne();
+
+        return Optional.ofNullable(result).orElse(0L); // null이면 0 반환
     }
 }

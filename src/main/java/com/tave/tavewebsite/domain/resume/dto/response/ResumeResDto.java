@@ -7,7 +7,8 @@ import com.tave.tavewebsite.global.common.FieldType;
 import java.time.LocalDateTime;
 
 public record ResumeResDto(
-        Long id,
+        Long memberId,
+        Long resumeId,
         FieldType fieldType,
         String name,
         Sex sex,
