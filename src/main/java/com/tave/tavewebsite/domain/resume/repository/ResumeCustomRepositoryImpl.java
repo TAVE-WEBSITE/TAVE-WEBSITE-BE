@@ -4,10 +4,12 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
+import com.tave.tavewebsite.domain.resume.entity.QResumeEvaluation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +30,8 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
 
     @Override
     public Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, Pageable pageable) {
+        QResumeEvaluation resumeEvaluationSub = new QResumeEvaluation("reSub");
+
         List<ResumeResDto> resumeResDtos = queryFactory
                 .select(Projections.constructor(
                         ResumeResDto.class,
@@ -37,7 +41,10 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                         resume.member.sex,
                         resume.school,
                         resume.createdAt,
-                        Expressions.constant(0L),
+                        JPAExpressions
+                                .select(resumeEvaluationSub.count())
+                                .from(resumeEvaluationSub)
+                                .where(resumeEvaluationSub.resume.id.eq(resume.id)),
                         new CaseBuilder()
                                 .when(resumeEvaluation.finalEvaluateDocument.isNull())
                                 .then(EvaluationStatus.NOTCHECKED)

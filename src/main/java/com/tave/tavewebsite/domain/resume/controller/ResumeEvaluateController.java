@@ -37,7 +37,7 @@ public class ResumeEvaluateController {
     // 서류 리스트 보기
     @GetMapping
     public SuccessResponse<ResumeEvaluateResDto> getDocumentEvaluationList(
-            @RequestParam EvaluationStatus status,
+            @RequestParam(required = false) EvaluationStatus status,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
