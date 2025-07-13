@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.apply.initial.setup.service;
 
+import com.tave.tavewebsite.domain.apply.dashboard.service.DashboardService;
 import com.tave.tavewebsite.domain.apply.initial.setup.dto.request.ApplyInitialSetupRequestDto;
 import com.tave.tavewebsite.domain.apply.initial.setup.dto.response.ApplyInitialSetupReadResponseDto;
 import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
@@ -8,13 +9,12 @@ import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSe
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApplyInitialSetupService {
 
     private final ApplyInitialSetupRepository applyInitialSetupRepository;
+    private final DashboardService dashboardService;
 
     @Transactional(readOnly = true)
     public ApplyInitialSetupReadResponseDto getInitialSetup() {
@@ -32,6 +33,7 @@ public class ApplyInitialSetupService {
     }
 
     public void saveInitialSetup(ApplyInitialSetupRequestDto dto) {
+        dashboardService.initDashboard(); // 대시보드 초기화
         if (applyInitialSetupRepository.existsById(1L)) {
             Optional<ApplyInitialSetup> byId = applyInitialSetupRepository.findById(1L);
             byId.get().updateFrom(dto);
