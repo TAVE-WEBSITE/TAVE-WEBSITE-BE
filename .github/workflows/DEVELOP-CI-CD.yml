@@ -69,7 +69,7 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tavewebsite-dev
 
             echo "🔄 [3] 도커 컴포즈 재시작"
-            docker compose down
-            docker compose up -d
+            sudo docker compose up -d --no-deps develop-tave-website 
 
             echo "✅ 배포 완료"
+            
