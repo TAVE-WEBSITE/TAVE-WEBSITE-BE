@@ -73,3 +73,5 @@ jobs:
 
             echo "✅ 배포 완료"
             
+            echo "✅ 사용하지 않는 도커 이미지 정리"
+            sudo docker image prune -f
