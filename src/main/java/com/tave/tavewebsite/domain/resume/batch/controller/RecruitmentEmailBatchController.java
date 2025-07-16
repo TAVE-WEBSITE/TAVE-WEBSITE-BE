@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.domain.resume.batch.controller;
 
 import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
+import com.tave.tavewebsite.domain.resume.batch.dto.response.RecruitmentResponseDto;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,11 @@ public class RecruitmentEmailBatchController {
 
     private final ApplyInitialSetupService applyInitialSetupService;
 
+    @GetMapping("/document/email/find")
+    public SuccessResponse<RecruitmentResponseDto> findDocumentEmailBatch(HttpServletRequest request) {
+        return new SuccessResponse<>(applyInitialSetupService.getDocumentFlag(), RecruitmentBatchSuccessMessage.GET_DOCUMENT_RESERVATION.getMessage());
+    }
+
     @GetMapping("/document/email")
     public SuccessResponse runDocumentEmailBatch(HttpServletRequest request) {
         applyInitialSetupService.changeDocumentAnnouncementFlag(true, request);
@@ -25,6 +31,11 @@ public class RecruitmentEmailBatchController {
     public SuccessResponse cancelDocumentEmailBatch(HttpServletRequest request) {
         applyInitialSetupService.changeDocumentAnnouncementFlag(false, request);
         return SuccessResponse.ok(RecruitmentBatchSuccessMessage.DOCUMENT_RESULT_BATCH_JOB_CANCEL.getMessage());
+    }
+
+    @GetMapping("/last/email/find")
+    public SuccessResponse<RecruitmentResponseDto> findLastEmailBatch(HttpServletRequest request) {
+        return new SuccessResponse<>(applyInitialSetupService.getLastFlag(), RecruitmentBatchSuccessMessage.GET_INTERVIEW_RESERVATION.getMessage());
     }
 
     @GetMapping("/last/email")
