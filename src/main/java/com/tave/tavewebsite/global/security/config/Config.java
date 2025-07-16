@@ -41,6 +41,7 @@ public class Config {
                         "https://recruit.tave-wave.com",
                         "https://tave-apply-rjjft5des-taves-projects-79609e27.vercel.app",
                         "https://feat-api.d2hnz1q3fz81jx.amplifyapp.com",
+                        "https://develop.d2hnz1q3fz81jx.amplifyapp.com",
                         "https://test.tave-wave.com",
                         "https://test-recruit.tave-wave.com"
                 ));
