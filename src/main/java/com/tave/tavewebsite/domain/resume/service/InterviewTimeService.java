@@ -1,5 +1,7 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.tave.tavewebsite.domain.apply.initial.setup.dto.response.ApplyInitialSetupReadResponseDto;
+import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
 import com.tave.tavewebsite.domain.resume.dto.request.InterviewTimeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.InterviewTimeResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotResDto;
@@ -8,12 +10,13 @@ import com.tave.tavewebsite.domain.resume.repository.InterviewTimeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -21,13 +24,17 @@ import java.util.*;
 public class InterviewTimeService {
 
     private final InterviewTimeRepository interviewTimeRepository;
+    private final ApplyInitialSetupService applyInitialSetupService;
 
+    @Transactional
     public void createInterviewTime(InterviewTimeReqDto reqDto) {
 
         interviewTimeRepository.deleteAll();
 
-        LocalDate startDate = reqDto.startDate();
-        LocalDate endDate   = reqDto.endDate();
+        ApplyInitialSetupReadResponseDto initialSetup = applyInitialSetupService.getInitialSetup();
+
+        LocalDate startDate = LocalDate.from(initialSetup.interviewStartDate());
+        LocalDate endDate   = LocalDate.from(initialSetup.interviewEndDate());
         LocalTime startTime = LocalTime.parse(reqDto.startTime());
         LocalTime endTime   = LocalTime.parse(reqDto.endTime());
         int intervalMin = reqDto.progressTime();
