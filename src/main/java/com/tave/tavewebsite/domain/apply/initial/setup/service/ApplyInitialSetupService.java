@@ -34,14 +34,14 @@ public class ApplyInitialSetupService {
     }
 
     @Transactional(readOnly = true)
-    public RecruitmentResponseDto getDocumentFlag() {
+    public RecruitmentResponseDto getDocumentAnnouncementFlag() {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(ApplyInitialSetupNotFoundException::new);
         return new RecruitmentResponseDto(applyInitialSetup.getDocumentAnnouncementFlag());
     }
 
     @Transactional(readOnly = true)
-    public RecruitmentResponseDto getLastFlag() {
+    public RecruitmentResponseDto getLastAnnouncementFlag() {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(ApplyInitialSetupNotFoundException::new);
         return new RecruitmentResponseDto(applyInitialSetup.getLastAnnouncementFlag());

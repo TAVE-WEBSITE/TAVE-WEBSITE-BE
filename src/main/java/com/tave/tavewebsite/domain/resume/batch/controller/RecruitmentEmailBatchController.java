@@ -18,7 +18,7 @@ public class RecruitmentEmailBatchController {
 
     @GetMapping("/document/email/find")
     public SuccessResponse<RecruitmentResponseDto> findDocumentEmailBatch(HttpServletRequest request) {
-        return new SuccessResponse<>(applyInitialSetupService.getDocumentFlag(), RecruitmentBatchSuccessMessage.GET_DOCUMENT_RESERVATION.getMessage());
+        return new SuccessResponse<>(applyInitialSetupService.getDocumentAnnouncementFlag(), RecruitmentBatchSuccessMessage.GET_DOCUMENT_RESERVATION.getMessage());
     }
 
     @GetMapping("/document/email")
@@ -35,7 +35,7 @@ public class RecruitmentEmailBatchController {
 
     @GetMapping("/last/email/find")
     public SuccessResponse<RecruitmentResponseDto> findLastEmailBatch(HttpServletRequest request) {
-        return new SuccessResponse<>(applyInitialSetupService.getLastFlag(), RecruitmentBatchSuccessMessage.GET_INTERVIEW_RESERVATION.getMessage());
+        return new SuccessResponse<>(applyInitialSetupService.getLastAnnouncementFlag(), RecruitmentBatchSuccessMessage.GET_INTERVIEW_RESERVATION.getMessage());
     }
 
     @GetMapping("/last/email")
