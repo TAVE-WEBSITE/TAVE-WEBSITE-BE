@@ -2,8 +2,6 @@ package com.tave.tavewebsite.domain.emailnotification.batch.scheduler;
 
 import com.tave.tavewebsite.domain.emailnotification.batch.exception.EmailNotificationBatchException.ApplyEmailBatchJobFailException;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.batch.core.Job;
@@ -13,6 +11,9 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @Slf4j
@@ -32,7 +33,7 @@ public class EmailBatchScheduler {
     }
 
 
-    @Scheduled(cron = "0 0 3 * * *") // 매일 새벽 3시
+    @Scheduled(cron = "0 0 0 * * *") // 매일 새벽 0시
     @SchedulerLock(name = "emailNotificationJobLock", lockAtMostFor = "PT10M") // 락 10분간 유지
     public void executeIfScheduled() {
         String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
