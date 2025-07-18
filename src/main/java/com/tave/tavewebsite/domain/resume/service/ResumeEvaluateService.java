@@ -12,6 +12,7 @@ import com.tave.tavewebsite.domain.resume.entity.ResumeEvaluation;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeEvaluationRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -49,9 +50,9 @@ public class ResumeEvaluateService {
 
     //본인 기반의 작성한 지원서에 대해 조회해야됨
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, Pageable pageable) {
+    public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, FieldType type, Pageable pageable) {
         Member currentMember = getCurrentMember();
-        Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, pageable);
+        Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, type, pageable);
 
 
 
@@ -62,10 +63,10 @@ public class ResumeEvaluateService {
     }
 
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getFinalDocumentResumes(EvaluationStatus status, Pageable pageable) {
+    public ResumeEvaluateResDto getFinalDocumentResumes(EvaluationStatus status, FieldType type, Pageable pageable) {
         Member currentMember = getCurrentMember();
         Page<ResumeResDto> resumeResDtos =
-                resumeRepository.findFinalEvaluation(currentMember, status, pageable);
+                resumeRepository.findFinalEvaluation(currentMember, status, type, pageable);
 
         return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
                 resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.NOTCHECKED),
