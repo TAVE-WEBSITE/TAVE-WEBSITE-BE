@@ -8,6 +8,7 @@ import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.webp.WebpWriter;
 import com.tave.tavewebsite.domain.interviewfinal.exception.EmptyFileException;
 import com.tave.tavewebsite.domain.interviewfinal.exception.IsNotXlsxFileException;
+import com.tave.tavewebsite.domain.resume.exception.InvalidFileTypeException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
@@ -90,7 +91,7 @@ public class S3Service {
         String contentType = file.getContentType();
 
         if (contentType == null || !contentType.equals("application/pdf")) {
-            throw new RuntimeException("PDF 파일만 업로드할 수 있습니다.");
+            throw new InvalidFileTypeException();
         }
 
         File uploadFile;
