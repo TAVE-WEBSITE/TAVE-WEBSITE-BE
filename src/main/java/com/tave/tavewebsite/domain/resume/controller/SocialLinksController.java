@@ -7,7 +7,6 @@ import com.tave.tavewebsite.domain.resume.exception.FileSizeExceededException;
 import com.tave.tavewebsite.domain.resume.service.SocialLinksService;
 import com.tave.tavewebsite.global.s3.service.S3Service;
 import com.tave.tavewebsite.global.success.SuccessResponse;
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
