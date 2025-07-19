@@ -3,9 +3,11 @@ package com.tave.tavewebsite.domain.resume.controller;
 import com.tave.tavewebsite.domain.resume.controller.message.SocialLinksSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.response.SocialLinksResponseDto;
+import com.tave.tavewebsite.domain.resume.exception.FileSizeExceededException;
 import com.tave.tavewebsite.domain.resume.service.SocialLinksService;
 import com.tave.tavewebsite.global.s3.service.S3Service;
 import com.tave.tavewebsite.global.success.SuccessResponse;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +54,12 @@ public class SocialLinksController {
     @PostMapping("/portfolio")
     public SuccessResponse updatePortfolio(@PathVariable("resumeId") Long resumeId,
                                            @RequestParam("file") MultipartFile file) {
+        final long MAX_FILE_SIZE = 300 * 1024 * 1024; // 300MB
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new FileSizeExceededException();
+        }
+
         URL portfolioUrl = s3Service.uploadFile(file);
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
         socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString());
