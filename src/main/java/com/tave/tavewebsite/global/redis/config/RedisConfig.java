@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.global.redis.config;
 
 import com.tave.tavewebsite.global.redis.entity.RedisProperties;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -20,6 +21,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
+    private RedissonClient redissonClient;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -55,7 +57,7 @@ public class RedisConfig {
     @PreDestroy
     public void destroy() {
         if (redissonClient != null && !redissonClient.isShutdown()) {
-            redissonClient.shutdown(); // 실제 사용 중인 클라이언트 종료
+            redissonClient.shutdown(); // ✅ 실제 사용 중인 클라이언트 종료
         }
     }
 }
