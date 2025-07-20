@@ -66,4 +66,4 @@ jobs:
             cd ~/tave-website
 
             echo "🔄 [2] deploy.sh 실행"
-            sudo ./deploy.sh
+            bash deploy.sh
