@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.DocumentEvaluationResDto;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.service.ResumeEvaluateService;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +39,12 @@ public class ResumeEvaluateController {
     @GetMapping
     public SuccessResponse<ResumeEvaluateResDto> getDocumentEvaluationList(
             @RequestParam(required = false) EvaluationStatus status,
+            @RequestParam(required = false) FieldType type,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
         return new SuccessResponse<>(
-                resumeEvaluateService.getDocumentResumes(status, pageable),
+                resumeEvaluateService.getDocumentResumes(status, type, pageable),
                 READ_SUCCESS.getMessage());
     }
 
@@ -50,11 +52,12 @@ public class ResumeEvaluateController {
     @GetMapping("/final")
     public SuccessResponse<ResumeEvaluateResDto> getFinalDocumentEvaluationList(
             @RequestParam(required = false) EvaluationStatus status,
+            @RequestParam(required = false) FieldType type,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
         return new SuccessResponse<>(
-                resumeEvaluateService.getFinalDocumentResumes(status, pageable),
+                resumeEvaluateService.getFinalDocumentResumes(status, type, pageable),
                 READ_SUCCESS.getMessage());
     }
 

@@ -9,6 +9,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DashboardService {
@@ -56,20 +58,21 @@ public class DashboardService {
     }
 
     public void addDetailedCount(Resume resume, Member member) {
-        String lockKey = "lock:dashboard:global";
+        String lockKey = "sync:dashboard:lock";
         RLock lock = redissonClient.getLock(lockKey);
 
+        boolean isLocked = false;
         try {
-            if (lock.tryLock(10, 5, TimeUnit.SECONDS)) { // 최대 10초 대기, 5초 유지
-                updateDashboardAtomically(resume, member);
-            } else {
-                throw new IllegalStateException("Dashboard 잠금 획득 실패");
+            isLocked = lock.tryLock(10, 2, TimeUnit.SECONDS);
+            if(!isLocked){
+                log.warn("락을 획득하지 못했습니다.");
             }
+            // 로직 처리
+            updateDashboardAtomically(resume, member);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Dashboard 락 중 인터럽트 발생", e);
         } finally {
-            if (lock.isHeldByCurrentThread()) {
+            if (isLocked && lock.isHeldByCurrentThread()) {
                 lock.unlock();
             }
         }

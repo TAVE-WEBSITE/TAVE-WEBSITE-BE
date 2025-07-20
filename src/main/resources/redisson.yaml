@@ -1,8 +1,0 @@
-singleServerConfig:
-  address: "redis://${REDIS_HOST}:${REDIS_PORT}"
-  password: "${REDIS_PASSWORD}"
-  connectionPoolSize: 64
-  connectionMinimumIdleSize: 24
-  timeout: 10000
-threads: 4
-nettyThreads: 8
