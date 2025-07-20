@@ -45,9 +45,17 @@ public class RedisConfig {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://" + redisProperties.getHost() + ":" + redisProperties.getPort())
                 .setPassword(redisProperties.getPassword())
-                .setConnectionPoolSize(26)
-                .setConnectionMinimumIdleSize(10);
+                .setConnectionPoolSize(3)
+                .setConnectionMinimumIdleSize(1);
 
-        return Redisson.create(config);
+        this.redissonClient = Redisson.create(config);
+        return redissonClient;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (redissonClient != null && !redissonClient.isShutdown()) {
+            redissonClient.shutdown(); // 실제 사용 중인 클라이언트 종료
+        }
     }
 }
