@@ -7,6 +7,7 @@ import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
 import com.tave.tavewebsite.domain.apply.initial.setup.exception.ApplyInitialSetupException.ApplyInitialSetupNotFoundException;
 import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSetupRepository;
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
+import com.tave.tavewebsite.domain.resume.batch.dto.response.RecruitmentResponseDto;
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,20 @@ public class ApplyInitialSetupService {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(ApplyInitialSetupNotFoundException::new);
         return ApplyInitialSetUpMapper.toApplyInitialSetupReadResponseDto(applyInitialSetup);
+    }
+
+    @Transactional(readOnly = true)
+    public RecruitmentResponseDto getDocumentAnnouncementFlag() {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+        return new RecruitmentResponseDto(applyInitialSetup.getDocumentAnnouncementFlag());
+    }
+
+    @Transactional(readOnly = true)
+    public RecruitmentResponseDto getLastAnnouncementFlag() {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+        return new RecruitmentResponseDto(applyInitialSetup.getLastAnnouncementFlag());
     }
 
     public void saveInitialSetup(ApplyInitialSetupRequestDto dto) {
@@ -81,7 +96,7 @@ public class ApplyInitialSetupService {
         applyInitialSetup.changeLastAnnouncementFlag(flag);
     }
 
-    public String getCurrentGeneration(){
+    public String getCurrentGeneration() {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(ApplyInitialSetupNotFoundException::new);
         log.info("현재 기수 = {}", applyInitialSetup.getGeneration());
