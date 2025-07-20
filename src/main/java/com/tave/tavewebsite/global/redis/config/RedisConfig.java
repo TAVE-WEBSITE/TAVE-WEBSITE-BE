@@ -48,8 +48,8 @@ public class RedisConfig {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://" + redisProperties.getHost() + ":" + redisProperties.getPort())
                 .setPassword(redisProperties.getPassword())
-                .setConnectionPoolSize(3)
-                .setConnectionMinimumIdleSize(1);
+                .setConnectionPoolSize(25)
+                .setConnectionMinimumIdleSize(15);
 
         this.redissonClient = Redisson.create(config);
         return redissonClient;
