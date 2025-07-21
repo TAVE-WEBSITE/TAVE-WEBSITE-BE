@@ -89,19 +89,19 @@ public class DashboardService {
 
     private List<DashboardRatioResDto> extractedFieldDto(Long totalCount, Dashboard dashboard) {
         return List.of(
-                new DashboardRatioResDto("앱프론트", totalCount, getRatio(totalCount, dashboard.getAppFrontCount())),
-                new DashboardRatioResDto("웹프론트", totalCount, getRatio(totalCount, dashboard.getWebFrontCount())),
-                new DashboardRatioResDto("백엔드", totalCount, getRatio(totalCount, dashboard.getBackendCount())),
-                new DashboardRatioResDto("디자인", totalCount, getRatio(totalCount, dashboard.getDesignCount())),
-                new DashboardRatioResDto("데이터분석", totalCount, getRatio(totalCount, dashboard.getDataAnalysisCount())),
-                new DashboardRatioResDto("딥러닝", totalCount, getRatio(totalCount, dashboard.getDeepCount()))
+                new DashboardRatioResDto("앱프론트", dashboard.getAppFrontCount(), getRatio(totalCount, dashboard.getAppFrontCount())),
+                new DashboardRatioResDto("웹프론트", dashboard.getWebFrontCount(), getRatio(totalCount, dashboard.getWebFrontCount())),
+                new DashboardRatioResDto("백엔드", dashboard.getBackendCount(), getRatio(totalCount, dashboard.getBackendCount())),
+                new DashboardRatioResDto("디자인", dashboard.getDesignCount(), getRatio(totalCount, dashboard.getDesignCount())),
+                new DashboardRatioResDto("데이터분석", dashboard.getDataAnalysisCount(), getRatio(totalCount, dashboard.getDataAnalysisCount())),
+                new DashboardRatioResDto("딥러닝", dashboard.getDeepCount(), getRatio(totalCount, dashboard.getDeepCount()))
         );
     }
 
     private List<DashboardRatioResDto> extractedSexDto(Long totalCount, Dashboard dashboard) {
         return List.of(
-                new DashboardRatioResDto("남성", totalCount, getRatio(totalCount, dashboard.getMaleCount())),
-                new DashboardRatioResDto("여성", totalCount, getRatio(totalCount, dashboard.getFemaleCount()))
+                new DashboardRatioResDto("남성", dashboard.getMaleCount(), getRatio(totalCount, dashboard.getMaleCount())),
+                new DashboardRatioResDto("여성", dashboard.getFemaleCount(), getRatio(totalCount, dashboard.getFemaleCount()))
         );
     }
 }
