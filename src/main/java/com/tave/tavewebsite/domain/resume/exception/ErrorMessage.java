@@ -35,7 +35,7 @@ public enum ErrorMessage {
     ALREADY_EXISTS_EVALUATION(400, "이미 평가중인 이력서입니다."),
 
     FILE_SIZE_EXCEEDED(400, "파일 크기는 최대 300MB까지 허용됩니다."),
-    FILE_TYPE_INVALID(400, "PDF 파일만 업로드할 수 있습니다.");
+    PDF_FILE_TYPE(400, "PDF 파일만 업로드할 수 있습니다.");
 
     private final int code;
     private final String message;
