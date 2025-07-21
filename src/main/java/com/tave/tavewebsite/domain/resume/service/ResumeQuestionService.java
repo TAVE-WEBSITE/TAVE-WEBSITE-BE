@@ -196,7 +196,7 @@ public class ResumeQuestionService {
         for (Resume resume : resumes) {
             List<DetailResumeQuestionResponse> commonQuestions = new ArrayList<>();
             List<DetailResumeQuestionResponse> specificQuestions = new ArrayList<>();
-            List<ResumeQuestion> rqList = getResumeListByResumeId(resume.getId());
+            List<ResumeQuestion> rqList = resume.getResumeQuestions();
 
             rqList.forEach(rq -> {
                 DetailResumeQuestionResponse response = DetailResumeQuestionResponse.from(rq);
