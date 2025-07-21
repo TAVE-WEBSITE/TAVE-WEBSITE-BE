@@ -188,14 +188,15 @@ public class ResumeQuestionService {
 
     @Transactional(readOnly = true)
     public ResumeListResponse getResumeListDetails(List<Long> resumeIds) {
-        List<Resume> resumes = resumeRepository.findAllWithTimeSlotsByIdIn(resumeIds);
+//        List<Resume> resumes = resumeRepository.findAllWithTimeSlotsByIdIn(resumeIds);
+        List<Resume> resumes = resumeRepository.findAllByMemberIdWithTimeSlotsIn(resumeIds);
 
         List<ResumeResponse> resumeResponseList = new ArrayList<>();
 
         for (Resume resume : resumes) {
             List<DetailResumeQuestionResponse> commonQuestions = new ArrayList<>();
             List<DetailResumeQuestionResponse> specificQuestions = new ArrayList<>();
-            List<ResumeQuestion> rqList = getResumeListByResumeId(resume.getId());
+            List<ResumeQuestion> rqList = resume.getResumeQuestions();
 
             rqList.forEach(rq -> {
                 DetailResumeQuestionResponse response = DetailResumeQuestionResponse.from(rq);
@@ -218,7 +219,9 @@ public class ResumeQuestionService {
                     languageLevels
             ));
 
-            resumeResponseList.add(ResumeResponse.of(resume.getId(), commonList, specificList));
+            ResumeMemberInfoDto resumeMemberInfoDto = ResumeMemberInfoDto.of(resume);
+
+            resumeResponseList.add(ResumeResponse.of(resume.getId(), commonList, specificList, resumeMemberInfoDto));
         }
 
         return ResumeListResponse.of(resumeResponseList);
