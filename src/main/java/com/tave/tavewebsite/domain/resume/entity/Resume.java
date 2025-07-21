@@ -153,4 +153,7 @@ public class Resume extends BaseEntity {
         return this.languageLevels;
     }
 
+    public boolean isDoubleMajor() {
+        return this.minor != null;
+    }
 }
