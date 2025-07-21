@@ -68,9 +68,10 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     })
     List<Resume> findAllWithRelationsByIdIn(List<Long> resumeIds);
 
-    // resumeTimeSlots만 fetch join으로 가져오고, 나머지는 @BatchSize로 처리
+    // 가짓수가 많은 TimeSlot은 Fetch, Member는 ManyToOne 관계이므로 Fetch 사용 무방
     @Query("SELECT DISTINCT r FROM Resume r " +
             "LEFT JOIN FETCH r.resumeTimeSlots " +
+            "LEFT JOIN FETCH r.member " +
             "WHERE r.id IN :resumeIds")
-    List<Resume> findAllWithTimeSlotsByIdIn(@Param("resumeIds") List<Long> resumeIds);
+    List<Resume> findAllByMemberIdWithTimeSlotsIn(@Param("resumeIds") List<Long> resumeIds);
 }
