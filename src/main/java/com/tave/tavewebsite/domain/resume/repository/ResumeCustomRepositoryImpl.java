@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -10,6 +11,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.QResumeEvaluation;
+import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,8 +32,19 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, Pageable pageable) {
+    public Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, FieldType type, Pageable pageable) {
         QResumeEvaluation resumeEvaluationSub = new QResumeEvaluation("reSub");
+
+        BooleanBuilder condition = new BooleanBuilder();
+        BooleanExpression statusCondition = extractedStatus(status);
+        BooleanExpression typeCondition = extractedFieldType(type);
+
+        if (statusCondition != null) {
+            condition.and(statusCondition);
+        }
+        if (typeCondition != null) {
+            condition.and(typeCondition);
+        }
 
         List<ResumeResDto> resumeResDtos = queryFactory
                 .select(Projections.constructor(
@@ -57,7 +70,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                         resumeEvaluation.resume.id.eq(resume.id)
                         .and(resumeEvaluation.member.id.eq(member.getId()))
                 )
-                .where(extractedStatus(status))
+                .where(condition)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -71,7 +84,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                                 resumeEvaluation.resume.id.eq(resume.id)
                                         .and(resumeEvaluation.member.id.eq(member.getId()))
                         )
-                        .where(extractedStatus(status))
+                        .where(condition)
                         .fetchOne()
         ).orElse(0L);
 
@@ -93,9 +106,31 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         return condition;
     }
 
+    private BooleanExpression extractedFieldType(FieldType type) {
+        BooleanExpression fieldType;
+
+        if(type == null)
+            return null;
+        fieldType = resume.field.eq(type);
+
+        return fieldType;
+    }
+
     // 해당 조회는 EvaluationStatus 값이 평가 완료 or 평가 진행 전일 경우에 둘다 평가 진행 전으로 처리
     @Override
-    public Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, Pageable pageable) {
+    public Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, FieldType type, Pageable pageable) {
+
+        BooleanBuilder condition = new BooleanBuilder();
+        BooleanExpression statusCondition = extractedStatusInFinalEvaluation(status);
+        BooleanExpression typeCondition = extractedFieldType(type);
+
+        if (statusCondition != null) {
+            condition.and(statusCondition);
+        }
+        if (typeCondition != null) {
+            condition.and(typeCondition);
+        }
+
         List<ResumeResDto> resumeResDtos = queryFactory
                 .select(Projections.constructor(
                         ResumeResDto.class,
@@ -116,7 +151,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                         resume.member.sex,
                         resume.school,
                         resume.finalDocumentEvaluationStatus) //
-                .where(extractedStatusInFinalEvaluation(status))
+                .where(condition)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -138,14 +173,22 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
 
     @Override
     public long findNotEvaluatedResume(Member member) {
-        Long resumeCount = queryFactory.select(resume.count()).from(resume).fetchOne(); // Long 반환 (nullable)
+        Long resumeCount = queryFactory
+                .select(resume.count())
+                .from(resume)
+                .fetchOne();
+
         Long evaluatedCount = queryFactory
                 .select(resumeEvaluation.count())
                 .from(resumeEvaluation)
                 .where(resumeEvaluation.member.id.eq(member.getId()))
-                .fetchOne(); // Long 반환 (nullable)
+                .fetchOne();
 
-        return resumeCount - evaluatedCount;
+        // null 방지 처리
+        long safeResumeCount = resumeCount != null ? resumeCount : 0L;
+        long safeEvaluatedCount = evaluatedCount != null ? evaluatedCount : 0L;
+
+        return safeResumeCount - safeEvaluatedCount;
     }
 
     public long findEvaluatedResume(Member member) {

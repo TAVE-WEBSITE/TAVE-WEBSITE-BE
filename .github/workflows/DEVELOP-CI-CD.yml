@@ -65,11 +65,5 @@ jobs:
             echo "📁 [1] tave-website 디렉토리로 이동"
             cd ~/tave-website
 
-            echo "🐳 [2] 도커 이미지 pull"
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tavewebsite-dev
-
-            echo "🔄 [3] 도커 컴포즈 재시작"
-            docker compose down
-            docker compose up -d
-
-            echo "✅ 배포 완료"
+            echo "🔄 [2] deploy.sh 실행"
+            bash deploy.sh
