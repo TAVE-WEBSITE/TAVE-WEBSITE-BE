@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSe
 import com.tave.tavewebsite.domain.emailnotification.batch.exception.EmailNotificationBatchException.ApplyEmailFindException;
 import com.tave.tavewebsite.domain.emailnotification.dto.request.EmailNotificationRequeestDto;
 import com.tave.tavewebsite.domain.emailnotification.dto.response.EmailNotificationApplyResponseDto;
+import com.tave.tavewebsite.domain.emailnotification.dto.response.EmailNotificationReservationResponse;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailNotification;
 import com.tave.tavewebsite.domain.emailnotification.entity.EmailStatus;
 import com.tave.tavewebsite.domain.emailnotification.repository.EmailNotificationRepository;
@@ -44,8 +45,14 @@ public class EmailNotificationService {
 
         String key = "email_batch_" + targetDate.format(DateTimeFormatter.ISO_DATE);
 
-        // redis에 설정한 flag를 바탕으로 해당하는 날짜의 새벽 3시에 이메일 대량 발송 실행 예정
+        // redis에 설정한 flag를 바탕으로 해당하는 날짜의 다음 날 새벽 00시에 이메일 대량 발송 실행 예정
         redisUtil.set(key, "SCHEDULED", 26 * 60); // 넉넉하게 26시간으로 설정
+    }
+
+    public EmailNotificationReservationResponse isApplyEmailScheduledForTomorrow() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        String key = "email_batch_" + tomorrow.format(DateTimeFormatter.ISO_DATE);
+        return new EmailNotificationReservationResponse(redisUtil.hasKey(key));
     }
 
     public void cancelTodayAndTomorrowApplyNotificationSchedule() {
