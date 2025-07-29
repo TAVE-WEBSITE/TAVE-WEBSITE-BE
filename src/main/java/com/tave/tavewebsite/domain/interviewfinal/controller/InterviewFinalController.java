@@ -4,6 +4,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalEvaluateResDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
 import com.tave.tavewebsite.domain.member.entity.Member;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.tave.tavewebsite.domain.interviewfinal.controller.SuccessMessage.*;
 
@@ -71,11 +71,11 @@ public class InterviewFinalController {
     }
 
     @GetMapping("/v1/manager/interview-final")
-    public SuccessResponse interviewFinalPageNation(
+    public SuccessResponse<InterviewFinalPageDto> interviewFinalPageNation(
         @RequestParam int pageNum,
         @RequestParam int pageSize
     ) {
-        List<InterviewFinalDetailDto> response = interviewFinalUseCase.getInterviewFinalList(pageNum, pageSize);
+        InterviewFinalPageDto response = interviewFinalUseCase.getInterviewFinalList(pageNum, pageSize);
 
         return new SuccessResponse<>(response, INTERVIEW_FINAL_LIST_GET.getMessage());
     }

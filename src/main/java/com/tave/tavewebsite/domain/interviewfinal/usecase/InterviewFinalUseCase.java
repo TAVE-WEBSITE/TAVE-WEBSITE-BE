@@ -7,6 +7,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDet
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalEvaluateResDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalResDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
@@ -37,9 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -89,14 +88,17 @@ public class InterviewFinalUseCase {
 
     }
 
-    public List<InterviewFinalDetailDto> getInterviewFinalList(int pageNum, int pageSize) {
+    public InterviewFinalPageDto getInterviewFinalList(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
 
-        return interviewGetService.getInterviewFinalPageableList(pageable)
-                .getContent()
-                .stream()
+        Page<InterviewFinal> pageList = interviewGetService.getInterviewFinalPageableList(pageable);
+        int totalPages = pageList.getTotalPages();
+
+        List<InterviewFinalDetailDto> dtoList = pageList.getContent().stream()
                 .map(InterviewFinalDetailDto::from)
                 .toList();
+
+        return InterviewFinalPageDto.of(totalPages, dtoList);
     }
 
     public InterviewFinalForMemberDto getMemberInterviewFinalDetail(Member currentMember, String generation) {
