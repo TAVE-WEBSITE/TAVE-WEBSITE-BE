@@ -230,4 +230,29 @@ public class ResumeQuestionService {
     public List<ResumeQuestion> getResumeListByResumeId(Long resumeId) {
         return resumeQuestionRepository.findByResumeId(resumeId);
     }
+
+    @Transactional(readOnly = true)
+    public ResumeDetailResponse getResumeDetail(Long resumeId) {
+        Resume resume = resumeRepository.findWithTimeSlotsById(resumeId)
+                .orElseThrow(() -> new ResumeNotFoundException());
+
+        List<DetailResumeQuestionResponse> commonQuestions = new ArrayList<>();
+        List<DetailResumeQuestionResponse> specificQuestions = new ArrayList<>();
+
+        for (ResumeQuestion rq : resume.getResumeQuestions()) {
+            DetailResumeQuestionResponse dto = DetailResumeQuestionResponse.from(rq);
+            if (rq.getFieldType() == FieldType.COMMON) {
+                commonQuestions.add(dto);
+            } else {
+                specificQuestions.add(dto);
+            }
+        }
+
+        List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
+                .map(LanguageLevelResponseDto::fromEntity)
+                .toList();
+
+        return ResumeDetailResponse.of(resume, commonQuestions, specificQuestions, languageLevels);
+    }
+
 }

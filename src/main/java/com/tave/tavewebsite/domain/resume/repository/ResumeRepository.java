@@ -68,6 +68,9 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     })
     List<Resume> findAllWithRelationsByIdIn(List<Long> resumeIds);
 
+    @EntityGraph(attributePaths = {"resumeTimeSlots"})
+    Optional<Resume> findWithTimeSlotsById(Long id);
+
     // 가짓수가 많은 TimeSlot은 Fetch, Member는 ManyToOne 관계이므로 Fetch 사용 무방
     @Query("SELECT DISTINCT r FROM Resume r " +
             "LEFT JOIN FETCH r.resumeTimeSlots " +
