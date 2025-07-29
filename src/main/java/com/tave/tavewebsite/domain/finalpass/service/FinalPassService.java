@@ -22,8 +22,9 @@ public class FinalPassService {
         return FinalPassMapper.toResponseDto(entity);
     }
 
-    public FinalPassResponseDto getFinalPass() {
-        FinalPass entity = finalPassRepository.findTopBy()
+    @Transactional(readOnly = true)
+    public FinalPassResponseDto getFinalPass(Long id) {
+        FinalPass entity = finalPassRepository.findById(id)
                 .orElseThrow(FinalPassNotFoundException::new);
         return FinalPassMapper.toResponseDto(entity);
     }
