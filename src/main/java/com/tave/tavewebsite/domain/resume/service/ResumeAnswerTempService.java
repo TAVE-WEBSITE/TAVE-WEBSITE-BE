@@ -113,11 +113,20 @@ public class ResumeAnswerTempService {
                 wrapper.setLastPage(1);
             }
 
+            if (wrapper.getPage2() == null) {
+                wrapper.setPage2(ResumeReqDto.empty());
+            }
+            if (wrapper.getPage3() == null) {
+                wrapper.setPage3(ResumeReqDto.empty());
+            }
+
             return wrapper;
 
         } catch (Exception e) {
             // Redis 접근 자체가 실패한 경우 → 기본 빈 wrapper 반환
             ResumeTempWrapper fallback = new ResumeTempWrapper();
+            fallback.setPage2(ResumeReqDto.empty());
+            fallback.setPage3(ResumeReqDto.empty());
             fallback.setLastPage(1);
             return fallback;
         }
