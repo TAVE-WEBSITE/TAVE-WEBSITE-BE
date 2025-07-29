@@ -11,6 +11,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.Intervi
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
+import com.tave.tavewebsite.domain.interviewfinal.exception.NotFoundInterviewFinalByMemberIdException;
 import com.tave.tavewebsite.domain.interviewfinal.mapper.InterviewFinalMapper;
 import com.tave.tavewebsite.domain.interviewfinal.repository.InterviewFinalRepository;
 import com.tave.tavewebsite.domain.interviewfinal.service.*;
@@ -21,6 +22,8 @@ import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.s3.service.S3DownloadSerivce;
@@ -169,6 +172,16 @@ public class InterviewFinalUseCase {
                 notCompletedCount,
                 interviewFinalRepository.count() - notCompletedCount,
                 interviewFinalEvaluation);
+    }
+
+    public void updateFinalInterviewStatus(Long interviewFinalId, EvaluationStatus status){
+        InterviewFinal interviewFinal = interviewFinalRepository.findById(interviewFinalId)
+                .orElseThrow(NotFoundInterviewFinalByMemberIdException::new);
+
+        Resume resume = resumeRepository.findById(interviewFinal.getResumeId())
+                .orElseThrow(ResumeNotFoundException::new);
+
+        resume.updateFinalDocumentEvaluationStatus(status);
     }
 
 }

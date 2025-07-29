@@ -109,4 +109,14 @@ public class InterviewFinalController {
                 INTERVIEW_FINAL_LIST_GET.getMessage());
     }
 
+    @PostMapping("/v1/admin/interview-final/{interviewFinalId}")
+    public SuccessResponse updateInterviewFinalStatus(
+            @PathVariable(name = "interviewFinalId") Long id,
+            @RequestParam(name = "status") EvaluationStatus status
+    ) {
+        interviewFinalUseCase.updateFinalInterviewStatus(id, status);
+
+        return new SuccessResponse<>(INTERVIEW_FINAL_UPDATE_SUCCESS.getMessage());
+    }
+
 }
