@@ -9,7 +9,6 @@ import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSe
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
 import com.tave.tavewebsite.domain.resume.batch.dto.response.RecruitmentResponseDto;
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
-import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +88,6 @@ public class ApplyInitialSetupService {
         log.info("서류 평가 완료 이메일 전송 예약 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
                 request.getHeader("User-Agent"));
         applyInitialSetup.changeDocumentAnnouncementFlag(flag);
-        resumeRepository.updateEvaluationStatusInPassedResume(EvaluationStatus.NOTCHECKED_IN_INTERVIEW, EvaluationStatus.PASS);
     }
 
     public void changeLastAnnouncementFlag(Boolean flag, HttpServletRequest request) {

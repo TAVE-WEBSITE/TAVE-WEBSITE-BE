@@ -6,7 +6,6 @@ import com.tave.tavewebsite.domain.resume.entity.Resume;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -75,10 +74,4 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
             "LEFT JOIN FETCH r.member " +
             "WHERE r.id IN :resumeIds")
     List<Resume> findAllByMemberIdWithTimeSlotsIn(@Param("resumeIds") List<Long> resumeIds);
-
-    @Query("UPDATE Resume r "
-        + "SET r.finalDocumentEvaluationStatus = :status " +
-            "WHERE r.finalDocumentEvaluationStatus = :notChangedStatus")
-    @Modifying(clearAutomatically = true)
-    void updateEvaluationStatusInPassedResume(@Param("status") EvaluationStatus status, @Param("notChangedStatus") EvaluationStatus notChangedStatus);
 }
