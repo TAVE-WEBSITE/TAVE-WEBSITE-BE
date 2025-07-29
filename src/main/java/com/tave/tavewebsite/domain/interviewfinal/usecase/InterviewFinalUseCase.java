@@ -5,6 +5,7 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
@@ -19,6 +20,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.global.s3.service.S3DownloadSerivce;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -75,14 +77,17 @@ public class InterviewFinalUseCase {
 
     }
 
-    public List<InterviewFinalDetailDto> getInterviewFinalList(int pageNum, int pageSize) {
+    public InterviewFinalPageDto getInterviewFinalList(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
 
-        return interviewGetService.getInterviewFinalPageableList(pageable)
-                .getContent()
-                .stream()
+        Page<InterviewFinal> pageList = interviewGetService.getInterviewFinalPageableList(pageable);
+        int totalPages = pageList.getTotalPages();
+
+        List<InterviewFinalDetailDto> dtoList = pageList.getContent().stream()
                 .map(InterviewFinalDetailDto::from)
                 .toList();
+
+        return InterviewFinalPageDto.of(totalPages, dtoList);
     }
 
     public InterviewFinalForMemberDto getMemberInterviewFinalDetail(Member currentMember, String generation) {
