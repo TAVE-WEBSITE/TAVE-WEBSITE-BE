@@ -4,13 +4,17 @@ import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalEvaluateResDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalResDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
+import com.tave.tavewebsite.domain.interviewfinal.exception.NotFoundInterviewFinalByMemberIdException;
 import com.tave.tavewebsite.domain.interviewfinal.mapper.InterviewFinalMapper;
+import com.tave.tavewebsite.domain.interviewfinal.repository.InterviewFinalRepository;
 import com.tave.tavewebsite.domain.interviewfinal.service.*;
 import com.tave.tavewebsite.domain.interviewfinal.utils.InterviewGroupUtil;
 import com.tave.tavewebsite.domain.interviewplace.dto.response.InterviewPlaceDetailDto;
@@ -18,6 +22,11 @@ import com.tave.tavewebsite.domain.interviewplace.service.InterviewPlaceService;
 import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.service.MemberService;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
+import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
+import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.s3.service.S3DownloadSerivce;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,6 +56,8 @@ public class InterviewFinalUseCase {
     private final InterviewFinalMapper mapper;
     private final InterviewGroupUtil groupUtil;
     private final MemberService memberService;
+    private final InterviewFinalRepository interviewFinalRepository;
+    private final ResumeRepository resumeRepository;
 
     public S3ExcelFileInputStreamDto downloadInterviewFinal() throws IOException {
         return s3DownloadSerivce.downloadInterviewFinalSetUpForm();
@@ -148,6 +159,31 @@ public class InterviewFinalUseCase {
                             .orElseGet(() -> InterviewFinalSaveDto.analysisFailed(interviewDto));
                 })
                 .toList();
+    }
+
+    /* ========================================== 면접 최종 평가 리스트 및 평가 기능 ============================= */
+
+    public InterviewFinalEvaluateResDto getInterviewFinalEvaluateList(Pageable pageable,
+                                                                      EvaluationStatus status,
+                                                                      FieldType type) {
+        Page<InterviewFinalResDto> interviewFinalEvaluation = interviewFinalRepository.findInterviewFinalEvaluation(pageable, status, type);
+
+        long notCompletedCount = resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.PASS);
+
+        return InterviewFinalEvaluateResDto.fromInterviewFinalResDto(interviewFinalRepository.count(),
+                notCompletedCount,
+                interviewFinalRepository.count() - notCompletedCount,
+                interviewFinalEvaluation);
+    }
+
+    public void updateFinalInterviewStatus(Long interviewFinalId, EvaluationStatus status){
+        InterviewFinal interviewFinal = interviewFinalRepository.findById(interviewFinalId)
+                .orElseThrow(NotFoundInterviewFinalByMemberIdException::new);
+
+        Resume resume = resumeRepository.findById(interviewFinal.getResumeId())
+                .orElseThrow(ResumeNotFoundException::new);
+
+        resume.updateFinalDocumentEvaluationStatus(status);
     }
 
 }

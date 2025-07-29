@@ -9,6 +9,7 @@ import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSe
 import com.tave.tavewebsite.domain.apply.initial.setup.util.ApplyInitialSetUpMapper;
 import com.tave.tavewebsite.domain.resume.batch.dto.response.RecruitmentResponseDto;
 import com.tave.tavewebsite.domain.resume.batch.exception.RecruitmentBatchJobException.DocumentResultBatchJobFailException;
+import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class ApplyInitialSetupService {
 
     private final ApplyInitialSetupRepository applyInitialSetupRepository;
     private final DashboardService dashboardService;
+    private final ResumeRepository resumeRepository;
 
     @Transactional(readOnly = true)
     public ApplyInitialSetupReadResponseDto getInitialSetup() {

@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface InterviewFinalRepository extends JpaRepository<InterviewFinal, Long> {
+public interface InterviewFinalRepository extends JpaRepository<InterviewFinal, Long>, InterviewFinalCustomRepository {
 
     Page<InterviewFinal> findAllByOrderByInterviewDateAscInterviewTimeAscUsernameAsc(Pageable pageable);
 

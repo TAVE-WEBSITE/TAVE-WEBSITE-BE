@@ -2,16 +2,20 @@ package com.tave.tavewebsite.domain.interviewfinal.controller;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalEvaluateResDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
-import com.tave.tavewebsite.domain.interviewfinal.service.InterviewFinalTestService;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewFinalUseCase;
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
+import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.security.CurrentMember;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,6 +96,27 @@ public class InterviewFinalController {
         interviewFinalUseCase.getInterviewFinalSaveListTestVersion();
 
         return new SuccessResponse<>(BETA_INTERVIEW_FINAL_LIST_CREATED.getMessage());
+    }
+
+    @GetMapping("/v1/admin/interview-final")
+    public SuccessResponse<InterviewFinalEvaluateResDto> getAdminInterviewFinalDetail(
+            @RequestParam(required = false) EvaluationStatus status,
+            @RequestParam(required = false) FieldType type,
+            @PageableDefault(size = 7) Pageable pageable
+    ) {
+
+        return new SuccessResponse<>(interviewFinalUseCase.getInterviewFinalEvaluateList(pageable, status, type),
+                INTERVIEW_FINAL_LIST_GET.getMessage());
+    }
+
+    @PostMapping("/v1/admin/interview-final/{interviewFinalId}")
+    public SuccessResponse updateInterviewFinalStatus(
+            @PathVariable(name = "interviewFinalId") Long id,
+            @RequestParam(name = "status") EvaluationStatus status
+    ) {
+        interviewFinalUseCase.updateFinalInterviewStatus(id, status);
+
+        return new SuccessResponse<>(INTERVIEW_FINAL_UPDATE_SUCCESS.getMessage());
     }
 
 }
