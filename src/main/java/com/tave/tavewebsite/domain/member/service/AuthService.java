@@ -47,10 +47,16 @@ public class AuthService {
         Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(NotFoundMemberException::new);
 
-        ResumeState resumeState = resumeRepository.findByMemberId(member.getId())
-                .map(Resume::getState)
-                .orElse(ResumeState.TEMPORARY);
-        return SignInResponseDto.from(jwtToken, member, resumeState);
+//        ResumeState resumeState = resumeRepository.findByMemberId(member.getId())
+//                .map(Resume::getState)
+//                .orElse(ResumeState.TEMPORARY);
+        // 작성한 지원서 조회
+        Resume resume = resumeRepository.findByMemberId(member.getId()).orElse(null);
+        ResumeState resumeState = (resume != null) ? resume.getState() : ResumeState.TEMPORARY;
+
+        Long resumeId = (resume != null) ? resume.getId() : 0L;  // 지원서 없으면 0
+
+        return SignInResponseDto.from(jwtToken, member, resumeState, resumeId);
     }
 
     public void signOut(String accessToken, HttpServletResponse response) {

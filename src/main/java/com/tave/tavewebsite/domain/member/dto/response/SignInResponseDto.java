@@ -17,9 +17,10 @@ public record SignInResponseDto(
         String generation,
         DepartmentType department,
         JobType job,
-        ResumeState resumeState
+        ResumeState resumeState,
+        Long resumeId
 ) {
-    public static SignInResponseDto from(JwtToken token, Member member, ResumeState resumeState) {
+    public static SignInResponseDto from(JwtToken token, Member member, ResumeState resumeState, Long resumeId) {
         return new SignInResponseDto(token.getGrantType(),
                 token.getAccessToken(),
                 member.getId(),
@@ -30,6 +31,7 @@ public record SignInResponseDto(
                 member.getGeneration(),
                 member.getDepartment(),
                 member.getJob(),
-                resumeState);
+                resumeState,
+                resumeId);
     }
 }
