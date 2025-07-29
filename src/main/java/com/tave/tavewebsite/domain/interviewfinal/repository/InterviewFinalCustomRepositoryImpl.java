@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static com.tave.tavewebsite.domain.interviewfinal.entity.QInterviewFinal.interviewFinal;
 import static com.tave.tavewebsite.domain.resume.entity.QResume.resume;
-import static com.tave.tavewebsite.domain.resume.entity.QResumeEvaluation.resumeEvaluation;
 
 @Repository
 @RequiredArgsConstructor
@@ -82,7 +81,7 @@ public class InterviewFinalCustomRepositoryImpl implements InterviewFinalCustomR
         if(status == null)
             return null;
 
-        return resumeEvaluation.finalEvaluateDocument.eq(status);
+        return resume.finalDocumentEvaluationStatus.eq(status);
     }
 
     private BooleanExpression extractedFieldType(FieldType type) {
