@@ -17,14 +17,16 @@ public class FinalPassService {
 
     @Transactional
     public FinalPassResponseDto createFinalPass(FinalPassRequestDto dto) {
+        finalPassRepository.deleteAll();
+
         FinalPass entity = FinalPassMapper.toEntity(dto);
         finalPassRepository.save(entity);
         return FinalPassMapper.toResponseDto(entity);
     }
 
     @Transactional(readOnly = true)
-    public FinalPassResponseDto getFinalPass(Long id) {
-        FinalPass entity = finalPassRepository.findById(id)
+    public FinalPassResponseDto getFinalPass() {
+        FinalPass entity = finalPassRepository.findTopByOrderByCreatedAtDesc()
                 .orElseThrow(FinalPassNotFoundException::new);
         return FinalPassMapper.toResponseDto(entity);
     }
