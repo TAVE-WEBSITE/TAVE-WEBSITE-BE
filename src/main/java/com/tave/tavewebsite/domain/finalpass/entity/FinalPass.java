@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.finalpass.entity;
 
+import com.tave.tavewebsite.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FinalPass {
+public class FinalPass extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
