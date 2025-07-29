@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.resume.controller;
 
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.DetailResumeQuestionResponse;
+import com.tave.tavewebsite.domain.resume.dto.response.ResumeDetailResponse;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.service.PersonalInfoService;
 import com.tave.tavewebsite.domain.resume.service.ResumeQuestionService;
@@ -38,6 +39,12 @@ public class ResumeQuestionController {
     ) {
         Resume resume = personalInfoService.getResumeEntityById(resumeId);
         List<DetailResumeQuestionResponse> response = resumeQuestionService.getResumeQuestionPage(resume, page);
+        return new SuccessResponse<>(response, QUESTION_READ_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/{resumeId}/details")
+    public SuccessResponse<ResumeDetailResponse> getResumeDetails(@PathVariable Long resumeId) {
+        ResumeDetailResponse response = resumeQuestionService.getResumeDetail(resumeId);
         return new SuccessResponse<>(response, QUESTION_READ_SUCCESS.getMessage());
     }
 }
