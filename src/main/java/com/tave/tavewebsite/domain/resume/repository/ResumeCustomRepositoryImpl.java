@@ -98,7 +98,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
 
     private BooleanExpression extractedStatus(EvaluationStatus status) {
         if (status == null)
-            return Expressions.asBoolean(true).isTrue(); // 항상 참 반환
+            return null;
         if (status == EvaluationStatus.NOTCHECKED) {
             return resumeEvaluation.finalEvaluateDocument.isNull();
         } else {
