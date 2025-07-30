@@ -12,7 +12,7 @@ import static com.tave.tavewebsite.domain.resume.controller.message.PersonalInfo
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/member/resume/temp-answer")
+@RequestMapping("/v1/normal/resume/temp-answer")
 public class ResumeAnswerTempController {
 
     private final ResumeAnswerTempService tempService;

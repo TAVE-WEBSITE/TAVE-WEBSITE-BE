@@ -9,19 +9,13 @@ import java.util.List;
 public record ResumeReqDto(
         List<ResumeAnswerTempDto> answers,
         List<TimeSlotReqDto> timeSlots,
-        List<LanguageLevelRequestDto> languageLevels,
-        String githubUrl,
-        String blogUrl,
-        String portfolioUrl
+        List<LanguageLevelRequestDto> languageLevels
 ) {
     public static ResumeReqDto empty() {
         return new ResumeReqDto(
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>(),
-                null,
-                null,
-                null
+                new ArrayList<>()
         );
     }
 }
