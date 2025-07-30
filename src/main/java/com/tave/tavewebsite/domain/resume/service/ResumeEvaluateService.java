@@ -29,20 +29,19 @@ public class ResumeEvaluateService {
     private final ResumeEvaluationRepository resumeEvaluationRepository;
     private final ResumeRepository resumeRepository;
 
-    public Member getCurrentMember(){
+    public Member getCurrentMember() {
         return SecurityUtils.getCurrentMember();
     }
 
     @Transactional
-    public void createDocumentEvaluation(Long resumeId, DocumentEvaluationReqDto documentEvaluationReqDto){
+    public void createDocumentEvaluation(Long resumeId, DocumentEvaluationReqDto documentEvaluationReqDto) {
         Resume resume = findIfResumeExists(resumeId);
         Member currentMember = getCurrentMember();
 
-        if(resumeEvaluationRepository.existsByMemberIdAndResumeId(currentMember.getId(), resumeId)){
+        if (resumeEvaluationRepository.existsByMemberIdAndResumeId(currentMember.getId(), resumeId)) {
             ResumeEvaluation evaluation = resumeEvaluationRepository.findByMemberIdAndResumeId(currentMember.getId(), resumeId);
             evaluation.update(documentEvaluationReqDto);
-        }
-        else {
+        } else {
             ResumeEvaluation resumeEvaluation = ResumeEvaluation.of(documentEvaluationReqDto, currentMember, resume);
             resumeEvaluationRepository.save(resumeEvaluation);
         }
@@ -50,13 +49,12 @@ public class ResumeEvaluateService {
 
     //본인 기반의 작성한 지원서에 대해 조회해야됨
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, FieldType type, Pageable pageable) {
+    public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, FieldType type, String name, Pageable pageable) {
         Member currentMember = getCurrentMember();
-        Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, type, pageable);
+        Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, type, name, pageable);
 
-
-
-        return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
+        return ResumeEvaluateResDto.fromResume(
+                resumeRepository.count(),
                 resumeRepository.findNotEvaluatedResume(currentMember),
                 resumeRepository.findEvaluatedResume(currentMember),
                 resumeResDtos);
@@ -75,7 +73,7 @@ public class ResumeEvaluateService {
     }
 
     @Transactional
-    public void createFinalDocumentEvaluation(Long resumeId, FinalDocumentEvaluationReqDto reqDto){
+    public void createFinalDocumentEvaluation(Long resumeId, FinalDocumentEvaluationReqDto reqDto) {
         Resume resume = findIfResumeExists(resumeId);
         resume.updateFinalDocumentEvaluationStatus(reqDto.status());
     }
@@ -92,7 +90,7 @@ public class ResumeEvaluateService {
     }
 
     @Transactional
-    public void deleteAllResume(){
+    public void deleteAllResume() {
         resumeRepository.deleteAll();
     }
 

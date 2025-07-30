@@ -40,11 +40,12 @@ public class ResumeEvaluateController {
     public SuccessResponse<ResumeEvaluateResDto> getDocumentEvaluationList(
             @RequestParam(required = false) EvaluationStatus status,
             @RequestParam(required = false) FieldType type,
+            @RequestParam(required = false) String name,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
         return new SuccessResponse<>(
-                resumeEvaluateService.getDocumentResumes(status, type, pageable),
+                resumeEvaluateService.getDocumentResumes(status, type, name, pageable),
                 READ_SUCCESS.getMessage());
     }
 

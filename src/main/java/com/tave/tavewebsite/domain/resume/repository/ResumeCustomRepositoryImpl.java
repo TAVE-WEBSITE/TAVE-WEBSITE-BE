@@ -32,18 +32,23 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, FieldType type, Pageable pageable) {
+    public Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, FieldType type, String name, Pageable pageable) {
         QResumeEvaluation resumeEvaluationSub = new QResumeEvaluation("reSub");
 
         BooleanBuilder condition = new BooleanBuilder();
         BooleanExpression statusCondition = extractedStatus(status);
         BooleanExpression typeCondition = extractedFieldType(type);
+        BooleanExpression nameCondition = extractedName(name);
 
         if (statusCondition != null) {
             condition.and(statusCondition);
         }
         if (typeCondition != null) {
             condition.and(typeCondition);
+        }
+
+        if (nameCondition != null) {
+            condition.and(nameCondition);
         }
 
         List<ResumeResDto> resumeResDtos = queryFactory
@@ -68,7 +73,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                 .leftJoin(resumeEvaluation)
                 .on(
                         resumeEvaluation.resume.id.eq(resume.id)
-                        .and(resumeEvaluation.member.id.eq(member.getId()))
+                                .and(resumeEvaluation.member.id.eq(member.getId()))
                 )
                 .where(condition)
                 .offset(pageable.getOffset())
@@ -92,28 +97,30 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
     }
 
     private BooleanExpression extractedStatus(EvaluationStatus status) {
-        BooleanExpression condition;
-
-        if(status == null)
+        if (status == null)
             return null;
-
         if (status == EvaluationStatus.NOTCHECKED) {
-            condition = resumeEvaluation.finalEvaluateDocument.isNull();
+            return resumeEvaluation.finalEvaluateDocument.isNull();
         } else {
-            condition = resumeEvaluation.finalEvaluateDocument.eq(status);
+            return resumeEvaluation.finalEvaluateDocument.eq(status);
         }
-
-        return condition;
     }
 
     private BooleanExpression extractedFieldType(FieldType type) {
         BooleanExpression fieldType;
 
-        if(type == null)
+        if (type == null)
             return null;
         fieldType = resume.field.eq(type);
 
         return fieldType;
+    }
+
+    private BooleanExpression extractedName(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+        return resume.member.username.containsIgnoreCase(name);
     }
 
     // 해당 조회는 EvaluationStatus 값이 평가 완료 or 평가 진행 전일 경우에 둘다 평가 진행 전으로 처리
@@ -162,7 +169,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
     private BooleanExpression extractedStatusInFinalEvaluation(EvaluationStatus status) {
         BooleanExpression condition;
 
-        if(status == null)
+        if (status == null)
             return null;
 
 
