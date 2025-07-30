@@ -2,6 +2,7 @@ package com.tave.tavewebsite.domain.resume.controller;
 
 import com.tave.tavewebsite.domain.resume.controller.message.SocialLinksSuccessMessage;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.PortfolioUploadResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.SocialLinksResponseDto;
 import com.tave.tavewebsite.domain.resume.service.SocialLinksService;
 import com.tave.tavewebsite.domain.resume.validator.FileValidator;
@@ -55,9 +56,11 @@ public class SocialLinksController {
         fileValidator.validateSize(file);
 
         URL portfolioUrl = s3Service.uploadFile(file);
+
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
         socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString());
-        return SuccessResponse.ok(SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
+        PortfolioUploadResponseDto responseDto = new PortfolioUploadResponseDto(portfolioUrl.toString());
+        return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
 
 }
