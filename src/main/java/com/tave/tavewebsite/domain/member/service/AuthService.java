@@ -47,10 +47,6 @@ public class AuthService {
         Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(NotFoundMemberException::new);
 
-//        ResumeState resumeState = resumeRepository.findByMemberId(member.getId())
-//                .map(Resume::getState)
-//                .orElse(ResumeState.TEMPORARY);
-        // 작성한 지원서 조회
         Resume resume = resumeRepository.findByMemberId(member.getId()).orElse(null);
         ResumeState resumeState = (resume != null) ? resume.getState() : ResumeState.TEMPORARY;
 
