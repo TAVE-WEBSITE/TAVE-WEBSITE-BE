@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SocialLinksResponseDto {
+    private Long memberId;
     private String blogUrl;
     private String githubUrl;
     private String portfolioUrl;
