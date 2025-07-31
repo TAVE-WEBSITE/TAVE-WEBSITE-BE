@@ -3,11 +3,7 @@ package com.tave.tavewebsite.domain.interviewfinal.usecase;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalEvaluateResDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalResDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.response.*;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.TotalDateTimeDto;
@@ -33,12 +29,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -176,6 +175,7 @@ public class InterviewFinalUseCase {
                 interviewFinalEvaluation);
     }
 
+    @Transactional
     public void updateFinalInterviewStatus(Long interviewFinalId, EvaluationStatus status){
         InterviewFinal interviewFinal = interviewFinalRepository.findById(interviewFinalId)
                 .orElseThrow(NotFoundInterviewFinalByMemberIdException::new);
