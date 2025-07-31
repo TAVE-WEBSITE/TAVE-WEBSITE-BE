@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
+import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.request.DocumentEvaluationReqDto;
 import com.tave.tavewebsite.domain.resume.dto.request.FinalDocumentEvaluationReqDto;
 import com.tave.tavewebsite.domain.resume.dto.response.DocumentEvaluationResDto;
@@ -7,6 +8,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.ResumeEvaluateResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.service.ResumeEvaluateService;
 import com.tave.tavewebsite.global.common.FieldType;
+import com.tave.tavewebsite.global.security.CurrentMember;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,18 @@ public class ResumeEvaluateController {
         resumeEvaluateService.createDocumentEvaluation(resumeId, reqDto);
 
         return new SuccessResponse(CREATE_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/{resumeId}")
+    public SuccessResponse<DocumentEvaluationResDto> getDocumentEvaluation(
+            @CurrentMember Member currentMember,
+            @PathVariable Long resumeId) {
+
+        DocumentEvaluationResDto documentEvaluation =
+                resumeEvaluateService.getDocumentEvaluation(currentMember, resumeId);
+
+        return new SuccessResponse(documentEvaluation,
+                READ_SUCCESS.getMessage());
     }
 
     // 서류 리스트 보기

@@ -47,6 +47,14 @@ public class ResumeEvaluateService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public DocumentEvaluationResDto getDocumentEvaluation(Member currentMember, Long resumeId) {
+        findIfResumeExists(resumeId);
+        ResumeEvaluation evaluation = resumeEvaluationRepository.findByMemberIdAndResumeId(currentMember.getId(), resumeId);
+
+        return DocumentEvaluationResDto.from(evaluation);
+    }
+
     //본인 기반의 작성한 지원서에 대해 조회해야됨
     @Transactional(readOnly = true)
     public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, FieldType type, String name, Pageable pageable) {
