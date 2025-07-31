@@ -7,6 +7,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.SocialLinksResponseDto;
 import com.tave.tavewebsite.domain.resume.service.SocialLinksService;
 import com.tave.tavewebsite.domain.resume.validator.FileValidator;
 import com.tave.tavewebsite.global.s3.service.S3Service;
+import com.tave.tavewebsite.global.security.utils.SecurityUtils;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -27,24 +28,27 @@ public class SocialLinksController {
     @PostMapping("/social-links")
     public SuccessResponse registerSocialLinks(@PathVariable("resumeId") Long resumeId,
                                                @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
-        socialLinksService.createSocialLinks(resumeId, socialLinksRequestDto);
-        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto);
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        socialLinksService.createSocialLinks(resumeId, socialLinksRequestDto, memberId);
+        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto, memberId);
         return SuccessResponse.ok(SocialLinksSuccessMessage.CREATE_SUCCESS.getMessage());
     }
 
     // 소셜 링크 조회
     @GetMapping("/social-links")
     public SuccessResponse<SocialLinksResponseDto> getSocialLinks(@PathVariable("resumeId") Long resumeId) {
-        return new SuccessResponse<>(socialLinksService.getSocialLinks(resumeId),
-                SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        SocialLinksResponseDto dto = socialLinksService.getSocialLinks(resumeId, memberId);
+        return new SuccessResponse<>(dto, SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
     }
 
     // 소셜 링크 업데이트
     @PatchMapping("/social-links")
     public SuccessResponse updateSocialLinks(@PathVariable("resumeId") Long resumeId,
                                              @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
-        socialLinksService.updateSocialLinks(resumeId, socialLinksRequestDto);
-        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto);
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        socialLinksService.updateSocialLinks(resumeId, socialLinksRequestDto, memberId);
+        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto, memberId);
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPDATE_SUCCESS.getMessage());
     }
 
@@ -52,20 +56,21 @@ public class SocialLinksController {
     @PostMapping("/portfolio")
     public SuccessResponse updatePortfolio(@PathVariable("resumeId") Long resumeId,
                                            @RequestParam("file") MultipartFile file) {
+        Long memberId = SecurityUtils.getCurrentMember().getId();
 
         fileValidator.validateSize(file);
-
         URL portfolioUrl = s3Service.uploadFile(file);
 
-        socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString());
-        socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString());
+        socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString(), memberId);
+        socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString(), memberId);
         PortfolioUploadResponseDto responseDto = new PortfolioUploadResponseDto(portfolioUrl.toString());
         return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
 
     @GetMapping("/social-links/detail")
     public SuccessResponse<SocialLinksResponseDto> getSocialLinksDetail(@PathVariable("resumeId") Long resumeId) {
-        SocialLinksResponseDto dto = socialLinksService.getSocialLinks(resumeId);
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        SocialLinksResponseDto dto = socialLinksService.getSocialLinks(resumeId, memberId);
         return new SuccessResponse<>(dto, SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
     }
 
