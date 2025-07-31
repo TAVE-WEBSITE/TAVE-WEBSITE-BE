@@ -9,9 +9,7 @@ import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
 import com.tave.tavewebsite.domain.resume.dto.wrapper.ResumeTempWrapper;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
-import com.tave.tavewebsite.domain.resume.exception.InvalidPageNumberException;
-import com.tave.tavewebsite.domain.resume.exception.TempReadFailedException;
-import com.tave.tavewebsite.domain.resume.exception.TempSaveFailedException;
+import com.tave.tavewebsite.domain.resume.exception.*;
 import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +33,10 @@ public class ResumeAnswerTempService {
     private final InterviewTimeService interviewTimeService;
     private final ProgramingLanguageService programingLanguageService;
 
-
-    private final String REDIS_KEY_PREFIX = "resume:temp:";
+    private String getRedisKey(Long memberId, Long resumeId) {
+        String REDIS_KEY_PREFIX = "resume:temp:";
+        return REDIS_KEY_PREFIX + memberId + ":" + resumeId;
+    }
 
     private ResumeAnswerTempDto toDto(ResumeQuestion question) {
         return new ResumeAnswerTempDto(
@@ -45,16 +46,22 @@ public class ResumeAnswerTempService {
     }
 
     @Transactional
-    public void tempSaveAnswers(Long resumeId, int page, ResumeReqDto dto) {
-        String key = REDIS_KEY_PREFIX + resumeId;
+    public void tempSaveAnswers(Long resumeId, int page, ResumeReqDto dto, Long memberId) {
+        validateResumeOwnership(resumeId, memberId);
+
+        String key = getRedisKey(memberId, resumeId);
 
         ResumeTempWrapper wrapper;
         try {
             String existing = (String) redisUtil.get(key);
             if (existing != null) {
                 wrapper = objectMapper.readValue(existing, ResumeTempWrapper.class);
+                if (!Objects.equals(wrapper.getMemberId(), memberId)) {
+                    throw new InvalidDataOwnerException();
+                }
             } else {
                 wrapper = new ResumeTempWrapper();
+                wrapper.setMemberId(memberId); // 새로 생성될 경우 memberId 설정
             }
         } catch (Exception e) {
             throw new TempReadFailedException();
@@ -77,8 +84,10 @@ public class ResumeAnswerTempService {
         }
     }
 
-    public ResumeTempWrapper getTempSavedAnswers(Long resumeId) {
-        String key = REDIS_KEY_PREFIX + resumeId;
+    public ResumeTempWrapper getTempSavedAnswers(Long resumeId, Long memberId) {
+        validateResumeOwnership(resumeId, memberId);
+
+        String key = getRedisKey(memberId, resumeId);
 
         ResumeTempWrapper wrapper = null;
 
@@ -89,6 +98,9 @@ public class ResumeAnswerTempService {
             if (json != null && !json.isBlank()) {
                 try {
                     wrapper = objectMapper.readValue(json, ResumeTempWrapper.class);
+                    if (wrapper.getMemberId() != null && !Objects.equals(wrapper.getMemberId(), memberId)) {
+                        throw new InvalidDataOwnerException();
+                    }
                 } catch (Exception jsonEx) {
                     // 파싱 실패 시 wrapper는 그대로 null → DB fallback
                 }
@@ -96,9 +108,10 @@ public class ResumeAnswerTempService {
 
             // Redis에 값이 없거나 파싱 실패한 경우 → DB 조회
             if (wrapper == null) {
-                wrapper = loadFromDatabase(resumeId);
+                wrapper = loadFromDatabase(resumeId, memberId);
 
                 if (wrapper != null) {
+                    wrapper.setMemberId(memberId); // fallback 된 wrapper에도 memberId 세팅
                     try {
                         String dbJson = objectMapper.writeValueAsString(wrapper);
                         redisUtil.set(key, dbJson, 2592000);
@@ -111,6 +124,7 @@ public class ResumeAnswerTempService {
             // DB에도 없으면 → 기본 빈 wrapper
             if (wrapper == null) {
                 wrapper = new ResumeTempWrapper();
+                wrapper.setMemberId(memberId); // 기본 빈 wrapper에도 세팅
                 wrapper.setLastPage(1);
             }
 
@@ -126,6 +140,7 @@ public class ResumeAnswerTempService {
         } catch (Exception e) {
             // Redis 접근 자체가 실패한 경우 → 기본 빈 wrapper 반환
             ResumeTempWrapper fallback = new ResumeTempWrapper();
+            fallback.setMemberId(memberId); // Redis 실패 시 fallback에도 세팅
             fallback.setPage2(ResumeReqDto.empty());
             fallback.setPage3(ResumeReqDto.empty());
             fallback.setLastPage(1);
@@ -133,10 +148,14 @@ public class ResumeAnswerTempService {
         }
     }
 
-    private ResumeTempWrapper loadFromDatabase(Long resumeId) {
+    private ResumeTempWrapper loadFromDatabase(Long resumeId, Long memberId) {
         Resume resume = resumeRepository.findWithAllRelationsById(resumeId).orElse(null);
         if (resume == null) {
             return null;
+        }
+
+        if (!resume.getMember().getId().equals(memberId)) {
+            throw new InvalidDataOwnerException();
         }
 
         ResumeTempWrapper wrapper = new ResumeTempWrapper();
@@ -196,8 +215,13 @@ public class ResumeAnswerTempService {
         return wrapper;
     }
 
-    public int getLastPage(Long resumeId) {
-        ResumeTempWrapper wrapper = getTempSavedAnswers(resumeId);
-        return wrapper == null ? 1 : wrapper.getLastPage();
+    private void validateResumeOwnership(Long resumeId, Long memberId) {
+        Resume resume = resumeRepository.findById(resumeId)
+            .orElseThrow(ResumeNotFoundException::new);
+
+        if (!resume.getMember().getId().equals(memberId)) {
+            throw new InvalidDataOwnerException();
+        }
     }
+
 }
