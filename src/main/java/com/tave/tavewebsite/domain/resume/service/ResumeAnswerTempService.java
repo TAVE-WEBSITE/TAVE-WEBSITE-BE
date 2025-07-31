@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -170,22 +171,18 @@ public class ResumeAnswerTempService {
         if (!page2Answers.isEmpty() || !languageLevels.isEmpty()) {
             ResumeReqDto page2Dto = new ResumeReqDto(
                     page2Answers,
-                    null,
-                    languageLevels,
-                    null, null, null
+                    new ArrayList<>(),
+                    languageLevels
             );
             wrapper.setPage2(page2Dto);
         }
 
         // 공통 질문 → page3 세팅
-        if (!page3Answers.isEmpty() || timeSlots.isEmpty() || githubUrl != null || blogUrl != null || portfolioUrl != null) {
+        if (!page3Answers.isEmpty() || timeSlots.isEmpty()) {
             ResumeReqDto page3Dto = new ResumeReqDto(
                     page3Answers,
                     timeSlots,
-                    null,
-                    githubUrl,
-                    blogUrl,
-                    portfolioUrl
+                    new ArrayList<>()
             );
             wrapper.setPage3(page3Dto);
         }
@@ -193,7 +190,7 @@ public class ResumeAnswerTempService {
         // 마지막 저장 페이지 계산
         int lastPage = 1;
         if (wrapper.getPage2() != null) lastPage = 2;
-        if (wrapper.getPage3() != null) lastPage = Math.max(lastPage, 3);
+        if (wrapper.getPage3() != null) lastPage = 3;
         wrapper.setLastPage(lastPage);
 
         return wrapper;

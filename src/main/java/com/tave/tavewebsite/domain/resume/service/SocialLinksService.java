@@ -55,10 +55,7 @@ public class SocialLinksService {
         ResumeReqDto updatedPage3 = new ResumeReqDto(
                 oldPage3 != null ? oldPage3.answers() : null,
                 oldPage3 != null ? oldPage3.timeSlots() : null,
-                null,
-                dto.getGithubUrl(),
-                dto.getBlogUrl(),
-                oldPage3 != null ? oldPage3.portfolioUrl() : null // 포폴은 아래에서 따로 처리
+                null
         );
 
         resumeAnswerTempService.tempSaveAnswers(resumeId, 3, updatedPage3);
@@ -118,8 +115,7 @@ public class SocialLinksService {
 
         resume.updateSocialLinks(dto);
 
-        ResumeReqDto page3 = new ResumeReqDto(null, null, null,
-                dto.getGithubUrl(), dto.getBlogUrl(), null);
+        ResumeReqDto page3 = new ResumeReqDto(null, null, null);
 
         resumeAnswerTempService.tempSaveAnswers(resumeId, 3, page3); // Redis에도 저장
     }
@@ -139,10 +135,7 @@ public class SocialLinksService {
         ResumeReqDto updatedPage3 = new ResumeReqDto(
                 oldPage3 != null ? oldPage3.answers() : null,
                 oldPage3 != null ? oldPage3.timeSlots() : null,
-                null,
-                oldPage3 != null ? oldPage3.githubUrl() : null,
-                oldPage3 != null ? oldPage3.blogUrl() : null,
-                portfolioUrl // 새로운 포폴 주소
+                null
         );
 
         resumeAnswerTempService.tempSaveAnswers(resumeId, 3, updatedPage3);

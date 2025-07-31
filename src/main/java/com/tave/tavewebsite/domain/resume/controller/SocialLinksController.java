@@ -63,4 +63,10 @@ public class SocialLinksController {
         return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
 
+    @GetMapping("/social-links/detail")
+    public SuccessResponse<SocialLinksResponseDto> getSocialLinksDetail(@PathVariable("resumeId") Long resumeId) {
+        SocialLinksResponseDto dto = socialLinksService.getSocialLinks(resumeId);
+        return new SuccessResponse<>(dto, SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
+    }
+
 }
