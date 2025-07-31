@@ -176,10 +176,10 @@ public class PersonalInfoService {
                 .birthday(member.getBirthday().toString())
                 .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())
-                .school(resume != null ? resume.getSchool() : null)
-                .major(resume != null ? resume.getMajor() : null)
-                .minor(resume != null ? resume.getMinor() : null)
-                .field(resume != null ? resume.getField().name() : null)
+                .school(resume != null ? resume.getSchool() : "")
+                .major(resume != null ? resume.getMajor() : "")
+                .minor(resume != null ? resume.getMinor() : "")
+                .field(resume != null ? resume.getField().name() : "")
                 .build();
     }
 
