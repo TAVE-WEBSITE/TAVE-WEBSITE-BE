@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SocialLinksResponseDto {
-    private String githubUrl;
     private String blogUrl;
+    private String githubUrl;
     private String portfolioUrl;
 }
