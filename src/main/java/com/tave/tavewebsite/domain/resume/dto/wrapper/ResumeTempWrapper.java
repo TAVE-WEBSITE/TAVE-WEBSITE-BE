@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ResumeTempWrapper {
+    private Long memberId;
     private ResumeReqDto page2;
     private ResumeReqDto page3;
     private int lastPage;
