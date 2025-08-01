@@ -33,9 +33,9 @@ public class ResumeAnswerTempService {
     private final InterviewTimeService interviewTimeService;
     private final ProgramingLanguageService programingLanguageService;
 
-    private String getRedisKey(Long memberId, Long resumeId) {
+    private String getRedisKey(Long resumeId) {
         String REDIS_KEY_PREFIX = "resume:temp:";
-        return REDIS_KEY_PREFIX + memberId + ":" + resumeId;
+        return REDIS_KEY_PREFIX + resumeId;
     }
 
     private ResumeAnswerTempDto toDto(ResumeQuestion question) {
@@ -49,7 +49,7 @@ public class ResumeAnswerTempService {
     public void tempSaveAnswers(Long resumeId, int page, ResumeReqDto dto, Long memberId) {
         validateResumeOwnership(resumeId, memberId);
 
-        String key = getRedisKey(memberId, resumeId);
+        String key = getRedisKey(resumeId);
 
         ResumeTempWrapper wrapper;
         try {
@@ -60,8 +60,7 @@ public class ResumeAnswerTempService {
                     throw new InvalidDataOwnerException();
                 }
             } else {
-                wrapper = new ResumeTempWrapper();
-                wrapper.setMemberId(memberId); // 새로 생성될 경우 memberId 설정
+                wrapper = ResumeTempWrapper.empty(memberId);
             }
         } catch (Exception e) {
             throw new TempReadFailedException();
@@ -87,7 +86,7 @@ public class ResumeAnswerTempService {
     public ResumeTempWrapper getTempSavedAnswers(Long resumeId, Long memberId) {
         validateResumeOwnership(resumeId, memberId);
 
-        String key = getRedisKey(memberId, resumeId);
+        String key = getRedisKey(resumeId);
 
         ResumeTempWrapper wrapper = null;
 
@@ -123,9 +122,7 @@ public class ResumeAnswerTempService {
 
             // DB에도 없으면 → 기본 빈 wrapper
             if (wrapper == null) {
-                wrapper = new ResumeTempWrapper();
-                wrapper.setMemberId(memberId); // 기본 빈 wrapper에도 세팅
-                wrapper.setLastPage(1);
+                wrapper = ResumeTempWrapper.empty(memberId);
             }
 
             if (wrapper.getPage2() == null) {
@@ -212,7 +209,7 @@ public class ResumeAnswerTempService {
 
     private void validateResumeOwnership(Long resumeId, Long memberId) {
         Resume resume = resumeRepository.findById(resumeId)
-            .orElseThrow(ResumeNotFoundException::new);
+                .orElseThrow(ResumeNotFoundException::new);
 
         if (!resume.getMember().getId().equals(memberId)) {
             throw new InvalidDataOwnerException();
