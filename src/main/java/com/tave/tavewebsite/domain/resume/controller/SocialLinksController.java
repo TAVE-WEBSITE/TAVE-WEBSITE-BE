@@ -30,16 +30,7 @@ public class SocialLinksController {
                                                @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
         Long memberId = SecurityUtils.getCurrentMember().getId();
         socialLinksService.createSocialLinks(resumeId, socialLinksRequestDto, memberId);
-        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto, memberId);
         return SuccessResponse.ok(SocialLinksSuccessMessage.CREATE_SUCCESS.getMessage());
-    }
-
-    // 소셜 링크 조회
-    @GetMapping("/social-links")
-    public SuccessResponse<SocialLinksResponseDto> getSocialLinks(@PathVariable("resumeId") Long resumeId) {
-        Long memberId = SecurityUtils.getCurrentMember().getId();
-        SocialLinksResponseDto dto = socialLinksService.getSocialLinks(resumeId, memberId);
-        return new SuccessResponse<>(dto, SocialLinksSuccessMessage.READ_SUCCESS.getMessage());
     }
 
     // 소셜 링크 업데이트
@@ -48,7 +39,6 @@ public class SocialLinksController {
                                              @RequestBody SocialLinksRequestDto socialLinksRequestDto) {
         Long memberId = SecurityUtils.getCurrentMember().getId();
         socialLinksService.updateSocialLinks(resumeId, socialLinksRequestDto, memberId);
-        socialLinksService.saveSocialLinksToRedis(resumeId, socialLinksRequestDto, memberId);
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPDATE_SUCCESS.getMessage());
     }
 
@@ -62,11 +52,11 @@ public class SocialLinksController {
         URL portfolioUrl = s3Service.uploadFile(file);
 
         socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString(), memberId);
-        socialLinksService.savePortfolioToRedis(resumeId, portfolioUrl.toString(), memberId);
         PortfolioUploadResponseDto responseDto = new PortfolioUploadResponseDto(portfolioUrl.toString());
         return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
 
+    // 소셜주소 + 포폴 url 조회
     @GetMapping("/social-links/detail")
     public SuccessResponse<SocialLinksResponseDto> getSocialLinksDetail(@PathVariable("resumeId") Long resumeId) {
         Long memberId = SecurityUtils.getCurrentMember().getId();
