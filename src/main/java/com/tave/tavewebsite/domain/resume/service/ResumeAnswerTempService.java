@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ResumeAnswerTempService {
+
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
     private final ResumeRepository resumeRepository;
@@ -127,9 +128,10 @@ public class ResumeAnswerTempService {
         return wrapper;
     }
 
-
     private ResumeTempWrapper loadFromDatabase(Long resumeId, Long memberId) {
-        Resume resume = resumeRepository.findWithAllRelationsById(resumeId).orElse(null);
+        Resume resume = resumeRepository.findByIdWithTimeSlotsAndMember(resumeId)
+                .orElse(null);
+
         if (resume == null) {
             return null;
         }
