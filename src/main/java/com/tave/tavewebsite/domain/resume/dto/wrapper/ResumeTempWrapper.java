@@ -15,4 +15,13 @@ public class ResumeTempWrapper {
     private ResumeReqDto page2;
     private ResumeReqDto page3;
     private int lastPage;
+
+    public static ResumeTempWrapper empty(Long memberId) {
+        return ResumeTempWrapper.builder()
+                .memberId(memberId)
+                .page2(ResumeReqDto.empty())
+                .page3(ResumeReqDto.empty())
+                .lastPage(1)
+                .build();
+    }
 }

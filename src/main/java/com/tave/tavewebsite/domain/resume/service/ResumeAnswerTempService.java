@@ -139,12 +139,7 @@ public class ResumeAnswerTempService {
 
         } catch (Exception e) {
             // Redis 접근 자체가 실패한 경우 → 기본 빈 wrapper 반환
-            ResumeTempWrapper fallback = new ResumeTempWrapper();
-            fallback.setMemberId(memberId); // Redis 실패 시 fallback에도 세팅
-            fallback.setPage2(ResumeReqDto.empty());
-            fallback.setPage3(ResumeReqDto.empty());
-            fallback.setLastPage(1);
-            return fallback;
+            return ResumeTempWrapper.empty(memberId);
         }
     }
 
