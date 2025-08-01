@@ -193,7 +193,7 @@ public class ResumeAnswerTempService {
         if (wrapper.getPage2() != null) lastPage = 2;
         if (wrapper.getPage3() != null) lastPage = 3;
         wrapper.setLastPage(lastPage);
-
+        wrapper.setMemberId(memberId);
         return wrapper;
     }
 
