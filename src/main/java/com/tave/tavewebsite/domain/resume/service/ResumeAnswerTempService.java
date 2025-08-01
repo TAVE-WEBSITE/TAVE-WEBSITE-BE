@@ -2,7 +2,6 @@ package com.tave.tavewebsite.domain.resume.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tave.tavewebsite.domain.programinglaunguage.dto.request.LanguageLevelRequestDto;
-import com.tave.tavewebsite.domain.programinglaunguage.service.ProgramingLanguageService;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeAnswerTempDto;
 import com.tave.tavewebsite.domain.resume.dto.request.ResumeReqDto;
 import com.tave.tavewebsite.domain.resume.dto.timeslot.TimeSlotReqDto;
@@ -10,7 +9,6 @@ import com.tave.tavewebsite.domain.resume.dto.wrapper.ResumeTempWrapper;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeQuestion;
 import com.tave.tavewebsite.domain.resume.exception.*;
-import com.tave.tavewebsite.domain.resume.repository.ResumeQuestionRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
@@ -28,10 +26,7 @@ import java.util.stream.Collectors;
 public class ResumeAnswerTempService {
     private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
-    private final ResumeQuestionRepository resumeQuestionRepository;
     private final ResumeRepository resumeRepository;
-    private final InterviewTimeService interviewTimeService;
-    private final ProgramingLanguageService programingLanguageService;
 
     private String getRedisKey(Long resumeId) {
         String REDIS_KEY_PREFIX = "resume:temp:";
@@ -84,61 +79,54 @@ public class ResumeAnswerTempService {
     }
 
     public ResumeTempWrapper getTempSavedAnswers(Long resumeId, Long memberId) {
-        validateResumeOwnership(resumeId, memberId);
-
         String key = getRedisKey(resumeId);
-
-        ResumeTempWrapper wrapper = null;
 
         try {
             String json = (String) redisUtil.get(key);
-
-            // Redis 값이 존재하고, 비어있지 않으면 파싱 시도
             if (json != null && !json.isBlank()) {
-                try {
-                    wrapper = objectMapper.readValue(json, ResumeTempWrapper.class);
-                    if (wrapper.getMemberId() != null && !Objects.equals(wrapper.getMemberId(), memberId)) {
-                        throw new InvalidDataOwnerException();
-                    }
-                } catch (Exception jsonEx) {
-                    // 파싱 실패 시 wrapper는 그대로 null → DB fallback
+                ResumeTempWrapper wrapper = objectMapper.readValue(json, ResumeTempWrapper.class);
+
+                // 캐시에 저장된 memberId와 요청 memberId가 다르면 예외
+                if (!Objects.equals(wrapper.getMemberId(), memberId)) {
+                    throw new InvalidDataOwnerException();
                 }
+
+                return fillEmptyPagesIfNeeded(wrapper, memberId);
             }
-
-            // Redis에 값이 없거나 파싱 실패한 경우 → DB 조회
-            if (wrapper == null) {
-                wrapper = loadFromDatabase(resumeId, memberId);
-
-                if (wrapper != null) {
-                    wrapper.setMemberId(memberId); // fallback 된 wrapper에도 memberId 세팅
-                    try {
-                        String dbJson = objectMapper.writeValueAsString(wrapper);
-                        redisUtil.set(key, dbJson, 2592000);
-                    } catch (Exception e) {
-                        // Redis 저장 실패 → 무시하고 wrapper만 반환
-                    }
-                }
-            }
-
-            // DB에도 없으면 → 기본 빈 wrapper
-            if (wrapper == null) {
-                wrapper = ResumeTempWrapper.empty(memberId);
-            }
-
-            if (wrapper.getPage2() == null) {
-                wrapper.setPage2(ResumeReqDto.empty());
-            }
-            if (wrapper.getPage3() == null) {
-                wrapper.setPage3(ResumeReqDto.empty());
-            }
-
-            return wrapper;
-
+        } catch (InvalidDataOwnerException e) {
+            throw e;
         } catch (Exception e) {
-            // Redis 접근 자체가 실패한 경우 → 기본 빈 wrapper 반환
-            return ResumeTempWrapper.empty(memberId);
+            // Redis 접근 실패 등은 무시하고 DB fallback
         }
+
+        // Redis에 캐시 없거나 오류 시 DB에서 조회
+        ResumeTempWrapper wrapperFromDb = loadFromDatabase(resumeId, memberId);
+        if (wrapperFromDb == null) {
+            wrapperFromDb = ResumeTempWrapper.empty(memberId);
+        }
+
+        try {
+            String json = objectMapper.writeValueAsString(wrapperFromDb);
+            redisUtil.set(key, json, 2592000); // TTL 30일
+        } catch (Exception ignored) {
+        }
+
+        return fillEmptyPagesIfNeeded(wrapperFromDb, memberId);
     }
+
+    private ResumeTempWrapper fillEmptyPagesIfNeeded(ResumeTempWrapper wrapper, Long memberId) {
+        if (wrapper.getMemberId() == null) {
+            wrapper.setMemberId(memberId);
+        }
+        if (wrapper.getPage2() == null) {
+            wrapper.setPage2(ResumeReqDto.empty());
+        }
+        if (wrapper.getPage3() == null) {
+            wrapper.setPage3(ResumeReqDto.empty());
+        }
+        return wrapper;
+    }
+
 
     private ResumeTempWrapper loadFromDatabase(Long resumeId, Long memberId) {
         Resume resume = resumeRepository.findWithAllRelationsById(resumeId).orElse(null);
