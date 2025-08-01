@@ -49,7 +49,7 @@ public class RedisConfig {
         config.useSingleServer().setAddress("redis://" + redisProperties.getHost() + ":" + redisProperties.getPort())
                 .setPassword(redisProperties.getPassword())
                 .setConnectionPoolSize(25)
-                .setConnectionMinimumIdleSize(15);
+                .setConnectionMinimumIdleSize(5);
 
         this.redissonClient = Redisson.create(config);
         return redissonClient;
