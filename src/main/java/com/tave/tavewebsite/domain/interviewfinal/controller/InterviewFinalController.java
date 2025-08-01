@@ -57,6 +57,7 @@ public class InterviewFinalController {
             @RequestPart(name="file")MultipartFile file
     )
     {
+        interviewFinalUseCase.deleteAll();
         interviewFinalUseCase.insertInterviewEntityFromExcel(file);
 
         return SuccessResponse.ok(INTERVIEW_FINAL_CREATED.getMessage());
