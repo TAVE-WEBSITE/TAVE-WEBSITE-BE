@@ -30,6 +30,7 @@ public enum ErrorMessage {
     TEMP_SERIALIZE_FAILED(500, "임시 저장 데이터를 JSON으로 변환하는 데 실패했습니다."),
     TEMP_SAVE_FAILED(500, "임시 저장 데이터를 Redis에 저장하는 데 실패했습니다."),
     TEMP_READ_FAILED(500, "임시 저장 데이터를 Redis에서 읽는 데 실패했습니다."),
+    INVALID_DATA_OWNER(403, "현재 사용자와 일치하지 않는 데이터입니다."),
 
     // Resume Evaluation
     ALREADY_EXISTS_EVALUATION(400, "이미 평가중인 이력서입니다."),
