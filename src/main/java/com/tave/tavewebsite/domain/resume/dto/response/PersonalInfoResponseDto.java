@@ -1,10 +1,8 @@
 package com.tave.tavewebsite.domain.resume.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@ToString
 @Getter
 @Builder
 @NoArgsConstructor
@@ -18,8 +16,12 @@ public class PersonalInfoResponseDto {
     private String email;
 
     // 이력서 정보
-    private String school;
-    private String major;
-    private String minor;
-    private String field;
+    @Builder.Default
+    private String school = "";
+    @Builder.Default
+    private String major = "";
+    @Builder.Default
+    private String minor = "";
+    @Builder.Default
+    private String field = "";
 }

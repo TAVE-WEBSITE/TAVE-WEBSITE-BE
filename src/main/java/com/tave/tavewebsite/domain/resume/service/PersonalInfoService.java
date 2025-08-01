@@ -34,10 +34,12 @@ import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonalInfoService {
@@ -170,6 +172,7 @@ public class PersonalInfoService {
         Resume resume = resumeRepository.findByMemberId(memberId)
                 .orElse(null); // 없을 수도 있음
 
+        log.info("getAllPersonalInfo resume {}", resume);
         return PersonalInfoResponseDto.builder()
                 .username(member.getUsername())
                 .sex(member.getSex().name())
