@@ -61,13 +61,6 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
             @Param("status") EvaluationStatus status
     );
 
-    @EntityGraph(attributePaths = {
-            "resumeQuestions",
-            "resumeTimeSlots",
-            "languageLevels"
-    })
-    List<Resume> findAllWithRelationsByIdIn(List<Long> resumeIds);
-
     @EntityGraph(attributePaths = {"resumeTimeSlots"})
     Optional<Resume> findWithTimeSlotsById(Long id);
 
@@ -77,4 +70,11 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
             "LEFT JOIN FETCH r.member " +
             "WHERE r.id IN :resumeIds")
     List<Resume> findAllByMemberIdWithTimeSlotsIn(@Param("resumeIds") List<Long> resumeIds);
+
+    @Query("SELECT DISTINCT r FROM Resume r " +
+            "LEFT JOIN FETCH r.resumeTimeSlots " +
+            "LEFT JOIN FETCH r.member " +
+            "WHERE r.id = :resumeId")
+    Optional<Resume> findByIdWithTimeSlotsAndMember(@Param("resumeId") Long resumeId);
+
 }
