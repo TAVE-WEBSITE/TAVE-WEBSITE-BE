@@ -14,7 +14,7 @@ public enum ErrorMessage {
 
     // 엑셀 오류
     EXCEL_BAD_REQUEST_EXCEPTION(400, "엑셀 오류"),
-    EXCEL_NULL_EXCEPTION(400,"현재 서버에서는 엑셀로부터 Null 값을 인식하고 있습니다.");
+    EXCEL_NULL_EXCEPTION(400,"[Excel]에 비어있는 값이 존재합니다.");
 
     private final int code;
     private final String message;
