@@ -19,7 +19,7 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    @PostMapping("/admin/dashboard")
+    @PostMapping("/manager/dashboard")
     public SuccessResponse updateDashboard() {
 
         dashboardService.updateDetailedCounts();
@@ -27,7 +27,7 @@ public class DashboardController {
         return new SuccessResponse(DASHBOARD_UPDATE_SUCCESS.getMessage());
     }
 
-    @GetMapping("/admin/dashboard")
+    @GetMapping("/manager/dashboard")
     public SuccessResponse<DashboardResDto> getDashboard() {
         return new SuccessResponse<>(dashboardService.getDashboard(), DASHBOARD_SUCCESS_MESSAGE.getMessage());
     }
