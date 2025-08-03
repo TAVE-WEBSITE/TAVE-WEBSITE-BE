@@ -2,21 +2,17 @@ package com.tave.tavewebsite.domain.apply.dashboard.service;
 
 import com.tave.tavewebsite.domain.apply.dashboard.dto.DashboardRatioResDto;
 import com.tave.tavewebsite.domain.apply.dashboard.dto.DashboardResDto;
+import com.tave.tavewebsite.domain.apply.dashboard.dto.DashboardUpdateDto;
 import com.tave.tavewebsite.domain.apply.dashboard.entity.Dashboard;
 import com.tave.tavewebsite.domain.apply.dashboard.exception.DashboardErrorException;
 import com.tave.tavewebsite.domain.apply.dashboard.repository.DashboardRepository;
-import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -25,7 +21,6 @@ public class DashboardService {
 
     private final DashboardRepository dashboardRepository;
     private final RedisUtil redisUtil;
-    private final RedissonClient redissonClient;
 
     public DashboardResDto getDashboard() {
         Dashboard dashboard = findIfExists();
@@ -52,30 +47,13 @@ public class DashboardService {
         dashboardRepository.save(dashboard);
     }
 
-    public void updateDashboardAtomically(Resume resume, Member member) {
+    @Transactional
+    public void updateDetailedCounts() {
         Dashboard dashboard = findIfExists();
-        dashboard.updateDashboard(resume, member);
-    }
 
-    public void addDetailedCount(Resume resume, Member member) {
-        String lockKey = "sync:dashboard:lock";
-        RLock lock = redissonClient.getLock(lockKey);
+        DashboardUpdateDto dashboardUpdateDto = dashboardRepository.countEachElements();
 
-        boolean isLocked = false;
-        try {
-            isLocked = lock.tryLock(10, 2, TimeUnit.SECONDS);
-            if(!isLocked){
-                log.warn("락을 획득하지 못했습니다.");
-            }
-            // 로직 처리
-            updateDashboardAtomically(resume, member);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            if (isLocked && lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
-        }
+        dashboard.updateDashboard(dashboardUpdateDto);
     }
 
     private Dashboard findIfExists() {
