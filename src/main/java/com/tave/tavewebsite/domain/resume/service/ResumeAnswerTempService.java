@@ -170,7 +170,7 @@ public class ResumeAnswerTempService {
 
         // 분야별 질문 → page2 세팅
         boolean hasPage2Data = page2Answers.stream().anyMatch(a -> a.getAnswer() != null && !a.getAnswer().isBlank())
-                || languageLevels.stream().anyMatch(l -> l.level() != null && l.level() > 1);
+                || !languageLevels.isEmpty();
 
         if (hasPage2Data) {
             ResumeReqDto page2Dto = new ResumeReqDto(
