@@ -169,7 +169,10 @@ public class ResumeAnswerTempService {
                 .collect(Collectors.toList());
 
         // 분야별 질문 → page2 세팅
-        if (!page2Answers.isEmpty() || !languageLevels.isEmpty()) {
+        boolean hasPage2Data = page2Answers.stream().anyMatch(a -> a.getAnswer() != null && !a.getAnswer().isBlank())
+                || languageLevels.stream().anyMatch(l -> l.level() != null && l.level() > 1);
+
+        if (hasPage2Data) {
             ResumeReqDto page2Dto = new ResumeReqDto(
                     page2Answers,
                     new ArrayList<>(),
@@ -179,7 +182,10 @@ public class ResumeAnswerTempService {
         }
 
         // 공통 질문 → page3 세팅
-        if (!page3Answers.isEmpty() || timeSlots.isEmpty()) {
+        boolean hasPage3Data = page3Answers.stream().anyMatch(a -> a.getAnswer() != null && !a.getAnswer().isBlank())
+                || !timeSlots.isEmpty();
+
+        if (hasPage3Data) {
             ResumeReqDto page3Dto = new ResumeReqDto(
                     page3Answers,
                     timeSlots,
