@@ -34,7 +34,7 @@ public class LanguageLevel {
     @NotNull
     @Column(nullable = false)
     @Max(5)
-    @Min(1)
+    @Min(0)
     private Integer level;
 
     @ManyToOne
@@ -44,7 +44,7 @@ public class LanguageLevel {
     @Builder
     public LanguageLevel(String language, Resume resume) {
         this.language = language;
-        this.level = 1;
+        this.level = 0;
         this.resume = resume;
         resume.getLanguageLevels().add(this);
     }
