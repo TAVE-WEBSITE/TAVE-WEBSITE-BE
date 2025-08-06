@@ -45,14 +45,9 @@ public class SocialLinksController {
     // 포트폴리오 업로드
     @PostMapping("/portfolio")
     public SuccessResponse updatePortfolio(@PathVariable("resumeId") Long resumeId,
-                                           @RequestParam("file") MultipartFile file) {
+                                           @RequestParam(value = "file", required = false) MultipartFile file) {
         Long memberId = SecurityUtils.getCurrentMember().getId();
-
-        fileValidator.validateSize(file);
-        URL portfolioUrl = s3Service.uploadFile(file);
-
-        socialLinksService.updatePortfolio(resumeId, portfolioUrl.toString(), memberId);
-        PortfolioUploadResponseDto responseDto = new PortfolioUploadResponseDto(portfolioUrl.toString());
+        PortfolioUploadResponseDto responseDto = socialLinksService.updatePortfolio(resumeId, file, memberId);
         return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
     }
 
