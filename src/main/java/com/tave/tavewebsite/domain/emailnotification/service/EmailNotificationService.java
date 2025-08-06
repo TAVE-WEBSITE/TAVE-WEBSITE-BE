@@ -38,7 +38,8 @@ public class EmailNotificationService {
     }
 
     public void setSchedulerOfApplyNotificationEmail(HttpServletRequest request) {
-        LocalDate targetDate = LocalDate.now().plusDays(1);
+//        LocalDate targetDate = LocalDate.now().plusDays(1);
+        LocalDate targetDate = LocalDate.now();
 
         log.info("신규 지원 모집 이메일 전송 예약 완료, 실행자 ip : {}, 기기 종류 : {}", request.getRemoteAddr(),
                 request.getHeader("User-Agent"));
