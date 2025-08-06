@@ -1,9 +1,6 @@
 package com.tave.tavewebsite.domain.apply.dashboard.entity;
 
-import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.domain.member.entity.Sex;
-import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.global.common.FieldType;
+import com.tave.tavewebsite.domain.apply.dashboard.dto.DashboardUpdateDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -69,28 +66,15 @@ public class Dashboard {
         this.deepCount = 0L;
     }
 
-    public void updateDashboard(Resume resume, Member member) {
-        this.totalCount += 1;
-        if(member.getSex().equals(Sex.MALE)) {
-            this.maleCount += 1;
-        } else this.femaleCount += 1;
-
-        if(resume.getField().equals(FieldType.APPFRONTEND)) {
-            this.appFrontCount += 1;
-        }
-        else if(resume.getField().equals(FieldType.WEBFRONTEND)) {
-            this.webFrontCount += 1;
-        }
-        else if(resume.getField().equals(FieldType.BACKEND)) {
-            this.backendCount += 1;
-        }
-        else if(resume.getField().equals(FieldType.DESIGN)) {
-            this.designCount += 1;
-        }
-        else if(resume.getField().equals(FieldType.DATAANALYSIS))
-            this.dataAnalysisCount += 1;
-        else if(resume.getField().equals(FieldType.DEEPLEARNING))
-            this.deepCount += 1;
-
+    public void updateDashboard(DashboardUpdateDto dto) {
+        this.totalCount = dto.totalCount();
+        this.maleCount = dto.maleCount();
+        this.femaleCount = dto.femaleCount();
+        this.backendCount = dto.backendCount();
+        this.webFrontCount = dto.webFrontCount();
+        this.designCount = dto.designCount();
+        this.appFrontCount = dto.appFrontCount();
+        this.dataAnalysisCount = dto.dataAnalysisCount();
+        this.deepCount = dto.deepCount();
     }
 }
