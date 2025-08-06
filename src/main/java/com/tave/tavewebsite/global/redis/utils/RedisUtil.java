@@ -1,6 +1,7 @@
 package com.tave.tavewebsite.global.redis.utils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RedisUtil {
@@ -59,7 +61,11 @@ public class RedisUtil {
 
     // 임시저장 Redis key 삭제
     public void deleteRedisKey(String key) {
-        redisTemplate.delete(key);
+        try {
+            redisTemplate.delete(key);
+        } catch (Exception e) {
+            log.error("[Redis] key 삭제 실패 - key: {}", key, e);
+        }
     }
 
 }
