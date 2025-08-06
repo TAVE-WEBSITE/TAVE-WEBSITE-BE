@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
@@ -267,6 +268,24 @@ public class S3Service {
     private void checkIsXLSXFile(MultipartFile file) {
         if (!XLSX_APPLICATION_TYPE.equals(file.getContentType())) {
             throw new IsNotXlsxFileException();
+        }
+    }
+
+    public void deleteFileByUrl(String fileUrl) {
+        try {
+            String key = extractKeyFromUrl(fileUrl);
+            s3Client.deleteObject(bucketName, key);
+        } catch (Exception e) {
+            throw new S3NotExistNameException();
+        }
+    }
+
+    private String extractKeyFromUrl(String fileUrl) {
+        try {
+            URL url = new URL(fileUrl);
+            return url.getPath().substring(1); // 앞의 '/' 제거
+        } catch (MalformedURLException e) {
+            throw new S3NotExistNameException();
         }
     }
 
