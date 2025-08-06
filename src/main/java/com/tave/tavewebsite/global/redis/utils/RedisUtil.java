@@ -57,11 +57,9 @@ public class RedisUtil {
         return count;
     }
 
-    // prefix 기반 키 삭제
-    public void deleteByPrefix(String prefix) {
-        var keys = redisTemplate.keys(prefix + "*");
-        if (keys != null && !keys.isEmpty()) {
-            redisTemplate.delete(keys);
-        }
+    // 임시저장 Redis key 삭제
+    public void deleteRedisKey(String key) {
+        redisTemplate.delete(key);
     }
+
 }
