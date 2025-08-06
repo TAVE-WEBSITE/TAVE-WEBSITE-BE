@@ -46,7 +46,7 @@ class ResumeResumeTimeServiceImplTest {
         Resume resumeReal = Resume.builder()
                 .school("세종대")
                 .major("경영학과")
-                .resumeGeneration(15)
+                .resumeGeneration("15")
                 .blogUrl("www.blog.com")
                 .githubUrl("www.github.com")
                 .state(ResumeState.TEMPORARY)
