@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -55,7 +56,10 @@ public class ResumeQuestionService {
 
     // 분야 별 ResumeQuestion 조회하기
     public List<DetailResumeQuestionResponse> getResumeQuestionList(Resume resume, FieldType fieldType) {
-        List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType);
+        List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType)
+                .stream()
+                .sorted(Comparator.comparing(ResumeQuestion::getOrdered))
+                .toList();
 
         return mapResumeQuestionListToDetailResponse(resumeQuestionList);
     }
@@ -250,6 +254,16 @@ public class ResumeQuestionService {
 
         List<LanguageLevelResponseDto> languageLevels = resume.getProgramingLanguages().stream()
                 .map(LanguageLevelResponseDto::fromEntity)
+                .toList();
+
+        List<DetailResumeQuestionResponse> commonDtoList = commonQuestions
+                .stream()
+                .sorted(Comparator.comparing(DetailResumeQuestionResponse::ordered))
+                .toList();
+
+        List<DetailResumeQuestionResponse> specificDtoList = specificQuestions
+                .stream()
+                .sorted(Comparator.comparing(DetailResumeQuestionResponse::ordered))
                 .toList();
 
         return ResumeDetailResponse.of(resume, commonQuestions, specificQuestions, languageLevels);
