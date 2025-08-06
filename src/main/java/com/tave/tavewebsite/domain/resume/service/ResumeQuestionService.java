@@ -238,7 +238,7 @@ public class ResumeQuestionService {
     @Transactional(readOnly = true)
     public ResumeDetailResponse getResumeDetail(Long resumeId) {
         Resume resume = resumeRepository.findWithTimeSlotsById(resumeId)
-                .orElseThrow(() -> new ResumeNotFoundException());
+                .orElseThrow(ResumeNotFoundException::new);
 
         List<DetailResumeQuestionResponse> commonQuestions = new ArrayList<>();
         List<DetailResumeQuestionResponse> specificQuestions = new ArrayList<>();
@@ -266,7 +266,7 @@ public class ResumeQuestionService {
                 .sorted(Comparator.comparing(DetailResumeQuestionResponse::ordered))
                 .toList();
 
-        return ResumeDetailResponse.of(resume, commonQuestions, specificQuestions, languageLevels);
+        return ResumeDetailResponse.of(resume, commonDtoList, specificDtoList, languageLevels);
     }
 
 }
