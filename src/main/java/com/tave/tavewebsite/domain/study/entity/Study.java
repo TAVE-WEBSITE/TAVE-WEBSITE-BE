@@ -11,8 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.net.URL;
-
 
 @Entity
 @Getter
@@ -48,38 +46,31 @@ public class Study extends BaseEntity {
     @Column(length = 2083, nullable = false) // DDL varchar(2083)
     private String blogUrl;
 
-    @NotNull
-    @Column(length = 2083, nullable = false) // DDL varchar(2083)
-    private String imgUrl;
-
     @Builder
-    public Study(StudyRequestDto req, URL imageUrl) {
+    public Study(StudyRequestDto req) {
         this.topic = req.topic();
         this.teamName = req.teamName();
         this.generation = req.generation();
         this.field = FieldType.valueOf(req.field());
         this.blogUrl = req.blogUrl();
-        this.imgUrl = imageUrl.toString();
     }
 
     // test를 위한 생성
-    public Study(Long id, String teamName, String topic, String generation, FieldType field, String blogUrl, String imgUrl) {
+    public Study(Long id, String teamName, String topic, String generation, FieldType field, String blogUrl) {
         this.id = id;
         this.teamName = teamName;
         this.topic = topic;
         this.generation = generation;
         this.field = field;
         this.blogUrl = blogUrl;
-        this.imgUrl = imgUrl;
     }
 
-    public void updateStudy(StudyRequestDto req, URL imageUrl) {
+    public void updateStudy(StudyRequestDto req) {
         this.topic = req.topic();
         this.teamName = req.teamName();
         this.generation = req.generation();
         this.field = FieldType.valueOf(req.field());
         this.blogUrl = req.blogUrl();
-        this.imgUrl = imageUrl.toString();
     }
 
 

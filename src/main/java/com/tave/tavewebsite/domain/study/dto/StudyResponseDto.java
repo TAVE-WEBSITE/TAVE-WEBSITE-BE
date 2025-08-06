@@ -7,7 +7,6 @@ public record StudyResponseDto(
         String generation,
         String field,
         String topic,
-        String imageUrl,
         String blogUrl
 ) {
 }

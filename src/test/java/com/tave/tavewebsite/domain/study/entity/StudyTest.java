@@ -6,13 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @ActiveProfiles("test")
 class StudyTest {
@@ -24,8 +20,8 @@ class StudyTest {
     @Test
     void createStudy(){
      //given
-        Study study1 = new Study(1L, "teamName1", "topic1", "14", FieldType.BACKEND, "http://blog.url1", "imageUrl");
-        Study study2 = new Study(2L, "teamName2", "topic2", "14", FieldType.BACKEND, "http://blog.url2", "imageUrl");
+        Study study1 = new Study(1L, "teamName1", "topic1", "14", FieldType.BACKEND, "http://blog.url1");
+        Study study2 = new Study(2L, "teamName2", "topic2", "14", FieldType.BACKEND, "http://blog.url2");
 
      //when
         studyRepository.save(study1);

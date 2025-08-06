@@ -5,16 +5,12 @@ import com.tave.tavewebsite.domain.study.dto.StudyResponseDto;
 import com.tave.tavewebsite.domain.study.entity.Study;
 import com.tave.tavewebsite.domain.study.exception.NotFoundStudy;
 import com.tave.tavewebsite.domain.study.repository.StudyRepository;
-import com.tave.tavewebsite.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.net.URL;
 
 @Slf4j
 @Service
@@ -22,12 +18,10 @@ import java.net.URL;
 public class StudyService {
 
     private final StudyRepository studyRepository;
-    private final S3Service s3Service;
 
-    public void createStudy(StudyRequestDto req, MultipartFile file) {
-        URL url = s3Service.uploadImages(file);
+    public void createStudy(StudyRequestDto req) {
 
-        Study study = new Study(req, url);
+        Study study = new Study(req);
 
         studyRepository.save(study);
     }
@@ -54,16 +48,14 @@ public class StudyService {
     }
 
     @Transactional
-    public void modifyStudy(Long studyId, StudyRequestDto req, MultipartFile file) {
+    public void modifyStudy(Long studyId, StudyRequestDto req) {
         // 존재 유무 & 직책에 대한 유저 자격 확인
         Study study = studyRepository.findById(studyId).orElseThrow(NotFoundStudy::new); // 스터디 존재 유무 확인
-        URL url = s3Service.uploadImages(file);
-        study.updateStudy(req, url);
+        study.updateStudy(req);
     }
 
     public void deleteStudy(Long studyId){
         Study study = studyRepository.findById(studyId).orElseThrow(NotFoundStudy::new); // 스터디 존재 유무 확인
-        s3Service.deleteImage(study.getImgUrl());
         studyRepository.delete(study);
     }
 }

@@ -66,8 +66,7 @@ public class CustomStudyRepositoryImpl implements CustomStudyRepository {
 
     private Page<StudyResponseDto> getResult(List<Study> studies, Pageable pageable) {
         List<StudyResponseDto> studyResponseDtos = studies.stream().map(study -> new StudyResponseDto(study.getId(), study.getTeamName(),
-                study.getGeneration(), String.valueOf(study.getField()), study.getTopic(),
-                study.getImgUrl(), study.getBlogUrl())).toList();
+                study.getGeneration(), String.valueOf(study.getField()), study.getTopic(), study.getBlogUrl())).toList();
 
         return new PageImpl<>(studyResponseDtos, pageable, studies.size());
     }

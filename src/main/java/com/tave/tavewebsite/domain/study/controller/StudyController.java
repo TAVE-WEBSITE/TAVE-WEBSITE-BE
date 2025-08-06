@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import static com.tave.tavewebsite.domain.study.controller.StudySuccessMessage.*;
 
@@ -23,9 +22,9 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping("/manager/study")
-    public SuccessResponse createStudy(@RequestPart @Valid StudyRequestDto req, @RequestPart MultipartFile imageFile) {
+    public SuccessResponse createStudy(@RequestBody @Valid StudyRequestDto req) {
 
-        studyService.createStudy(req, imageFile);
+        studyService.createStudy(req);
 
         return SuccessResponse.ok(STUDY_CREATE.getMessage());
     }
@@ -44,9 +43,8 @@ public class StudyController {
 
     @PutMapping("/manager/study/{studyId}")
     public SuccessResponse updateStudy(@PathVariable("studyId") Long studyId,
-                                       @RequestPart @Valid StudyRequestDto dto,
-                                       @RequestPart MultipartFile imageFile) {
-        studyService.modifyStudy(studyId, dto, imageFile);
+                                       @RequestBody @Valid StudyRequestDto dto) {
+        studyService.modifyStudy(studyId, dto);
 
         return SuccessResponse.ok(STUDY_UPDATE.getMessage());
     }
