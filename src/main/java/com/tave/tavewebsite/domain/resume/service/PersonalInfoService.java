@@ -219,7 +219,7 @@ public class PersonalInfoService {
         Long resumeId = resume.getId();
 
         // 1. Redis 임시저장 삭제
-        redisUtil.deleteByPrefix("resume:" + resumeId + ":");
+        redisUtil.deleteByPrefix("resume:temp:" + resumeId);
         // 2. 프로그래밍 언어 레벨 삭제
         languageLevelRepository.deleteByResumeId(resumeId);
         // 3. 질문 삭제
