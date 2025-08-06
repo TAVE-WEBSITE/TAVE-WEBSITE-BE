@@ -11,4 +11,6 @@ public class RedisProperties {
     private int port;
     private String host;
     private String password;
+    private int maxConnection;
+    private int minConnection;
 }

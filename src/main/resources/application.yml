@@ -23,6 +23,8 @@ spring:
       host: ${REDIS_HOST}
       #host: 127.0.0.1
       password: ${REDIS_PASSWORD}
+      max-connection: ${REDIS_MAX_CONNECTION}
+      min-connection: ${REDIS_MIN_CONNECTION}
       ssl:
         enabled: true
 
