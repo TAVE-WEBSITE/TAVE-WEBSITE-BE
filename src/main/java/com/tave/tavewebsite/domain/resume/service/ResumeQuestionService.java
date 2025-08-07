@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -55,7 +56,10 @@ public class ResumeQuestionService {
 
     // 분야 별 ResumeQuestion 조회하기
     public List<DetailResumeQuestionResponse> getResumeQuestionList(Resume resume, FieldType fieldType) {
-        List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType);
+        List<ResumeQuestion> resumeQuestionList = findResumeQuestionsByResumeId(resume, fieldType)
+                .stream()
+                .sorted(Comparator.comparing(ResumeQuestion::getOrdered))
+                .toList();
 
         return mapResumeQuestionListToDetailResponse(resumeQuestionList);
     }
@@ -234,7 +238,7 @@ public class ResumeQuestionService {
     @Transactional(readOnly = true)
     public ResumeDetailResponse getResumeDetail(Long resumeId) {
         Resume resume = resumeRepository.findWithTimeSlotsById(resumeId)
-                .orElseThrow(() -> new ResumeNotFoundException());
+                .orElseThrow(ResumeNotFoundException::new);
 
         List<DetailResumeQuestionResponse> commonQuestions = new ArrayList<>();
         List<DetailResumeQuestionResponse> specificQuestions = new ArrayList<>();
@@ -252,7 +256,17 @@ public class ResumeQuestionService {
                 .map(LanguageLevelResponseDto::fromEntity)
                 .toList();
 
-        return ResumeDetailResponse.of(resume, commonQuestions, specificQuestions, languageLevels);
+        List<DetailResumeQuestionResponse> commonDtoList = commonQuestions
+                .stream()
+                .sorted(Comparator.comparing(DetailResumeQuestionResponse::ordered))
+                .toList();
+
+        List<DetailResumeQuestionResponse> specificDtoList = specificQuestions
+                .stream()
+                .sorted(Comparator.comparing(DetailResumeQuestionResponse::ordered))
+                .toList();
+
+        return ResumeDetailResponse.of(resume, commonDtoList, specificDtoList, languageLevels);
     }
 
 }

@@ -33,7 +33,7 @@ public class EmailBatchScheduler {
     }
 
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 새벽 0시
+    @Scheduled(cron = "0 30 1 * * *") // 매일 새벽 0시
     @SchedulerLock(name = "emailNotificationJobLock", lockAtMostFor = "PT10M") // 락 10분간 유지
     public void executeIfScheduled() {
         String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
