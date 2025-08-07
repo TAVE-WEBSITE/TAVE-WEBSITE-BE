@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.global.discord.aop;
+package com.tave.tavewebsite.global.discord.domain;
 
 /*
 * 전달하고자 하는 Identifier의 Key:Value 전달

@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.global.discord.message;
 
 import com.tave.tavewebsite.domain.member.dto.response.log.MemberLogDto;
-import com.tave.tavewebsite.global.discord.aop.Discordable;
+import com.tave.tavewebsite.global.discord.domain.Discordable;
 import lombok.Builder;
 
 import java.util.List;

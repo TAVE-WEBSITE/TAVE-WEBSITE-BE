@@ -1,12 +1,12 @@
 package com.tave.tavewebsite.domain.member.dto.response.log;
 
 import com.tave.tavewebsite.domain.member.entity.Member;
-import com.tave.tavewebsite.global.discord.aop.DiscordMessageType;
-import com.tave.tavewebsite.global.discord.aop.Discordable;
+import com.tave.tavewebsite.global.discord.domain.DiscordMessageType;
+import com.tave.tavewebsite.global.discord.domain.Discordable;
 import lombok.Builder;
 import lombok.Getter;
 
-import static com.tave.tavewebsite.global.discord.aop.DiscordMessageType.SIGN_UP;
+import static com.tave.tavewebsite.global.discord.domain.DiscordMessageType.SIGN_UP;
 
 @Getter
 @Builder

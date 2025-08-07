@@ -2,6 +2,7 @@ package com.tave.tavewebsite.global.discord.aop;
 
 import com.tave.tavewebsite.domain.member.dto.response.log.MemberLogDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
+import com.tave.tavewebsite.global.discord.domain.Discordable;
 import com.tave.tavewebsite.global.discord.message.DiscordMessage;
 import com.tave.tavewebsite.global.discord.service.DiscordService;
 import com.tave.tavewebsite.global.security.exception.AuthorizedException;

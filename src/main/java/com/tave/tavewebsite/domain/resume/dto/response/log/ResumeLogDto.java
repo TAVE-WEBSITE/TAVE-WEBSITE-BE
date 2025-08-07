@@ -1,12 +1,12 @@
 package com.tave.tavewebsite.domain.resume.dto.response.log;
 
 import com.tave.tavewebsite.domain.resume.entity.Resume;
-import com.tave.tavewebsite.global.discord.aop.DiscordMessageType;
-import com.tave.tavewebsite.global.discord.aop.Discordable;
+import com.tave.tavewebsite.global.discord.domain.DiscordMessageType;
+import com.tave.tavewebsite.global.discord.domain.Discordable;
 import lombok.Builder;
 import lombok.Getter;
 
-import static com.tave.tavewebsite.global.discord.aop.DiscordMessageType.RESUME_SUBMIT;
+import static com.tave.tavewebsite.global.discord.domain.DiscordMessageType.RESUME_SUBMIT;
 
 @Getter
 @Builder

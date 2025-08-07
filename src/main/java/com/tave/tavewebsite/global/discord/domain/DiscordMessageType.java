@@ -1,4 +1,4 @@
-package com.tave.tavewebsite.global.discord.aop;
+package com.tave.tavewebsite.global.discord.domain;
 
 import lombok.AllArgsConstructor;
 
