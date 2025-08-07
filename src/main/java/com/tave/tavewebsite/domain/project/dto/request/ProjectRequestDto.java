@@ -21,10 +21,6 @@ public class ProjectRequestDto {
     private String generation;
 
     @NotNull
-    @Size(min = 1, max = 30)
-    private String teamName;
-
-    @NotNull
     private FieldType field;
 
     @NotNull
