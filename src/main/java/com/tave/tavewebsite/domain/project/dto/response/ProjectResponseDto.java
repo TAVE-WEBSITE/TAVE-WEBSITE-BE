@@ -21,6 +21,6 @@ public class ProjectResponseDto {
         this.generation = project.getGeneration();
         this.field = project.getField();
         this.blogUrl = project.getBlogUrl();
-        this.imageUrl = project.getImgUrl();
+        this.imageUrl = project.getImgUrl() != null ? project.getImgUrl() : "";
     }
 }
