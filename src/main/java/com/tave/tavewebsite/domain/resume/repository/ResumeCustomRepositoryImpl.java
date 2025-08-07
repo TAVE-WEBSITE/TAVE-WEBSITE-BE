@@ -11,6 +11,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.QResumeEvaluation;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,11 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         BooleanExpression statusCondition = extractedStatus(status);
         BooleanExpression typeCondition = extractedFieldType(type);
         BooleanExpression nameCondition = extractedName(name);
+        BooleanExpression resumeStatusCondition = extractedResumeStatus();
 
+        if (resumeStatusCondition != null) {
+            condition.and(resumeStatusCondition);
+        }
         if (statusCondition != null) {
             condition.and(statusCondition);
         }
@@ -104,6 +109,11 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         } else {
             return resumeEvaluation.finalEvaluateDocument.eq(status);
         }
+    }
+
+    private BooleanExpression extractedResumeStatus() {
+
+        return resume.state.eq(ResumeState.SUBMITTED);
     }
 
     private BooleanExpression extractedFieldType(FieldType type) {
