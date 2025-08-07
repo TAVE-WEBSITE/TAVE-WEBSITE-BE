@@ -29,7 +29,4 @@ public class ProjectRequestDto {
 
     @NotNull
     private String blogUrl;
-
-    @NotNull
-    private String imageUrl;
 }
