@@ -23,4 +23,21 @@ public class DiscordMessageAspect {
     public void discordMessagePointcut() {
     }
 
+    @AfterReturning(pointcut = "discordMessagePointcut()", returning = "result")
+    public void discordMessageAfterReturning(Object result) {
+        if (result instanceof Discordable returnData) {
+            MemberLogDto currentMember = getCurrentMember();
+            discordService.sendDiscordMessage(DiscordMessage.from(currentMember, returnData));
+        }
+    }
+
+    public MemberLogDto getCurrentMember() {
+        Member currentMember;
+        try {
+            currentMember = SecurityUtils.getCurrentMember();
+        } catch (AuthorizedException e) {
+            currentMember = null;
+        }
+        return MemberLogDto.of(currentMember);
+    }
 }
