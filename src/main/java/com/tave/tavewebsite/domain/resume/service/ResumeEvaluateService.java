@@ -9,6 +9,7 @@ import com.tave.tavewebsite.domain.resume.dto.response.ResumeResDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeEvaluation;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeEvaluationRepository;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
@@ -62,7 +63,7 @@ public class ResumeEvaluateService {
         Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, type, name, pageable);
 
         return ResumeEvaluateResDto.fromResume(
-                resumeRepository.count(),
+                resumeRepository.countByState(ResumeState.SUBMITTED),
                 resumeRepository.findNotEvaluatedResume(currentMember),
                 resumeRepository.findEvaluatedResume(currentMember),
                 resumeResDtos);

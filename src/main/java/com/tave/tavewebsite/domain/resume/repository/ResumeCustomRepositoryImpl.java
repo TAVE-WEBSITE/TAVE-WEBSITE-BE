@@ -193,6 +193,7 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         Long resumeCount = queryFactory
                 .select(resume.count())
                 .from(resume)
+                .where(resume.state.eq(ResumeState.SUBMITTED))
                 .fetchOne();
 
         Long evaluatedCount = queryFactory

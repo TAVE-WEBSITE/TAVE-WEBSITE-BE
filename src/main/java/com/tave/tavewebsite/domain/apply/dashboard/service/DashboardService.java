@@ -25,7 +25,7 @@ public class DashboardService {
     public DashboardResDto getDashboard() {
         Dashboard dashboard = findIfExists();
         double generationRatio = dashboard.getTotalCount() == 0 ? 0.0 :
-                (double) (dashboard.getTotalCount() - dashboard.getPreviousCount()) / dashboard.getTotalCount() * 100;
+                (double) (dashboard.getTotalCount() / dashboard.getPreviousCount());
         long tempCount = redisUtil.countResumeKeysWithPrefix();
 
         Long totalCount = dashboard.getTotalCount();

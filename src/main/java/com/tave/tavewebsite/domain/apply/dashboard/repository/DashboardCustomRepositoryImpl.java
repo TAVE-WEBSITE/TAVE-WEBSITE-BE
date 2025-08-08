@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tave.tavewebsite.domain.apply.dashboard.dto.DashboardUpdateDto;
 import com.tave.tavewebsite.domain.member.entity.Sex;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -42,7 +43,9 @@ public class DashboardCustomRepositoryImpl implements DashboardCustomRepository 
                 .leftJoin(member)
                 .on(
                         member.id.eq(resume.member.id)
-                ).fetchOne();
+                )
+                .where(resume.state.eq(ResumeState.SUBMITTED))
+                .fetchOne();
 
         // null 반환 방지: 모두 0으로 채운 DTO
         return Objects.requireNonNullElseGet(dashboardUpdateDto, () ->
