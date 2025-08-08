@@ -68,6 +68,9 @@ app:
   s3:
     high-quality-bucket: ${HIGH_QUALITY_BUCKET}
 
+discord:
+  webhookUrl: ${DISCORD_WEBHOOK_URL}
+
 logging:
   level:
     org:
