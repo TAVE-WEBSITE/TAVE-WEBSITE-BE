@@ -135,17 +135,21 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
 
     // 해당 조회는 EvaluationStatus 값이 평가 완료 or 평가 진행 전일 경우에 둘다 평가 진행 전으로 처리
     @Override
-    public Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, FieldType type, Pageable pageable) {
+    public Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, FieldType type, String name, Pageable pageable) {
 
         BooleanBuilder condition = new BooleanBuilder();
         BooleanExpression statusCondition = extractedStatusInFinalEvaluation(status);
         BooleanExpression typeCondition = extractedFieldType(type);
+        BooleanExpression nameCondition = extractedName(name);
 
         if (statusCondition != null) {
             condition.and(statusCondition);
         }
         if (typeCondition != null) {
             condition.and(typeCondition);
+        }
+        if (nameCondition != null) {
+            condition.and(nameCondition);
         }
 
         List<ResumeResDto> resumeResDtos = queryFactory

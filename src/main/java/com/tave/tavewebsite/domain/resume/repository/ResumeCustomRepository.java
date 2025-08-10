@@ -11,7 +11,7 @@ public interface ResumeCustomRepository {
 
     Page<ResumeResDto> findMiddleEvaluation(Member member, EvaluationStatus status, FieldType type, String name, Pageable pageable);
 
-    Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, FieldType type, Pageable pageable);
+    Page<ResumeResDto> findFinalEvaluation(Member member, EvaluationStatus status, FieldType type, String name, Pageable pageable);
 
     long findNotEvaluatedResume(Member member);
 

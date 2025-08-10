@@ -70,10 +70,10 @@ public class ResumeEvaluateService {
     }
 
     @Transactional(readOnly = true)
-    public ResumeEvaluateResDto getFinalDocumentResumes(EvaluationStatus status, FieldType type, Pageable pageable) {
+    public ResumeEvaluateResDto getFinalDocumentResumes(EvaluationStatus status, FieldType type, String name, Pageable pageable) {
         Member currentMember = getCurrentMember();
         Page<ResumeResDto> resumeResDtos =
-                resumeRepository.findFinalEvaluation(currentMember, status, type, pageable);
+                resumeRepository.findFinalEvaluation(currentMember, status, type, name, pageable);
 
         return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
                 resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.NOTCHECKED),
