@@ -1,10 +1,13 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.response.ResumeMemberInfoDto;
+import com.tave.tavewebsite.domain.resume.dto.response.ResumePortfolioDto;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeTimeSlot;
+import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +55,20 @@ public class ResumeGetService {
     public List<Tuple> getResumeListByGenerationAnd(String generation, EvaluationStatus status) {
         return resumeRepository
                 .findResumesWithInterviewTimesAndMemberByGenerationAndStatus(generation, status);
+    }
+
+    public ResumePortfolioDto getResumeWithMemberByResumeId(Long resumeId) {
+        Resume resume = getResumeWithMember(resumeId);
+        return ResumePortfolioDto.of(resume);
+    }
+
+    /*
+    * refactoring
+    * */
+
+    public Resume getResumeWithMember(Long resumeId) {
+        return resumeRepository.findResumeWithMemberByResumeId(resumeId)
+                .orElseThrow(ResumeNotFoundException::new);
     }
 
 }
