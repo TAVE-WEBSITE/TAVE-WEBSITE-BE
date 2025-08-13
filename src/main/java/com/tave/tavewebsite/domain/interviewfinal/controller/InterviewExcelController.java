@@ -1,6 +1,6 @@
 package com.tave.tavewebsite.domain.interviewfinal.controller;
 
-import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.usecase.InterviewExcelUseCase;
 import com.tave.tavewebsite.global.success.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class InterviewExcelController {
 
     @GetMapping("/excel/interviewer/time-table")
     public ResponseEntity<InputStreamResource> downloadPossibleTimeTableExcel() throws IOException {
-        S3ExcelFileInputStreamDto dto = useCase.getPossibleInterviewTimeCSV();
+        S3FileInputStreamDto dto = useCase.getPossibleInterviewTimeCSV();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())
@@ -52,7 +52,7 @@ public class InterviewExcelController {
     // 면접관 전용 시간표 파일 다운로드
     @GetMapping("/excel/interview/time-table")
     public ResponseEntity<InputStreamResource> downloadInterviewTimeTableForManager() throws IOException {
-        S3ExcelFileInputStreamDto dto = useCase.getInterviewTimeTableForManagerXLSX();
+        S3FileInputStreamDto dto = useCase.getInterviewTimeTableForManagerXLSX();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())
@@ -63,7 +63,7 @@ public class InterviewExcelController {
     // 면접 평가 초기 양식 다운로드
     @GetMapping("/excel/interview/evaluation-form")
     public ResponseEntity<InputStreamResource> downloadInterviewEvaluationInitialForm() throws IOException {
-        S3ExcelFileInputStreamDto dto = useCase.getInterviewEvaluationInitialFormXLSX();
+        S3FileInputStreamDto dto = useCase.getInterviewEvaluationInitialFormXLSX();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())
@@ -74,7 +74,7 @@ public class InterviewExcelController {
     // 면접 평가 시트 다운로드
     @GetMapping("/excel/interview/evaluation")
     public ResponseEntity<InputStreamResource> downloadInterviewEvaluation() throws IOException {
-        S3ExcelFileInputStreamDto dto = useCase.getInterviewEvaluationXLSX();
+        S3FileInputStreamDto dto = useCase.getInterviewEvaluationXLSX();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())
