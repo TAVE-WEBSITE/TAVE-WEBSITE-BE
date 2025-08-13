@@ -2,7 +2,7 @@ package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.*;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
@@ -58,7 +58,7 @@ public class InterviewFinalUseCase {
     private final InterviewFinalRepository interviewFinalRepository;
     private final ResumeRepository resumeRepository;
 
-    public S3ExcelFileInputStreamDto downloadInterviewFinal() throws IOException {
+    public S3FileInputStreamDto downloadInterviewFinal() throws IOException {
         return s3DownloadSerivce.downloadInterviewFinalSetUpForm();
     }
 
