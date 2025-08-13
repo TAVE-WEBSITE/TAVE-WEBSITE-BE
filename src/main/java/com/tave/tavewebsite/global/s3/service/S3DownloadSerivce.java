@@ -2,7 +2,7 @@ package com.tave.tavewebsite.global.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
-import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -47,51 +47,62 @@ public class S3DownloadSerivce {
     }
 
     // 최종면접 설정 양식 다운로드
-    public S3ExcelFileInputStreamDto downloadInterviewFinalSetUpForm() throws IOException {
+    public S3FileInputStreamDto downloadInterviewFinalSetUpForm() throws IOException {
             S3Object s3Object = s3Client.getObject(bucketName, finalInterviewBasicFormUrl);
             HttpHeaders headers = createHttpHeaders(FINAL_INTERVIEW_FORM_NAME);
 
-            return S3ExcelFileInputStreamDto.from(
+            return S3FileInputStreamDto.from(
                     s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
             );
     }
 
     // 서류합격자들 면접 가능 시간 파악 엑셀
-    public S3ExcelFileInputStreamDto downloadPossibleTimeTableXlsx() throws IOException {
+    public S3FileInputStreamDto downloadPossibleTimeTableXlsx() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewPossibleTimeTable);
         HttpHeaders headers = createHttpHeaders(POSSIBLE_TIME_TABLE_FORM_NAME);
 
-        return S3ExcelFileInputStreamDto.from(
+        return S3FileInputStreamDto.from(
                 s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
         );
     }
 
     // 면접 시간표 다운로드 (관리자용)
-    public S3ExcelFileInputStreamDto downloadInterviewTimeTableForManagerXLSX() throws IOException {
+    public S3FileInputStreamDto downloadInterviewTimeTableForManagerXLSX() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewTimeTableForManager);
         HttpHeaders headers = createHttpHeaders(INTERVIEW_TIME_TABLE_FOR_MANAGER_FILE_NAME);
 
-        return S3ExcelFileInputStreamDto.from(
+        return S3FileInputStreamDto.from(
                 s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
         );
     }
 
     // 면접 평가 초기 양식 다운로드
-    public S3ExcelFileInputStreamDto downloadInterviewEvaluationInitialFormXLSX() throws IOException {
+    public S3FileInputStreamDto downloadInterviewEvaluationInitialFormXLSX() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewEvaluationInitialForm);
         HttpHeaders headers = createHttpHeaders(INTERVIEW_EVALUATION_INITIAL_FORM_NAME);
 
-        return S3ExcelFileInputStreamDto.from(
+        return S3FileInputStreamDto.from(
                 s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
         );
     }
 
     // 면접 평가 시트 다운로드 (질문 + 면접자 정보)
-    public S3ExcelFileInputStreamDto downloadInterviewEvaluationXLSX() throws IOException {
+    public S3FileInputStreamDto downloadInterviewEvaluationXLSX() throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, interviewEvaluationXLSX);
         HttpHeaders headers = createHttpHeaders(INTERVIEW_EVALUATION_XLSX_NAME);
 
-        return S3ExcelFileInputStreamDto.from(
+        return S3FileInputStreamDto.from(
+                s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
+        );
+    }
+
+    public S3FileInputStreamDto downloadPortfolioPDF(String portfolioUrl, String memberName) throws IOException {
+        String fileName = extractFilename(portfolioUrl);
+        S3Object s3Object = s3Client.getObject(bucketName, fileName);
+
+        HttpHeaders headers = createHttpHeaders(memberName + " Portfolio.pdf");
+
+        return S3FileInputStreamDto.from(
                 s3Object.getObjectContent(), headers, s3Object.getObjectMetadata().getContentLength()
         );
     }
@@ -110,5 +121,12 @@ public class S3DownloadSerivce {
         headers.setContentDisposition(contentDisposition);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
         return headers;
+    }
+
+    private String extractFilename(String fileUrl) {
+        if (fileUrl.contains("/")) {
+            return fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+        }
+        return fileUrl;
     }
 }
