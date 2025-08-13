@@ -68,11 +68,12 @@ public class ResumeEvaluateController {
     public SuccessResponse<ResumeEvaluateResDto> getFinalDocumentEvaluationList(
             @RequestParam(required = false) EvaluationStatus status,
             @RequestParam(required = false) FieldType type,
+            @RequestParam(required = false) String name,
             @PageableDefault(size = 7) Pageable pageable
     ) {
 
         return new SuccessResponse<>(
-                resumeEvaluateService.getFinalDocumentResumes(status, type, pageable),
+                resumeEvaluateService.getFinalDocumentResumes(status, type, name, pageable),
                 READ_SUCCESS.getMessage());
     }
 

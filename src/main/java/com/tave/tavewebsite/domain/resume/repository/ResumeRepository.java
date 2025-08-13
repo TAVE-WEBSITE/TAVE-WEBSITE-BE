@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.resume.repository;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -77,4 +78,5 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
             "WHERE r.id = :resumeId")
     Optional<Resume> findByIdWithTimeSlotsAndMember(@Param("resumeId") Long resumeId);
 
+    long countByState(ResumeState state);
 }
