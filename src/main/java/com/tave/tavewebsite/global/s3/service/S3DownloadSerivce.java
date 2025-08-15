@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -98,7 +99,9 @@ public class S3DownloadSerivce {
 
     public S3FileInputStreamDto downloadPortfolioPDF(String portfolioUrl, String memberName) throws IOException {
         String fileName = extractFilename(portfolioUrl);
-        S3Object s3Object = s3Client.getObject(bucketName, fileName);
+        String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+
+        S3Object s3Object = s3Client.getObject(bucketName, decodedFileName);
 
         HttpHeaders headers = createHttpHeaders(memberName + " Portfolio.pdf");
 
