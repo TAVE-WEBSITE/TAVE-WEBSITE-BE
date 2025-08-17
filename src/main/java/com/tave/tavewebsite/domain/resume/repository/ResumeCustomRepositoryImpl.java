@@ -141,7 +141,11 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         BooleanExpression statusCondition = extractedStatusInFinalEvaluation(status);
         BooleanExpression typeCondition = extractedFieldType(type);
         BooleanExpression nameCondition = extractedName(name);
+        BooleanExpression resumeStatusCondition = extractedResumeStatus();
 
+        if (resumeStatusCondition != null) {
+            condition.and(resumeStatusCondition);
+        }
         if (statusCondition != null) {
             condition.and(statusCondition);
         }
