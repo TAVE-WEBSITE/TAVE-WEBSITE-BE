@@ -181,7 +181,16 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(resumeResDtos, pageable, resumeResDtos.size());
+        long total = Optional.ofNullable(
+                queryFactory
+                        .select(resume.count())
+                        .from(resume)
+                        .where(condition,
+                                resume.state.eq(ResumeState.SUBMITTED))
+                        .fetchOne()
+        ).orElse(0L);
+
+        return new PageImpl<>(resumeResDtos, pageable, total);
     }
 
     private BooleanExpression extractedStatusInFinalEvaluation(EvaluationStatus status) {

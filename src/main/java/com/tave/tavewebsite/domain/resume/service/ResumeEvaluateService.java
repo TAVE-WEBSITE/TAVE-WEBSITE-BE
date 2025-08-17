@@ -75,9 +75,10 @@ public class ResumeEvaluateService {
         Page<ResumeResDto> resumeResDtos =
                 resumeRepository.findFinalEvaluation(currentMember, status, type, name, pageable);
 
-        return ResumeEvaluateResDto.fromResume(resumeRepository.count(),
-                resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.NOTCHECKED),
-                resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.PASS),
+        return ResumeEvaluateResDto.fromResume(
+                resumeRepository.countByState(ResumeState.SUBMITTED),
+                resumeRepository.countByStateAndFinalDocumentEvaluationStatus(ResumeState.SUBMITTED, EvaluationStatus.NOTCHECKED),
+                resumeRepository.countByStateAndFinalDocumentEvaluationStatus(ResumeState.SUBMITTED, EvaluationStatus.PASS),
                 resumeResDtos);
     }
 

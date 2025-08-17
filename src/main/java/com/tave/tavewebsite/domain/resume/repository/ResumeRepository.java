@@ -26,7 +26,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
 
     long count();
 
-    long countByFinalDocumentEvaluationStatus(EvaluationStatus status);
+    long countByStateAndFinalDocumentEvaluationStatus(ResumeState state, EvaluationStatus status);
 
     @Query("SELECT MIN(r.id) FROM Resume r")
     Long findMinId();
