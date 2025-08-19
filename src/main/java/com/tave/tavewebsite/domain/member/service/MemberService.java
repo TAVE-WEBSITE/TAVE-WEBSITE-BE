@@ -2,9 +2,11 @@ package com.tave.tavewebsite.domain.member.service;
 
 import com.tave.tavewebsite.domain.member.dto.request.*;
 import com.tave.tavewebsite.domain.member.dto.response.MemberResumeDto;
+import com.tave.tavewebsite.domain.member.dto.response.log.MemberLogDto;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.exception.*;
 import com.tave.tavewebsite.domain.member.memberRepository.MemberRepository;
+import com.tave.tavewebsite.global.discord.aop.DiscordNotify;
 import com.tave.tavewebsite.global.mail.service.MailService;
 import com.tave.tavewebsite.global.mail.service.SESMailService;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
@@ -36,13 +38,15 @@ public class MemberService {
         sesMailService.sendAdminApplySuccessNotification(saveMember.getEmail(), saveMember.getUsername());
     }
 
-    public void saveNormalMember(RegisterMemberRequestDto dto) {
+    @DiscordNotify
+    public MemberLogDto saveNormalMember(RegisterMemberRequestDto dto) {
         validateEmail(dto.email());
 
         Member normalMember = Member.toNormalMember(dto, passwordEncoder);
 
-        memberRepository.save(normalMember);
+        Member saveMember = memberRepository.save(normalMember);
         sesMailService.sendJoinSuccessNotification(normalMember.getEmail(), normalMember.getUsername(), normalMember.getEmail());
+        return MemberLogDto.of(saveMember);
     }
 
     public void deleteMember(long id) {
