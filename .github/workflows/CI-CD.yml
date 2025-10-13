@@ -58,23 +58,23 @@ jobs:
       - name: docker Hub push
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
 
-      # 권한 주입
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@master
         with:
-          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-          aws-region: ${{  secrets.REGION }}
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          port: 22
+          key: ${{ secrets.PROD_SSH_SECRET_PRIVATE_KEY }}
+          script: |
+            set -e
 
-      # S3에 Docker Compose 파일 업로드
-      - name: Upload Docker Compose to S3
-        run: |
-          aws s3 cp docker-compose.yml s3://${{ secrets.BUCKET_NAME }}/docker-compose.yml --region ${{ secrets.REGION }}
+            echo "📁 [1] tave 디렉토리로 이동"
+            cd ~/tave
 
-      # ASG 재시작
-      - name: Trigger ASG Rolling Update
-        run: |
-          aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name ${{ secrets.ASG_NAME }} \
-            --region ${{ secrets.REGION }} \
-            --preferences '{"MinHealthyPercentage": 50}'
+            echo "🔄 [2] deploy.sh 실행"
+            ./deploy.sh
