@@ -2,7 +2,7 @@ package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.*;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.timetable.InterviewTimeTableGroupByDayDto;
@@ -20,6 +20,7 @@ import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.member.service.MemberService;
 import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
+import com.tave.tavewebsite.domain.resume.entity.ResumeState;
 import com.tave.tavewebsite.domain.resume.exception.ResumeNotFoundException;
 import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import com.tave.tavewebsite.global.common.FieldType;
@@ -58,7 +59,7 @@ public class InterviewFinalUseCase {
     private final InterviewFinalRepository interviewFinalRepository;
     private final ResumeRepository resumeRepository;
 
-    public S3ExcelFileInputStreamDto downloadInterviewFinal() throws IOException {
+    public S3FileInputStreamDto downloadInterviewFinal() throws IOException {
         return s3DownloadSerivce.downloadInterviewFinalSetUpForm();
     }
 
@@ -167,7 +168,7 @@ public class InterviewFinalUseCase {
                                                                       FieldType type) {
         Page<InterviewFinalResDto> interviewFinalEvaluation = interviewFinalRepository.findInterviewFinalEvaluation(pageable, status, type);
 
-        long notCompletedCount = resumeRepository.countByFinalDocumentEvaluationStatus(EvaluationStatus.PASS);
+        long notCompletedCount = resumeRepository.countByStateAndFinalDocumentEvaluationStatus(ResumeState.SUBMITTED, EvaluationStatus.PASS);
 
         return InterviewFinalEvaluateResDto.fromInterviewFinalResDto(interviewFinalRepository.count(),
                 notCompletedCount,

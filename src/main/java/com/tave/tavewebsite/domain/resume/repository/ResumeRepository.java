@@ -26,7 +26,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
 
     long count();
 
-    long countByFinalDocumentEvaluationStatus(EvaluationStatus status);
+    long countByStateAndFinalDocumentEvaluationStatus(ResumeState state, EvaluationStatus status);
 
     @Query("SELECT MIN(r.id) FROM Resume r")
     Long findMinId();
@@ -79,4 +79,9 @@ public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeCus
     Optional<Resume> findByIdWithTimeSlotsAndMember(@Param("resumeId") Long resumeId);
 
     long countByState(ResumeState state);
+
+    @Query("SELECT r FROM Resume r " +
+            "JOIN FETCH r.member " +
+            "WHERE r.id = :resumeId ")
+    Optional<Resume> findResumeWithMemberByResumeId(Long resumeId);
 }

@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.history.service;
 
+import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
 import com.tave.tavewebsite.domain.history.dto.request.HistoryRequestDto;
 import com.tave.tavewebsite.domain.history.dto.response.HistoryResponseDto;
 import com.tave.tavewebsite.domain.history.dto.response.HistoryResponseDtoList;
@@ -23,6 +24,7 @@ public class HistoryService {
     private static final int PRESENT_GENERATION = calculateGeneration();
 
     private final HistoryRepository historyRepository;
+    private final ApplyInitialSetupService applyInitialSetupService;
 
     @Transactional(readOnly = true)
     public List<HistoryResponseDtoList> findPublic() {
@@ -62,7 +64,9 @@ public class HistoryService {
 
     private Map<Integer, List<HistoryResponseDto>> initializeMap(List<History> histories) {
         Map<Integer, List<HistoryResponseDto>> historyMap = new HashMap<>();
-        for (int i = 1; i <= PRESENT_GENERATION; i++) {
+        String generation = applyInitialSetupService.getCurrentGeneration();
+
+        for (int i = 1; i <= Integer.parseInt(generation); i++) {
             historyMap.put(i, new ArrayList<>());
         }
         for (History history : histories) {

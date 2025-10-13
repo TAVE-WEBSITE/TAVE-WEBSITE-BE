@@ -141,7 +141,11 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
         BooleanExpression statusCondition = extractedStatusInFinalEvaluation(status);
         BooleanExpression typeCondition = extractedFieldType(type);
         BooleanExpression nameCondition = extractedName(name);
+        BooleanExpression resumeStatusCondition = extractedResumeStatus();
 
+        if (resumeStatusCondition != null) {
+            condition.and(resumeStatusCondition);
+        }
         if (statusCondition != null) {
             condition.and(statusCondition);
         }
@@ -177,7 +181,16 @@ public class ResumeCustomRepositoryImpl implements ResumeCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(resumeResDtos, pageable, resumeResDtos.size());
+        long total = Optional.ofNullable(
+                queryFactory
+                        .select(resume.count())
+                        .from(resume)
+                        .where(condition,
+                                resume.state.eq(ResumeState.SUBMITTED))
+                        .fetchOne()
+        ).orElse(0L);
+
+        return new PageImpl<>(resumeResDtos, pageable, total);
     }
 
     private BooleanExpression extractedStatusInFinalEvaluation(EvaluationStatus status) {

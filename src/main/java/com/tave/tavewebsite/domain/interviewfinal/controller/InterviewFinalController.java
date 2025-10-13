@@ -1,7 +1,6 @@
 package com.tave.tavewebsite.domain.interviewfinal.controller;
 
-import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
-import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalDetailDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalEvaluateResDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalForMemberDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.response.InterviewFinalPageDto;
@@ -33,7 +32,7 @@ public class InterviewFinalController {
     @GetMapping("/v1/manager/interview-final/form")
     public ResponseEntity<InputStreamResource> interviewFinalForm() throws IOException {
 
-        S3ExcelFileInputStreamDto dto = interviewFinalUseCase.downloadInterviewFinal();
+        S3FileInputStreamDto dto = interviewFinalUseCase.downloadInterviewFinal();
 
         return ResponseEntity.ok()
                 .headers(dto.headers())

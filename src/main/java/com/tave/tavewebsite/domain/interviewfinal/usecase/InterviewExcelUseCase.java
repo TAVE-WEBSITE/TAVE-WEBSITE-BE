@@ -1,7 +1,7 @@
 package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
 import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetupService;
-import com.tave.tavewebsite.domain.interviewfinal.dto.S3ExcelFileInputStreamDto;
+import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
 import com.tave.tavewebsite.domain.interviewfinal.entity.InterviewFinal;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewExcelService;
 import com.tave.tavewebsite.domain.interviewfinal.service.InterviewGetService;
@@ -65,7 +65,7 @@ public class InterviewExcelUseCase {
 
     }
 
-    public S3ExcelFileInputStreamDto getPossibleInterviewTimeCSV() throws IOException {
+    public S3FileInputStreamDto getPossibleInterviewTimeCSV() throws IOException {
         return s3DownloadSerivce.downloadPossibleTimeTableXlsx();
     }
 
@@ -73,15 +73,15 @@ public class InterviewExcelUseCase {
         s3Service.uploadTimeTableForMangerXLSXToS3(file);
     }
 
-    public S3ExcelFileInputStreamDto getInterviewTimeTableForManagerXLSX() throws IOException {
+    public S3FileInputStreamDto getInterviewTimeTableForManagerXLSX() throws IOException {
         return s3DownloadSerivce.downloadInterviewTimeTableForManagerXLSX();
     }
 
-    public S3ExcelFileInputStreamDto getInterviewEvaluationInitialFormXLSX() throws IOException {
+    public S3FileInputStreamDto getInterviewEvaluationInitialFormXLSX() throws IOException {
         return s3DownloadSerivce.downloadInterviewEvaluationInitialFormXLSX();
     }
 
-    public S3ExcelFileInputStreamDto getInterviewEvaluationXLSX() throws IOException {
+    public S3FileInputStreamDto getInterviewEvaluationXLSX() throws IOException {
         return s3DownloadSerivce.downloadInterviewEvaluationXLSX();
     }
 

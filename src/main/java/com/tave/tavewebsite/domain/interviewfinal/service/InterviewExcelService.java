@@ -11,6 +11,7 @@ import com.tave.tavewebsite.global.common.FieldType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,7 +79,7 @@ public class InterviewExcelService {
                 if(checkSequence(before, data)) sequence++;
                 else sequence = 1;
 
-                writeInterviewerData(sheet, startRow+i, data, sequence, cellStyle);
+                writeInterviewerData(sheet, (startRow+i)*4, data, sequence, cellStyle);
             }
         } catch (Exception e) {
             throw new RuntimeException("엑셀 데이터 작성 실패", e);
@@ -90,6 +91,10 @@ public class InterviewExcelService {
         if (row == null) {
             row = sheet.createRow(startRow);
         }
+        // 셀 병합 (4칸)
+        sheet.addMergedRegion(new CellRangeAddress(startRow, startRow + 3, 0, 0));
+        sheet.addMergedRegion(new CellRangeAddress(startRow, startRow + 3, 1, 1));
+        sheet.addMergedRegion(new CellRangeAddress(startRow, startRow + 3, 2, 2));
 
         // 기존 데이터 작성 로직
         String value = formatDateTimeToEvaluation(data.getInterviewDate(), data.getInterviewTime(), sequence);
