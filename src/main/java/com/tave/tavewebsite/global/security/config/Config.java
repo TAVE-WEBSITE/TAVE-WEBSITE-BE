@@ -71,7 +71,7 @@ public class Config {
                 authorizationManagerRequestMatcherRegistry
                         // 비회원 전용 api
                         .requestMatchers("/v1/normal/**", "/v1/auth/signup", "/v1/auth/signin", "/v1/auth/refresh",
-                                "/v1/auth/normal/signup")
+                                "/v1/auth/normal/signup", "/v1/auth/signin/administrator")
                         .permitAll()
 
                         // 일반 회원 전용 api
