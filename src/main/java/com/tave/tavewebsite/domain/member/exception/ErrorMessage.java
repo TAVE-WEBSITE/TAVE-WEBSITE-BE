@@ -16,7 +16,9 @@ public enum ErrorMessage {
     NOT_MANAGER(400, "MANAGER이 아닙니다."),
     INVALID_STATUS_VALUE(400, "유효하지 않은 상태 값입니다."),
     NOT_FOUND_UNAUTHORIZED_MANAGER(400, "대기 중인 운영진을 찾을 수 없습니다."),
-    UNAUTHORIZED_MANAGER(400, "아직 승인되지 않은 운영진입니다.");
+    UNAUTHORIZED_MANAGER(400, "아직 승인되지 않은 운영진입니다."),
+    IS_NOT_MANAGER_AUTHORIZATION(403, "관리자가 아닙니다."),
+    ;
 
     final int code;
     final String message;

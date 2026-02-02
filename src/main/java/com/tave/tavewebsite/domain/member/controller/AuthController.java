@@ -42,6 +42,15 @@ public class AuthController {
         return new SuccessResponse<>(signInResponseDto);
     }
 
+    @PostMapping("/auth/signin/administrator")
+    public SuccessResponse<SignInResponseDto> AdministratorPage(
+            @RequestBody SignUpRequestDto requestDto,
+            HttpServletResponse response
+    ) {
+        SignInResponseDto signInResponseDto = authService.signInAdministratorPage(requestDto, response);
+        return new SuccessResponse<>(signInResponseDto);
+    }
+
     @PostMapping("/auth/refresh")
     public SuccessResponse<RefreshResponseDto> refreshToken(@RequestBody RefreshTokenRequestDto requestDto,
                                                             @CookieValue("refreshToken") String refreshToken,
