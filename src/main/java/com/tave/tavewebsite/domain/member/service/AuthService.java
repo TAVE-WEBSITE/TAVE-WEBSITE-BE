@@ -55,6 +55,27 @@ public class AuthService {
         return SignInResponseDto.from(jwtToken, member, resumeState, resumeId);
     }
 
+    public SignInResponseDto signInAdministratorPage(SignUpRequestDto requestDto, HttpServletResponse response) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                requestDto.email(),
+                requestDto.password());
+        authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        JwtToken jwtToken = generateToken(requestDto.email());
+        CookieUtil.setCookie(response, "refreshToken", jwtToken.getRefreshToken());
+
+        Member member = memberRepository.findByEmail(requestDto.email())
+                .orElseThrow(NotFoundMemberException::new);
+        member.validateAdministratorRole();
+
+        Resume resume = resumeRepository.findByMemberId(member.getId()).orElse(null);
+        ResumeState resumeState = (resume != null) ? resume.getState() : ResumeState.TEMPORARY;
+
+        Long resumeId = (resume != null) ? resume.getId() : 0L;  // 지원서 없으면 0
+
+        return SignInResponseDto.from(jwtToken, member, resumeState, resumeId);
+    }
+
     public void signOut(String accessToken, HttpServletResponse response) {
         redisUtil.set(accessToken, "ban accessToken", ACCESS_TOKEN_MAX_AGE);
         CookieUtil.deleteCookie(response, "refreshToken");

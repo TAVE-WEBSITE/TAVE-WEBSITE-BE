@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tave.tavewebsite.domain.applicant.history.entity.ApplicantHistory;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterManagerRequestDto;
 import com.tave.tavewebsite.domain.member.dto.request.RegisterMemberRequestDto;
+import com.tave.tavewebsite.domain.member.exception.IsNotManagerAuthorizationException;
 import com.tave.tavewebsite.domain.resume.entity.Resume;
 import com.tave.tavewebsite.domain.resume.entity.ResumeEvaluation;
 import com.tave.tavewebsite.global.common.BaseEntity;
@@ -135,6 +136,20 @@ public class Member extends BaseEntity {
 
     public void addApplicantHistory(ApplicantHistory applicantHistory) {
         this.applicantHistories.add(applicantHistory);
+    }
+
+    public void validateAdministratorRole() {
+        if (isMember() || isUnAuthorizedManager()) {
+            throw new IsNotManagerAuthorizationException();
+        }
+    }
+
+    public boolean isMember() {
+        return this.role.name().equals(MEMBER.name());
+    }
+
+    public boolean isUnAuthorizedManager() {
+        return this.role.name().equals(UNAUTHORIZED_MANAGER.name());
     }
 
 }
