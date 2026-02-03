@@ -82,6 +82,13 @@ public class ApplyInitialSetupService {
         return applyInitialSetup.isOverDocumentEndDate();
     }
 
+    public boolean checkRecruitStartDate() {
+        ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
+                .orElseThrow(ApplyInitialSetupNotFoundException::new);
+
+        return applyInitialSetup.isOverRecruitStartDate();
+    }
+
     public void changeDocumentAnnouncementFlag(Boolean flag, HttpServletRequest request) {
         ApplyInitialSetup applyInitialSetup = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(DocumentResultBatchJobFailException::new);
