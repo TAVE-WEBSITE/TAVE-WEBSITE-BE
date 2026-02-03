@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
 
 
 @Slf4j
@@ -28,11 +31,27 @@ public class ExcelUtils {
 
     public LocalDate getDateToCell(Cell cell) {
         if (cell == null) return null;
+        CellType cellType = cell.getCellType();
+        log.info("DEBUG cellType = " + cellType);
+        if (cell.getCellType() == CellType.STRING) {
+            String dateStr = cell.getStringCellValue().trim();
+            return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
 
         return cell.getLocalDateTimeCellValue().toLocalDate();
     }
 
     public LocalTime getTimeToCell(Cell cell) {
+        if (cell.getCellType() == CellType.STRING) {
+            String timeStr = cell.getStringCellValue().trim();
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .appendPattern("[h:mm:ss a]")
+                    .appendPattern("[H:mm:ss]")
+                    .toFormatter(Locale.ENGLISH);
+            return LocalTime.parse(timeStr, formatter);
+        }
+
         return cell.getLocalDateTimeCellValue().toLocalTime();
     }
 
