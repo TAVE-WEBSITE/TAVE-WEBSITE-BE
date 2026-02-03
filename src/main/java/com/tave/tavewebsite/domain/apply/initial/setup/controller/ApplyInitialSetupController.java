@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.tave.tavewebsite.domain.apply.initial.setup.controller.ApplyInitialSetupSuccessMessage.CHECK_APPLY_RECRUIT_END_DATE;
+import static com.tave.tavewebsite.domain.apply.initial.setup.controller.ApplyInitialSetupSuccessMessage.CHECK_DOCUMENT_RECRUIT_START_DATE;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,5 +51,11 @@ public class ApplyInitialSetupController {
         boolean result = applyInitialSetupService.checkRecruitExpiration();
 
         return new SuccessResponse<>(result, CHECK_APPLY_RECRUIT_END_DATE.getMessage());
+    }
+
+    @GetMapping("/v1/member/apply-recruit/started")
+    public SuccessResponse<Boolean> checkApplyStartDate() {
+        boolean result = applyInitialSetupService.checkRecruitStartDate();
+        return new SuccessResponse<>(result, CHECK_DOCUMENT_RECRUIT_START_DATE.getMessage());
     }
 }
