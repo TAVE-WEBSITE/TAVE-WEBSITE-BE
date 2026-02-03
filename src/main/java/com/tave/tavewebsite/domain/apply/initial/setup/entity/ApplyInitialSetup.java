@@ -106,4 +106,9 @@ public class ApplyInitialSetup extends BaseEntity {
         return (LocalDateTime.now().isBefore(this.documentRecruitEndDate));
     }
 
+    public boolean isOverRecruitStartDate() {
+        // 현재 시간이 시작 시간과 같거나 이후이면 true
+        return !LocalDateTime.now().isBefore(this.documentRecruitStartDate);
+    }
+
 }
