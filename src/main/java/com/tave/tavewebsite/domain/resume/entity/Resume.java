@@ -35,15 +35,15 @@ public class Resume extends BaseEntity {
     private EvaluationStatus finalDocumentEvaluationStatus;
 
     @Size(min = 1, max = 20)
-    @Column(length = 20)
+    @Column(length = 50)
     private String school;
 
     @Size(max = 20)
-    @Column(length = 20)
+    @Column(length = 50)
     private String major;
 
     @Size(max = 20)
-    @Column(length = 20)
+    @Column(length = 50)
     private String minor;
 
     @Enumerated(EnumType.STRING)
