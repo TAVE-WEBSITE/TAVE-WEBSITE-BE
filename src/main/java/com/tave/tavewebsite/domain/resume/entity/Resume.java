@@ -38,11 +38,11 @@ public class Resume extends BaseEntity {
     @Column(length = 50)
     private String school;
 
-    @Size(max = 20)
+    @Size(max = 50)
     @Column(length = 50)
     private String major;
 
-    @Size(max = 20)
+    @Size(max = 50)
     @Column(length = 50)
     private String minor;
 
