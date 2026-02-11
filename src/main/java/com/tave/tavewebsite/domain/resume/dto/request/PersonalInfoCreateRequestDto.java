@@ -11,10 +11,10 @@ public class PersonalInfoCreateRequestDto {
     private String school;
 
     @NotNull
-    @Size(max = 30)
+    @Size(max = 50)
     private String major;
 
-    @Size(max = 30)
+    @Size(max = 50)
     private String minor;
 
     @NotNull
