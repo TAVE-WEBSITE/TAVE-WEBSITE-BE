@@ -3,6 +3,7 @@ package com.tave.tavewebsite.domain.apply.initial.setup.service;
 import com.tave.tavewebsite.domain.apply.initial.setup.exception.ApplyInitialSetupException.ApplyInitialSetupNotFoundException;
 import com.tave.tavewebsite.domain.apply.initial.setup.repository.ApplyInitialSetupRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,7 @@ public class ApplyInitialSetUpGetService {
 
     private final ApplyInitialSetupRepository applyInitialSetupRepository;
 
+    @Cacheable(value = "applySetupCache", key = "'generation'")
     public String getCurrentGeneration() {
         return applyInitialSetupRepository.findById(1L)
                 .orElseThrow(ApplyInitialSetupNotFoundException::new)
