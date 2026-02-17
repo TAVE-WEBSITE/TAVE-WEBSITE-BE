@@ -7,6 +7,7 @@ public record DashboardResDto(
         double comparisonRatio,
         long temperCount,
         List<DashboardRatioResDto> sexRatioDtos,
-        List<DashboardRatioResDto> fieldRatioDtos
+        List<DashboardRatioResDto> fieldRatioDtos,
+        String generation
 ) {
 }

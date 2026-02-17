@@ -9,12 +9,14 @@ import java.util.List;
 public record InterviewTimeTableDto(
 
         TotalDateTimeDto totalDateTimeDto,
-        List<InterviewTimeTableGroupByDayDto> timetableList
+        List<InterviewTimeTableGroupByDayDto> timetableList,
+        String generation
 ) {
-    public static InterviewTimeTableDto of(TotalDateTimeDto totalDateTimeDto, List<InterviewTimeTableGroupByDayDto> timetableList) {
+    public static InterviewTimeTableDto of(TotalDateTimeDto totalDateTimeDto, List<InterviewTimeTableGroupByDayDto> timetableList, String generation) {
         return InterviewTimeTableDto.builder()
                 .totalDateTimeDto(totalDateTimeDto)
                 .timetableList(timetableList)
+                .generation(generation)
                 .build();
     }
 }

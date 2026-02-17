@@ -6,17 +6,22 @@ public record ResumeEvaluateResDto(
         long totalRecruiter,
         long notCompletedRecruiter,
         long completedRecruiter,
-        Page<ResumeResDto> resumeResDtos
+        Page<ResumeResDto> resumeResDtos,
+        String generation
 ) {
-    public static ResumeEvaluateResDto fromResume(long totalRecruiter,
-                                                  long notCompletedRecruiter,
-                                                  long completedRecruiter,
-                                                  Page<ResumeResDto> resumeResDtos) {
+    public static ResumeEvaluateResDto fromResume(
+            long totalRecruiter,
+            long notCompletedRecruiter,
+            long completedRecruiter,
+            Page<ResumeResDto> resumeResDtos,
+            String generation
+                                                  ) {
         return new ResumeEvaluateResDto(
                 totalRecruiter,
                 notCompletedRecruiter,
                 completedRecruiter,
-                resumeResDtos
+                resumeResDtos,
+                generation
         );
     }
 }

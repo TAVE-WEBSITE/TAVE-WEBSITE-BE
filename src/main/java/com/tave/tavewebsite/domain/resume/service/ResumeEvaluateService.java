@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.resume.service;
 
+import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetUpGetService;
 import com.tave.tavewebsite.domain.member.entity.Member;
 import com.tave.tavewebsite.domain.resume.dto.request.DocumentEvaluationReqDto;
 import com.tave.tavewebsite.domain.resume.dto.request.FinalDocumentEvaluationReqDto;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ResumeEvaluateService {
 
     private final ResumeEvaluationRepository resumeEvaluationRepository;
+    private final ApplyInitialSetUpGetService applyInitialSetUpGetService;
     private final ResumeRepository resumeRepository;
 
     public Member getCurrentMember() {
@@ -61,12 +63,15 @@ public class ResumeEvaluateService {
     public ResumeEvaluateResDto getDocumentResumes(EvaluationStatus status, FieldType type, String name, Pageable pageable) {
         Member currentMember = getCurrentMember();
         Page<ResumeResDto> resumeResDtos = resumeRepository.findMiddleEvaluation(currentMember, status, type, name, pageable);
+        String currentGeneration = applyInitialSetUpGetService.getCurrentGeneration();
 
         return ResumeEvaluateResDto.fromResume(
                 resumeRepository.countByState(ResumeState.SUBMITTED),
                 resumeRepository.findNotEvaluatedResume(currentMember),
                 resumeRepository.findEvaluatedResume(currentMember),
-                resumeResDtos);
+                resumeResDtos,
+                currentGeneration
+        );
     }
 
     @Transactional(readOnly = true)
@@ -74,12 +79,15 @@ public class ResumeEvaluateService {
         Member currentMember = getCurrentMember();
         Page<ResumeResDto> resumeResDtos =
                 resumeRepository.findFinalEvaluation(currentMember, status, type, name, pageable);
+        String currentGeneration = applyInitialSetUpGetService.getCurrentGeneration();
 
         return ResumeEvaluateResDto.fromResume(
                 resumeRepository.countByState(ResumeState.SUBMITTED),
                 resumeRepository.countByStateAndFinalDocumentEvaluationStatus(ResumeState.SUBMITTED, EvaluationStatus.NOTCHECKED),
                 resumeRepository.countByStateAndFinalDocumentEvaluationStatus(ResumeState.SUBMITTED, EvaluationStatus.PASS),
-                resumeResDtos);
+                resumeResDtos,
+                currentGeneration
+        );
     }
 
     @Transactional

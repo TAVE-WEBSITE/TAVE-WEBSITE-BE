@@ -1,5 +1,6 @@
 package com.tave.tavewebsite.domain.interviewfinal.usecase;
 
+import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetUpGetService;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalConvertDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.InterviewFinalSaveDto;
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
@@ -51,6 +52,7 @@ public class InterviewFinalUseCase {
     private final InterviewGetService interviewGetService;
     private final InterviewDeleteService interviewDeleteService;
     private final InterviewFinalTestService interviewTestService; // todo 베타 테스트 용 로직.
+    private final ApplyInitialSetUpGetService applyInitialSetUpGetService;
     private final S3DownloadSerivce s3DownloadSerivce;
     private final InterviewPlaceService interviewPlaceService;
     private final InterviewFinalMapper mapper;
@@ -120,7 +122,8 @@ public class InterviewFinalUseCase {
         List<InterviewTimeTableGroupByDayDto> timeTableList = groupUtil.createTimeTableDtoList(group);
         TotalDateTimeDto totalDateTimeList = groupUtil.getTotalDateTimeDto(group);
 
-        return InterviewTimeTableDto.of(totalDateTimeList, timeTableList);
+        String currentGeneration = applyInitialSetUpGetService.getCurrentGeneration();
+        return InterviewTimeTableDto.of(totalDateTimeList, timeTableList, currentGeneration);
     }
 
     // todo 베타 테스트용 기능이므로 추 후 삭제할 것.

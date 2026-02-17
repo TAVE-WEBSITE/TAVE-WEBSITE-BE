@@ -6,6 +6,7 @@ import com.tave.tavewebsite.domain.apply.dashboard.dto.DashboardUpdateDto;
 import com.tave.tavewebsite.domain.apply.dashboard.entity.Dashboard;
 import com.tave.tavewebsite.domain.apply.dashboard.exception.DashboardErrorException;
 import com.tave.tavewebsite.domain.apply.dashboard.repository.DashboardRepository;
+import com.tave.tavewebsite.domain.apply.initial.setup.service.ApplyInitialSetUpGetService;
 import com.tave.tavewebsite.global.redis.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.List;
 public class DashboardService {
 
     private final DashboardRepository dashboardRepository;
+    private final ApplyInitialSetUpGetService applyInitialSetUpGetService;
     private final RedisUtil redisUtil;
 
     public DashboardResDto getDashboard() {
@@ -31,9 +33,10 @@ public class DashboardService {
         Long totalCount = dashboard.getTotalCount();
         List<DashboardRatioResDto> dashboardRatioResDtosBySex = extractedSexDto(totalCount, dashboard);
         List<DashboardRatioResDto> dashboardRatioResDtosByField = extractedFieldDto(totalCount, dashboard);
+        String currentGeneration = applyInitialSetUpGetService.getCurrentGeneration();
 
         return new DashboardResDto(totalCount, generationRatio, tempCount,
-                dashboardRatioResDtosBySex, dashboardRatioResDtosByField);
+                dashboardRatioResDtosBySex, dashboardRatioResDtosByField, currentGeneration);
     }
 
     // 지원 초기 설정 시 대시보드도 초기화

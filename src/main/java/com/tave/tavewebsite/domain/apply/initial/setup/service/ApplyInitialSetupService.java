@@ -13,6 +13,7 @@ import com.tave.tavewebsite.domain.resume.repository.ResumeRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +61,7 @@ public class ApplyInitialSetupService {
         applyInitialSetupRepository.save(entity);
     }
 
+    @CacheEvict(value = "applySetupCache", key = "'generation'")
     public void updateInitialSetup(ApplyInitialSetupRequestDto dto) {
         ApplyInitialSetup existing = applyInitialSetupRepository.findById(1L)
                 .orElseThrow(ApplyInitialSetupNotFoundException::new);
