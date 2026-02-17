@@ -66,7 +66,6 @@ dependencies {
     // cache
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.23.5'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
 
     // redis shedlock
     implementation 'net.javacrumbs.shedlock:shedlock-spring:5.16.0'
