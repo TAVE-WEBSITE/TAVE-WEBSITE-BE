@@ -45,7 +45,10 @@ public class DocumentResultWriterConfig {
             for (Resume item : items) {
                 try {
                     retryTemplate.execute(context -> {
-                        sesMailService.sendDocumentResultMail(item.getMember().getEmail(),
+                        // TODO 수정
+//                        sesMailService.sendDocumentResultMail(item.getMember().getEmail(),
+//                                item.getMember().getUsername(), item.getResumeGeneration());
+                        sesMailService.sendDocumentResultMailV2(item.getFinalDocumentEvaluationStatus(), item.getMember().getEmail(),
                                 item.getMember().getUsername(), item.getResumeGeneration());
                         log.info("메일 전송 성공: {}", item.getMember().getEmail());
                         return null;
