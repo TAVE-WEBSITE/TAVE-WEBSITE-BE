@@ -4,6 +4,7 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.tave.tavewebsite.domain.apply.initial.setup.entity.ApplyInitialSetup;
 import com.tave.tavewebsite.domain.member.entity.DepartmentType;
+import com.tave.tavewebsite.domain.resume.entity.EvaluationStatus;
 import com.tave.tavewebsite.global.common.FieldType;
 import com.tave.tavewebsite.global.mail.util.SESMailFormatUtil;
 import com.tave.tavewebsite.global.mail.util.SESTemplateUtil;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tave.tavewebsite.domain.resume.entity.EvaluationStatus.PASS;
 
 @Slf4j
 @Service
@@ -128,6 +131,32 @@ public class SESMailService {
             throw new RuntimeException("서류 결과 메일 전송 실패", e);
         }
     }
+
+    // 버전2 긴급
+    public void sendDocumentResultMailV2(EvaluationStatus evaluationStatus, String recipient, String memberName, String generation) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("generation", generation);
+            templateData.put("memberName", memberName);
+
+            if (evaluationStatus == PASS) {
+                // 임시 템플릿으로 변경
+                SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                        recipient, "Temp18DocumentResultTemplate", templateData
+                );
+                emailService.sendTemplatedEmail(request);
+                return;
+            }
+            SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                    recipient, "DocumentResultTemplate", templateData
+            );
+            emailService.sendTemplatedEmail(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("서류 결과 메일 전송 실패", e);
+        }
+    }
+
 
     // 신규 회원 모집 오픈 이메일 전송
     public void sendApplyNotification(String recipient, ApplyInitialSetup applyInitialSetup) {
