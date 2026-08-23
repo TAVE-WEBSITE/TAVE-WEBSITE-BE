@@ -142,7 +142,7 @@ public class SESMailService {
             if (evaluationStatus == PASS) {
                 // 임시 템플릿으로 변경
                 SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
-                        recipient, "Temp18DocumentResultTemplate", templateData
+                        recipient, "Temp18DocumentResultTemplate1", templateData
                 );
                 emailService.sendTemplatedEmail(request);
                 log.info("합격자에게 V2 메일 전송 성공: {}", recipient);
