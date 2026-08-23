@@ -145,12 +145,15 @@ public class SESMailService {
                         recipient, "Temp18DocumentResultTemplate", templateData
                 );
                 emailService.sendTemplatedEmail(request);
+                log.info("합격자에게 V2 메일 전송 성공: {}", recipient);
                 return;
             }
+
             SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
                     recipient, "DocumentResultTemplate", templateData
             );
             emailService.sendTemplatedEmail(request);
+            log.info("비합격자에게 기존 메일 전송 성공: {}", recipient);
 
         } catch (Exception e) {
             throw new RuntimeException("서류 결과 V2 메일 전송 실패", e);
@@ -172,6 +175,7 @@ public class SESMailService {
                         recipient, "Temp18InterviewDateTimeConfirmedTemplate", templateData
                 );
                 emailService.sendTemplatedEmail(request);
+                log.info("합격자에게 V3 면접 배정 안내 메일 전송 성공: {}", recipient);
                 return;
             }
         } catch (Exception e) {
