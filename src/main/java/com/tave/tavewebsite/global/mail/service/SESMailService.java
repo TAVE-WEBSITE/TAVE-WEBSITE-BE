@@ -153,9 +153,32 @@ public class SESMailService {
             emailService.sendTemplatedEmail(request);
 
         } catch (Exception e) {
-            throw new RuntimeException("서류 결과 메일 전송 실패", e);
+            throw new RuntimeException("서류 결과 V2 메일 전송 실패", e);
         }
     }
+
+    // 구글폼 받은 후, 서류합격자에게 배정완료되었다는 메일을 보내기 위함.
+    public void sendDocumentResultMailV3(EvaluationStatus evaluationStatus, String recipient, String memberName, String generation) {
+        try {
+            Map<String, String> templateData = new HashMap<>();
+            templateData.put("generation", generation);
+            templateData.put("memberName", memberName);
+
+
+            // 합격자한테만 이메일 전송하기
+            if (evaluationStatus == PASS) {
+                // 면접 배정 안내 임시 템플릿으로 변경
+                SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
+                        recipient, "Temp18InterviewDateTimeConfirmedTemplate", templateData
+                );
+                emailService.sendTemplatedEmail(request);
+                return;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("면접 배정 안내 메일 전송 실패", e);
+        }
+    }
+
 
 
     // 신규 회원 모집 오픈 이메일 전송
