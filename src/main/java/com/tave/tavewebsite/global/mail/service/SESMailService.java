@@ -172,7 +172,7 @@ public class SESMailService {
             if (evaluationStatus == PASS) {
                 // 면접 배정 안내 임시 템플릿으로 변경
                 SendTemplatedEmailRequest request = templateUtil.createTemplatedEmailRequest(
-                        recipient, "Temp18InterviewDateTimeConfirmedTemplate", templateData
+                        recipient, "Temp18InterviewDateTimeConfirmedTemplate01", templateData
                 );
                 emailService.sendTemplatedEmail(request);
                 log.info("합격자에게 V3 면접 배정 안내 메일 전송 성공: {}", recipient);
