@@ -15,6 +15,8 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
+import static com.tave.tavewebsite.domain.resume.entity.EvaluationStatus.PASS;
+
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -23,6 +25,7 @@ public class DocumentResultWriterConfig {
     private final SESMailService sesMailService;
     private final DocumentResultDLQRepository documentResultDLQRepository;
 
+    // 서류 결과 발표 시, 실행되는 배치
     @Bean(name = "documentResultWriter")
     public ItemWriter<Resume> documentResultWriter() {
         RetryTemplate retryTemplate = new RetryTemplate();
@@ -48,9 +51,11 @@ public class DocumentResultWriterConfig {
                         // TODO 수정
 //                        sesMailService.sendDocumentResultMail(item.getMember().getEmail(),
 //                                item.getMember().getUsername(), item.getResumeGeneration());
-                        sesMailService.sendDocumentResultMailV2(item.getFinalDocumentEvaluationStatus(), item.getMember().getEmail(),
-                                item.getMember().getUsername(), item.getResumeGeneration());
-                        log.info("메일 전송 성공: {}", item.getMember().getEmail());
+                        if(item.getFinalDocumentEvaluationStatus() == PASS){ // 1차 보안망 PASS인 사람들에게만 메일 보내기. (18기 한정. 뒷 기수는 지우셈.)
+                            sesMailService.sendDocumentResultMailV3(item.getFinalDocumentEvaluationStatus(), item.getMember().getEmail(),
+                                    item.getMember().getUsername(), item.getResumeGeneration());
+                            log.info("메일 전송 성공: {}", item.getMember().getEmail());
+                        }
                         return null;
                     }, context -> {
                         Throwable lastError = context.getLastThrowable();
