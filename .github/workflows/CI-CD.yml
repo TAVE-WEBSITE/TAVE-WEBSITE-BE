@@ -74,7 +74,7 @@ jobs:
             set -e
 
             echo "📁 [1] tave 디렉토리로 이동"
-            cd ~/tave
+            cd /tave
 
             echo "🔄 [2] deploy.sh 실행"
             ./deploy.sh
