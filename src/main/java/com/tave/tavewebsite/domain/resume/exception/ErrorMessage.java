@@ -35,8 +35,13 @@ public enum ErrorMessage {
     // Resume Evaluation
     ALREADY_EXISTS_EVALUATION(400, "이미 평가중인 이력서입니다."),
 
-    FILE_SIZE_EXCEEDED(400, "파일 크기는 최대 100MB까지 허용됩니다."),
-    PDF_FILE_TYPE(400, "PDF 파일만 업로드할 수 있습니다.");
+    FILE_SIZE_EXCEEDED(400, "파일 크기는 최대 200MB까지 허용됩니다."),
+    PDF_FILE_TYPE(400, "PDF 파일만 업로드할 수 있습니다."),
+
+    // 포트폴리오 PresignedUrl 업로드
+    PORTFOLIO_UPLOAD_NOT_FOUND(404, "발급되지 않았거나 만료된 포트폴리오 업로드 요청입니다."),
+    PORTFOLIO_OBJECT_NOT_FOUND(400, "업로드된 포트폴리오 파일이 존재하지 않습니다."),
+    PORTFOLIO_UPLOAD_IN_PROGRESS(409, "포트폴리오 업로드가 처리 중입니다. 잠시 후 다시 시도해주세요.");
 
     private final int code;
     private final String message;

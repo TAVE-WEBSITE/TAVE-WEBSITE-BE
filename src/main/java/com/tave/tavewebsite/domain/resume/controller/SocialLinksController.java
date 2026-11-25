@@ -1,7 +1,10 @@
 package com.tave.tavewebsite.domain.resume.controller;
 
 import com.tave.tavewebsite.domain.resume.controller.message.SocialLinksSuccessMessage;
+import com.tave.tavewebsite.domain.resume.dto.request.PortfolioPresignedUrlRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.request.PortfolioUploadCompleteRequestDto;
 import com.tave.tavewebsite.domain.resume.dto.request.SocialLinksRequestDto;
+import com.tave.tavewebsite.domain.resume.dto.response.PortfolioPresignedUrlResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.PortfolioUploadResponseDto;
 import com.tave.tavewebsite.domain.resume.dto.response.SocialLinksResponseDto;
 import com.tave.tavewebsite.domain.resume.service.SocialLinksService;
@@ -42,7 +45,38 @@ public class SocialLinksController {
         return SuccessResponse.ok(SocialLinksSuccessMessage.UPDATE_SUCCESS.getMessage());
     }
 
-    // 포트폴리오 업로드
+    // 포트폴리오 업로드용 PresignedUrl 발급
+    @PostMapping("/portfolio/presigned-url")
+    public SuccessResponse<PortfolioPresignedUrlResponseDto> issuePortfolioPresignedUrl(
+            @PathVariable("resumeId") Long resumeId,
+            @RequestBody PortfolioPresignedUrlRequestDto requestDto) {
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        PortfolioPresignedUrlResponseDto responseDto =
+                socialLinksService.issuePortfolioPresignedUrl(resumeId, requestDto, memberId);
+        return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.PRESIGNED_URL_ISSUE_SUCCESS.getMessage());
+    }
+
+    // 포트폴리오 업로드 완료
+    @PostMapping("/portfolio/complete")
+    public SuccessResponse<PortfolioUploadResponseDto> completePortfolioUpload(
+            @PathVariable("resumeId") Long resumeId,
+            @RequestBody PortfolioUploadCompleteRequestDto requestDto) {
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        PortfolioUploadResponseDto responseDto =
+                socialLinksService.completePortfolioUpload(resumeId, requestDto.objectKey(), memberId);
+        return new SuccessResponse<>(responseDto, SocialLinksSuccessMessage.UPLOAD_SUCCESS.getMessage());
+    }
+
+    // 포트폴리오 삭제
+    @DeleteMapping("/portfolio")
+    public SuccessResponse deletePortfolio(@PathVariable("resumeId") Long resumeId) {
+        Long memberId = SecurityUtils.getCurrentMember().getId();
+        socialLinksService.deletePortfolio(resumeId, memberId);
+        return SuccessResponse.ok(SocialLinksSuccessMessage.PORTFOLIO_DELETE_SUCCESS.getMessage());
+    }
+
+    // 포트폴리오 업로드 (multipart, FE 전환 후 제거 예정)
+    @Deprecated
     @PostMapping("/portfolio")
     public SuccessResponse updatePortfolio(@PathVariable("resumeId") Long resumeId,
                                            @RequestParam(value = "file", required = false) MultipartFile file) {

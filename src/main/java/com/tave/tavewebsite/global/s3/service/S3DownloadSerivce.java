@@ -3,6 +3,7 @@ package com.tave.tavewebsite.global.s3.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
 import com.tave.tavewebsite.domain.interviewfinal.dto.S3FileInputStreamDto;
+import com.tave.tavewebsite.global.s3.utils.S3UrlUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -10,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -98,10 +98,10 @@ public class S3DownloadSerivce {
     }
 
     public S3FileInputStreamDto downloadPortfolioPDF(String portfolioUrl, String memberName) throws IOException {
-        String fileName = extractFilename(portfolioUrl);
-        String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+        // 경로가 포함된 key(portfolio/...)도 다운로드되도록 URL 경로 전체를 key로 사용
+        String key = S3UrlUtils.extractKey(portfolioUrl);
 
-        S3Object s3Object = s3Client.getObject(bucketName, decodedFileName);
+        S3Object s3Object = s3Client.getObject(bucketName, key);
 
         HttpHeaders headers = createHttpHeaders(memberName + " Portfolio.pdf");
 
@@ -124,12 +124,5 @@ public class S3DownloadSerivce {
         headers.setContentDisposition(contentDisposition);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
         return headers;
-    }
-
-    private String extractFilename(String fileUrl) {
-        if (fileUrl.contains("/")) {
-            return fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-        }
-        return fileUrl;
     }
 }
