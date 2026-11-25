@@ -1,7 +1,10 @@
 package com.tave.tavewebsite.global.s3.service;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sksamuel.scrimage.ImmutableImage;
@@ -12,6 +15,7 @@ import com.tave.tavewebsite.domain.resume.exception.PdfFileTypeException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3ConvertFailException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3NotExistNameException;
 import com.tave.tavewebsite.global.s3.exception.S3ErrorException.S3UploadFailException;
+import com.tave.tavewebsite.global.s3.utils.S3UrlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +24,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -273,20 +279,35 @@ public class S3Service {
 
     public void deleteFileByUrl(String fileUrl) {
         try {
-            String key = extractKeyFromUrl(fileUrl);
+            String key = S3UrlUtils.extractKey(fileUrl);
             s3Client.deleteObject(bucketName, key);
         } catch (Exception e) {
             throw new S3NotExistNameException();
         }
     }
 
-    private String extractKeyFromUrl(String fileUrl) {
+    // Content-Type을 서명에 포함한 PUT용 PresignedUrl 발급
+    public URL generatePresignedPutUrl(String key, String contentType, Duration expiration) {
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT)
+                .withExpiration(Date.from(Instant.now().plus(expiration)))
+                .withContentType(contentType);
+        return s3Client.generatePresignedUrl(request);
+    }
+
+    // 객체 메타데이터 조회, 객체가 없으면 null
+    public ObjectMetadata getObjectMetadataOrNull(String key) {
         try {
-            URL url = new URL(fileUrl);
-            return url.getPath().substring(1); // 앞의 '/' 제거
-        } catch (MalformedURLException e) {
-            throw new S3NotExistNameException();
+            return s3Client.getObjectMetadata(bucketName, key);
+        } catch (AmazonS3Exception e) {
+            if (e.getStatusCode() == 404) {
+                return null;
+            }
+            throw e;
         }
+    }
+
+    public void makePublicRead(String key) {
+        s3Client.setObjectAcl(bucketName, key, CannedAccessControlList.PublicRead);
     }
 
 }
